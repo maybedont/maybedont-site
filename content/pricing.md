@@ -95,7 +95,7 @@ Company offers a free version of the Software. Free-tier users are bound by this
 
 ### 2.3 Software Warranty
 
-Company warrants that the Software will perform substantially in accordance with Documentation for thirty (30) days from delivery. Licensee's sole remedy is notification within this period, and Company will use commercially reasonable efforts to correct defects.
+For paid Licensees under an active Order Form, Company warrants that the Software will perform substantially in accordance with Documentation for thirty (30) days from delivery. Licensee's sole remedy is notification within this period, and Company will use commercially reasonable efforts to correct defects.
 
 ---
 
