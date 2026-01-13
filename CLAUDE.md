@@ -1,9 +1,10 @@
 # CLAUDE.md
 
-`This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
+## Project Overview
 
-This project uses Hugo to generate static. 
+This project uses Hugo to generate static content. The generated content will be served at https://maybedont.ai. 
 
 ## Essential Commands
 
