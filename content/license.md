@@ -4,7 +4,7 @@ title: License
 
 # Customer License Agreement
 
-**Version 1.0 | Effective: Jan 1, 2026**
+**Effective: Jan 1, 2026**
 
 This Customer License Agreement ("Agreement") is entered into by and between **Maybe Don't, Inc.**, a Delaware corporation doing business as "Maybe Don't, AI" ("Company"), and the customer ("Licensee") using the Software. By executing an Order Form, installing, or using the Software, Licensee agrees to be bound by these terms.
 
