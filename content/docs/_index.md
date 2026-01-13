@@ -12,9 +12,9 @@ Maybe Don't is a security gateway that sits between AI assistants (like Claude) 
 
 Maybe Don't can be installed through several methods depending on your environment.
 
-### Download Pre-built Binaries
+### Download Packages
 
-The easiest way to get started is to download pre-built binaries for your platform from the [Download page](/download/). Available for Linux, macOS, and Windows.
+The easiest way to get started is to download the package for your platform from the [Download page](/download/). Available for Linux, macOS, and Windows.
 
 ### Docker/Container Installation
 
@@ -175,7 +175,7 @@ Common Expression Language (CEL) rules for deterministic policy enforcement:
 ```yaml
 policy_validation:
   enabled: true
-  # Optional: path to custom rules file otherwise default rules will be used.
+  # Path to CEL policy rules file (required when enabled)
   rules_file: "cel.rules.yaml"
 ```
 
@@ -225,7 +225,7 @@ ai_validation:
   enabled: true
   endpoint: "https://api.openai.com/v1/chat/completions"
   model: "gpt-4o-mini"
-  # Optional: path to custom AI rules file. If not set, default rules will be used.
+  # Path to AI policy rules file (required when enabled)
   rules_file: "ai.rules.yaml"
   # API key (can also be set via OPENAI_API_KEY env var)
   api_key: "${OPENAI_API_KEY}"
@@ -350,7 +350,6 @@ Mount your config directory containing all configuration and rules files:
 ```bash
 # Using Docker
 docker run \
-  -e GITHUB_TOKEN \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
@@ -358,7 +357,6 @@ docker run \
 
 # Using Podman
 podman run \
-  -e GITHUB_TOKEN \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
