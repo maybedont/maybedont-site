@@ -429,6 +429,17 @@ footer {
 	min-width: 200px;
 }
 
+.footer-section.footer-legal {
+	flex: 2;
+	min-width: 300px;
+}
+
+.footer-section.footer-social {
+	flex: 0 1 auto;
+	min-width: 0;
+	text-align: right;
+}
+
 .footer-legal nav ul {
 	display: flex;
 	gap: 1.5rem;

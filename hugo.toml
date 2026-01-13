@@ -26,17 +26,21 @@ theme = 'basic'
     url = "/blog/"
     weight = 50
   [[menu.footer]]
+    name = "License"
+    url = "/license/"
+    weight = 10
+  [[menu.footer]]
     name = "Privacy Policy"
     url = "/privacy/"
-    weight = 10
+    weight = 20
   [[menu.footer]]
     name = "Terms of Service"
     url = "/terms/"
-    weight = 20
+    weight = 30
   [[menu.footer]]
     name = "Cookie Policy"
     url = "/cookies/"
-    weight = 30
+    weight = 40
 
 # Social media links
 [params]

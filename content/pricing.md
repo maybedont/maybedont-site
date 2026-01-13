@@ -46,6 +46,8 @@ Maybe Don't AI uses a combination of AI policy, a traditional policy engine, hum
 ## Ready to Get Started?
 
 [Talk to a founder to learn more](https://cal.com/kmillermd/30min)
+Or start with our [free version](/download/) today.
+
 {.call-to-action}
 
-Or start with our [free version](/download/) today.
+
