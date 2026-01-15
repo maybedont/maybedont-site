@@ -1,0 +1,29 @@
+{{/*
+  Simplified blog pagination - just prev/next arrows
+*/}}
+
+{{- $paginator := . -}}
+
+{{- if or $paginator.HasPrev $paginator.HasNext -}}
+  <nav class="blog-pagination">
+    {{- if $paginator.HasPrev -}}
+      <a href="{{ $paginator.Prev.URL }}" class="blog-pagination-link blog-pagination-prev">
+        <svg class="blog-pagination-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+        </svg>
+        <span>Previous</span>
+      </a>
+    {{- else -}}
+      <span class="blog-pagination-spacer"></span>
+    {{- end -}}
+
+    {{- if $paginator.HasNext -}}
+      <a href="{{ $paginator.Next.URL }}" class="blog-pagination-link blog-pagination-next">
+        <span>Next</span>
+        <svg class="blog-pagination-arrow" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
+        </svg>
+      </a>
+    {{- end -}}
+  </nav>
+{{- end -}}

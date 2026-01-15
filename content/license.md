@@ -145,7 +145,3 @@ a. **Priority A (Critical):** Software inoperative or complete failure. Response
 b. **Priority B (Major):** Substantial performance degradation. Response within 6 hours (Enterprise) or next Update (Professional).
 
 c. **Priority C (Minor):** Minor impact. May be addressed in next Update.
-
----
-
-© {{< year >}} Maybe Don't, Inc. All rights reserved.

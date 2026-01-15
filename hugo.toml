@@ -1,60 +1,83 @@
 baseURL = 'https://maybedont.ai/'
 languageCode = 'en-us'
 title = "Maybe Don't, AI"
-theme = 'basic'
 
-# Navigation menus
+# Use Hextra theme via Hugo modules
+[module]
+  [[module.imports]]
+    path = "github.com/imfing/hextra"
+
+# Navigation menu
 [menu]
   [[menu.main]]
-    name = "Home"
-    url = "/"
-    weight = 10
-  [[menu.main]]
     name = "Documentation"
-    url = "/docs/"
-    weight = 20
+    pageRef = "/docs"
+    weight = 1
   [[menu.main]]
     name = "Download"
-    url = "/download/"
-    weight = 30
+    pageRef = "/docs/download"
+    weight = 2
   [[menu.main]]
     name = "Pricing"
-    url = "/pricing/"
-    weight = 40
+    pageRef = "/pricing"
+    weight = 3
   [[menu.main]]
     name = "Blog"
-    url = "/blog/"
-    weight = 50
-  [[menu.footer]]
-    name = "License"
-    url = "/license/"
-    weight = 10
-  [[menu.footer]]
-    name = "Privacy Policy"
-    url = "/privacy/"
-    weight = 20
-  [[menu.footer]]
-    name = "Terms of Service"
-    url = "/terms/"
-    weight = 30
-  [[menu.footer]]
-    name = "Cookie Policy"
-    url = "/cookies/"
-    weight = 40
+    pageRef = "/blog"
+    weight = 4
+  [[menu.main]]
+    identifier = "theme-toggle"
+    weight = 5
+    [menu.main.params]
+      type = "theme-toggle"
 
-# Social media links
+# Site parameters
 [params]
-  [params.social]
-    linkedin = "https://www.linkedin.com/company/maybe-don-t-ai/"
+  description = "AI Security Guardrails - Real-time monitoring and intelligent blocking for AI agents"
 
+  # Navbar settings
+  [params.navbar]
+    displayTitle = true
+    displayLogo = true
+    [params.navbar.logo]
+      path = "images/logo.png"
+      dark = "images/logo.png"
+      width = 40
+      height = 40
+
+  # Footer configuration
+  [params.footer]
+    displayCopyright = true
+    displayPoweredBy = false
+    displayModeToggle = false
+
+  # Search
+  [params.search]
+    enable = true
+    type = "flexsearch"
+
+  # Theme settings
+  [params.theme]
+    default = "system"
+    displayToggle = true
+
+  # Edit link for docs (optional)
+  [params.editURL]
+    enable = false
+
+# Disable taxonomies (keep existing behavior)
 disableKinds = ["taxonomy", "term"]
 
+# Cache configuration
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
 
+# Markdown rendering
 [markup]
   [markup.goldmark]
+    [markup.goldmark.renderer]
+      unsafe = true
     [markup.goldmark.parser]
       [markup.goldmark.parser.attribute]
         block = true
@@ -63,3 +86,5 @@ disableKinds = ["taxonomy", "term"]
     startLevel = 2
     endLevel = 3
     ordered = false
+  [markup.highlight]
+    noClasses = false

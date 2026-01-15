@@ -1,33 +1,17 @@
 ---
 title: Download
+weight: 0
 ---
 
-## What is Maybe Don't?
+## Download the Package
 
-Maybe Don't is a security gateway that sits between AI assistants (like Claude) and external tools/servers. It monitors and blocks potentially dangerous AI actions before they can affect your system. Think of it as a firewall for AI tool calls - it logs everything and stops risky operations like deleting files or accessing sensitive data.
-
-**Why use it?** When AI assistants interact with your systems through MCP (Model Context Protocol) servers, you want protection against unintended consequences. Maybe Don't gives you that safety net with real-time monitoring and intelligent blocking.
-
-## Run The Gateway
-
-### Download the package
-
-#### v0.7.2
+### v0.7.2
 
 You can download the package below, click on the link that matches your system architecture. Note that the file will be in the form of a `.tar.gz` for all platforms except Windows which will be a `.zip` file.
 
 {{< list-files-for-version version = v0.7.2 >}}
 
-**Not sure which file to download?**
-- **macOS (Apple Silicon):** `darwin_arm64` (most common)
-- **macOS (Intel):** `darwin_x86_64`
-- **64-bit x86 Windows:** `windows_x86_64`
-- **64-bit arm Windows:** `windows_arm64`
-- **32-bit x86 Windows:** `windows_i386`
-- **64-bit Linux:** `linux_x86_64`
-- **32-bit Linux:** `linux_i386`
-
-### Prerequisites
+## Prerequisites
 
 Before starting, you'll need:
 - **OpenAI account with billing enabled** - The gateway uses OpenAI's API which requires a payment method on file
@@ -38,7 +22,7 @@ Before starting, you'll need:
   - Used to authenticate requests to GitHub via the MCP server
   - Can be a fine-grained token with minimal permissions (really anything you want to give it)
 
-### Quickstart
+## Quickstart
 
 After you extract the downloaded file, you should see a binary and a `gateway-config.yaml`. The default configuration connects to both the GitHub MCP server and AWS documentation server, exposing them on `http://localhost:8080/mcp` with security rules in place. All tool calls are logged to `./audit.log`.
 
@@ -51,7 +35,7 @@ export OPENAI_API_KEY="Insert Key Here"
 
 _Need help getting your key?_ [_Get OpenAI API Key_](https://platform.openai.com/docs/quickstart)
 
-### Running Maybe Don't
+## Running Maybe Don't
 
 1. **Start the gateway:**
    ```bash
@@ -77,9 +61,3 @@ _Need help getting your key?_ [_Get OpenAI API Key_](https://platform.openai.com
 
 4. **Start Claude Code** and you can now access both GitHub and AWS documentation MCP servers securely through the gateway with AI guardrails.
    - You can also verify it's working from within Claude by running `/mcp` to see available MCP tools
-
-**Need More?** See our [full documentation](/docs/) for additional configuration.
-
----
-
-For detailed configuration instructions, including custom rules, Docker/Podman deployment, and advanced setups, see our [Documentation](/docs/) section.
