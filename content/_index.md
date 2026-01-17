@@ -16,7 +16,7 @@ AI agents don't act in predictable ways. Your development processes should stop 
   <a href="https://cal.com/kmillermd/30min" class="cta-primary">
     Book a Demo
   </a>
-  <a href="/download/" class="cta-secondary">
+  <a href="/docs/download/" class="cta-secondary">
     Download Now
   </a>
 </div>
