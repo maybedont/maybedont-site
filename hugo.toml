@@ -42,8 +42,8 @@ title = "Maybe Don't, AI"
     [params.navbar.logo]
       path = "images/logo.png"
       dark = "images/logo.png"
-      width = 40
-      height = 40
+      width = 42
+      height = 42
 
   # Footer configuration
   [params.footer]
