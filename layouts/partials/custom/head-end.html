@@ -13,10 +13,12 @@ gtag('config', 'G-95EX0B12B9');
 <!-- Custom styles -->
 <style>
 :root {
-  /* Primary brand colors */
-  --color-primary: #104DEB;
-  --color-primary-dark: #60a5fa;
-  --color-secondary: #6f44bf;
+  /* Primary brand colors - Light mode */
+  --color-primary: #1A40E5;
+  /* Primary brand colors - Dark mode */
+  --color-primary-dark: #6699FF;
+  /* Secondary color for gradients */
+  --color-secondary: #0D2F9E;
 
   /* Success/positive color (checkmarks, etc) */
   --color-success: #10b981;
@@ -32,12 +34,12 @@ gtag('config', 'G-95EX0B12B9');
   --color-border: #e5e7eb;
   --color-border-dark: #333;
 
-  /* Gradients */
-  --gradient-primary: linear-gradient(135deg, var(--color-primary) 0%, var(--color-secondary) 100%);
+  /* Gradients - CTA buttons use a blue gradient */
+  --gradient-primary: linear-gradient(135deg, #2952EF 0%, var(--color-primary) 50%, var(--color-secondary) 100%);
 
-  /* Shadows */
-  --shadow-primary: rgba(16, 77, 235, 0.3);
-  --shadow-primary-hover: rgba(16, 77, 235, 0.4);
+  /* Shadows - updated to match new primary */
+  --shadow-primary: rgba(26, 64, 229, 0.3);
+  --shadow-primary-hover: rgba(26, 64, 229, 0.4);
 }
 
 /* ===== NAVBAR & PAGE ALIGNMENT ===== */
@@ -122,6 +124,27 @@ html.dark .hextra-max-navbar-width > a:first-child span {
 
 .nav-cta:hover {
   box-shadow: 0 4px 12px var(--shadow-primary-hover) !important;
+}
+
+/* Responsive CTA text - show full text by default, short text on small screens */
+.nav-cta .cta-short {
+  display: none;
+}
+
+@media (max-width: 460px) {
+  .nav-cta .cta-full {
+    display: none;
+  }
+  .nav-cta .cta-short {
+    display: inline;
+  }
+}
+
+/* Hide logo text on very small screens */
+@media (max-width: 412px) {
+  .hextra-max-navbar-width > a:first-child span {
+    display: none !important;
+  }
 }
 
 /* ===== PAGE WIDTH / LAYOUT ===== */
@@ -295,17 +318,6 @@ html.dark .content .cta-primary:hover {
   opacity: 0.8;
 }
 
-/* ===== HIDE TOC ON HOME PAGE ===== */
-.hextra-toc {
-  display: block;
-}
-
-/* When on home page, hide TOC */
-body.hextra-home .hextra-toc,
-.home-page .hextra-toc {
-  display: none !important;
-}
-
 /* ===== HIDE SIDEBAR THEME TOGGLE ===== */
 /* Remove the theme toggle from sidebar bottom */
 .hextra-sidebar-container > div:last-child[data-toggle-animation],
@@ -317,17 +329,6 @@ body.hextra-home .hextra-toc,
 /* Only show sidebar on docs pages - hide on other pages */
 .docs .hextra-sidebar-container {
   display: flex !important;
-}
-
-/* Hide sidebar on non-docs pages */
-.hextra-sidebar-container.hx\:md\:hidden {
-  display: none !important;
-}
-
-@media (min-width: 768px) {
-  .docs .hextra-sidebar-container.hx\:md\:hidden {
-    display: flex !important;
-  }
 }
 
 /* Fix selected menu item in dark mode - use font weight not dark blue background */
@@ -346,23 +347,24 @@ html.dark .hextra-sidebar-active-item {
 
 /*
  * DOCS RESPONSIVE BREAKPOINTS (Axiom-style)
- * - TOC (right column): Hide below 1280px (xl breakpoint)
- * - Sidebar (left nav): Hide below 1024px (lg breakpoint) - changed from 768px (md)
+ * - TOC (right column): Only show on docs pages at 1280px+ (xl breakpoint)
+ * - Sidebar (left nav): Hide below 1024px (lg breakpoint)
  */
 
-/* TOC: Ensure it hides below 1280px on docs pages */
-body.docs .hextra-toc {
+/* TOC: Hidden by default on all pages */
+.hextra-toc {
   display: none !important;
 }
 
+/* TOC: Only show on docs pages at 1280px+ */
 @media (min-width: 1280px) {
   body.docs .hextra-toc {
     display: block !important;
   }
 }
 
-/* Sidebar: hidden by default on docs (mobile state) */
-body.docs .hextra-sidebar-container {
+/* Sidebar: hidden by default (mobile state) - applies to all pages */
+.hextra-sidebar-container {
   position: fixed !important;
   top: 0 !important;
   width: 100% !important;
@@ -374,17 +376,16 @@ body.docs .hextra-sidebar-container {
   transition: transform 0.4s cubic-bezier(0.52, 0.16, 0.04, 1) !important;
 }
 
-.dark body.docs .hextra-sidebar-container,
-body.docs .dark .hextra-sidebar-container {
+.dark .hextra-sidebar-container {
   background: #111 !important;
 }
 
 /* Sidebar: when menu is open (toggled by JS) */
-body.docs .hextra-sidebar-container.sidebar-open {
+.hextra-sidebar-container.sidebar-open {
   transform: translate3d(0, 0, 0) !important;
 }
 
-/* Sidebar: visible at lg (1024px) as sticky */
+/* Sidebar: visible at lg (1024px) as sticky - ONLY on docs pages */
 @media (min-width: 1024px) {
   body.docs .hextra-sidebar-container {
     position: sticky !important;
@@ -398,15 +399,20 @@ body.docs .hextra-sidebar-container.sidebar-open {
     flex-shrink: 0 !important;
     align-self: flex-start !important;
   }
+
+  /* Hide sidebar on non-docs pages at desktop */
+  body:not(.docs) .hextra-sidebar-container {
+    display: none !important;
+  }
 }
 
-/* Hamburger menu: show below 1024px on docs, hide at 1024px+ */
-body.docs .hextra-hamburger-menu {
+/* Hamburger menu: show below 1024px, hide at 1024px+ */
+.hextra-hamburger-menu {
   display: block !important;
 }
 
 @media (min-width: 1024px) {
-  body.docs .hextra-hamburger-menu {
+  .hextra-hamburger-menu {
     display: none !important;
   }
 }
@@ -422,14 +428,31 @@ body.docs .hextra-hamburger-menu {
  */
 .hextra-sidebar-container .hextra-scrollbar {
   padding-left: 1.5rem !important;
-  padding-right: 0.5rem !important;
+  padding-right: 1.5rem !important;
 }
 
 /* Nav items: negative margin pulls highlight left, extra padding keeps text in place */
-.hextra-sidebar-container .hextra-scrollbar > ul > li > a {
+.hextra-sidebar-container .hextra-scrollbar > ul > li > a,
+.hextra-sidebar-container .hextra-scrollbar > ul > li > button {
   margin-left: -1.5rem !important;
   padding-left: 1.5rem !important;
   border-radius: 0 0.375rem 0.375rem 0 !important;
+}
+
+/* Expandable menu items (mobile Documentation menu) */
+/* Hide submenu by default, show when parent li has .open class */
+.hextra-sidebar-container .hextra-scrollbar > ul > li > div {
+  display: none;
+}
+
+.hextra-sidebar-container .hextra-scrollbar > ul > li.open > div {
+  display: block;
+}
+
+/* Arrow rotation for expandable button items */
+.hextra-sidebar-container .hextra-scrollbar > ul > li.open > button > span > svg > path,
+.open > button > span > svg > path {
+  transform: rotate(90deg);
 }
 
 /* Nested items in the sidebar div wrapper */
@@ -458,21 +481,24 @@ nav[aria-label="Breadcrumb"],
   margin-bottom: 1.5rem !important;
 }
 
-/* ===== LINK COLORS IN DARK MODE ===== */
-/* Fix dark blue links in dark mode */
-.dark a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not([class*="hx:"]):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn),
-html.dark .content a:not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.cta-primary) {
-  color: var(--color-primary-dark) !important; /* Lighter blue for dark mode */
+/* ===== GLOBAL LINK COLORS ===== */
+/*
+ * All links inherit text color by default, show primary blue on hover.
+ * Excludes: CTA buttons, cards, pricing buttons, download buttons, logo.
+ */
+a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo) {
+  color: inherit !important;
+  text-decoration: none !important;
+  transition: color 0.15s ease;
 }
 
-.dark a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn),
-html.dark .content a:hover:not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.cta-primary):not(.download-detected-btn) {
-  color: #93c5fd !important;
+a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo) {
+  color: var(--color-primary) !important;
 }
 
-/* Blog link colors in dark mode */
-.dark .hx\:text-primary-600,
-html.dark .hx\:text-primary-600 {
+/* Dark mode hover - use lighter blue for readability */
+.dark a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo),
+html.dark a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo) {
   color: var(--color-primary-dark) !important;
 }
 
@@ -503,7 +529,7 @@ html:not(.dark) .custom-footer {
 
 .footer-grid {
   display: grid;
-  grid-template-columns: 2fr repeat(3, 1fr);
+  grid-template-columns: 2fr repeat(4, 1fr);
   gap: 3rem;
   max-width: 1200px;
   margin: 0 auto;
@@ -564,13 +590,21 @@ html:not(.dark) .custom-footer {
 .footer-column a {
   font-size: 0.9rem;
   opacity: 0.8;
-  text-decoration: none;
-  color: inherit;
-  transition: opacity 0.2s;
 }
 
 .footer-column a:hover {
   opacity: 1;
+}
+
+/* Footer link hover color - light mode footer uses dark text */
+html:not(.dark) .footer-column a:hover {
+  color: var(--color-primary) !important;
+}
+
+/* Footer link hover color - dark mode footer */
+.dark .footer-column a:hover,
+html.dark .footer-column a:hover {
+  color: var(--color-primary-dark) !important;
 }
 
 .footer-bottom {
@@ -601,12 +635,20 @@ html:not(.dark) .footer-bottom {
 
 .footer-social a {
   opacity: 0.6;
-  transition: opacity 0.2s;
-  color: inherit;
 }
 
 .footer-social a:hover {
   opacity: 1;
+}
+
+/* Footer social hover color */
+html:not(.dark) .footer-social a:hover {
+  color: var(--color-primary) !important;
+}
+
+.dark .footer-social a:hover,
+html.dark .footer-social a:hover {
+  color: var(--color-primary-dark) !important;
 }
 
 .footer-social svg {
@@ -778,16 +820,17 @@ html:not(.dark) .footer-bottom {
 }
 
 /* ===== PRICING PAGE ===== */
-/* Pricing grid - OrbStack inspired layout */
+/* Pricing grid - two tier layout */
 .pricing-grid {
   display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
+  grid-template-columns: repeat(2, 1fr) !important;
   gap: 2.5rem !important;
   align-items: stretch !important;
   margin-bottom: 5rem !important;
+  max-width: 900px !important;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 768px) {
   .pricing-grid {
     grid-template-columns: 1fr !important;
     gap: 2rem !important;
@@ -1201,14 +1244,105 @@ html.dark .download-detected-btn:hover * {
 .dark .download-list-sha:hover {
   color: var(--color-primary-dark) !important;
 }
+
+/* ===== 404 ERROR PAGE ===== */
+.error-page-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 200px);
+  padding: 4rem 1.5rem;
+  text-align: center;
+}
+
+.error-page-content {
+  max-width: 500px;
+}
+
+.error-page-code {
+  font-size: 8rem;
+  font-weight: 700;
+  line-height: 1;
+  background: var(--gradient-primary);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 1rem;
+}
+
+@media (max-width: 640px) {
+  .error-page-code {
+    font-size: 5rem;
+  }
+}
+
+.error-page-title {
+  font-size: 2rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 1rem 0;
+}
+
+.dark .error-page-title {
+  color: #f3f4f6;
+}
+
+.error-page-message {
+  font-size: 1.125rem;
+  color: #6b7280;
+  margin: 0 0 2.5rem 0;
+  line-height: 1.6;
+}
+
+.dark .error-page-message {
+  color: #9ca3af;
+}
+
+.error-page-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  justify-content: center;
+  margin-bottom: 2.5rem;
+}
+
+.error-page-actions .cta-primary,
+.error-page-actions .cta-secondary {
+  padding: 0.875rem 1.75rem !important;
+  font-size: 0.95rem !important;
+}
+
+.error-page-links {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  font-size: 0.9rem;
+  color: #6b7280;
+}
+
+.dark .error-page-links {
+  color: #9ca3af;
+}
+
+.error-page-links a {
+  color: var(--color-primary) !important;
+  text-decoration: none !important;
+}
+
+.error-page-links a:hover {
+  text-decoration: underline !important;
+}
+
+.dark .error-page-links a {
+  color: var(--color-primary-dark) !important;
+}
 </style>
 
-<!-- Custom JS for docs sidebar toggle at 1024px breakpoint -->
+<!-- Custom JS for sidebar toggle at 1024px breakpoint - works on all pages -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-  // Only apply to docs pages
-  if (!document.body.classList.contains('docs')) return;
-
   const hamburger = document.querySelector('.hextra-hamburger-menu');
   const sidebar = document.querySelector('.hextra-sidebar-container');
 
@@ -1250,6 +1384,17 @@ document.addEventListener('DOMContentLoaded', function() {
       hamburger.querySelector('svg').classList.remove('open');
       document.body.style.overflow = '';
     }
+  });
+
+  // Handle expandable menu items (Documentation) - make entire row clickable
+  sidebar.querySelectorAll('button.hextra-sidebar-collapsible-button').forEach(function(btn) {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      var li = btn.closest('li');
+      if (li) {
+        li.classList.toggle('open');
+      }
+    });
   });
 });
 </script>
