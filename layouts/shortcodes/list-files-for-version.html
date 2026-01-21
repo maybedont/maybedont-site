@@ -1,0 +1,144 @@
+{{ $version     := .Get "version" }}
+{{ $filepath := printf "/static/download/%s" $version }}
+{{ $files    := readDir $filepath }}
+{{ if (fileExists $filepath)}}
+
+<!-- Auto-detected download recommendation -->
+<div id="detected-download" class="download-detected">
+  <div id="download-single" class="download-detected-content" style="display: none;">
+    <span class="download-detected-label">Recommended for your system:</span>
+    <a id="detected-download-link" href="#" class="download-detected-btn">
+      <i class="fa-solid fa-download"></i>
+      <span id="detected-download-text">Detecting...</span>
+    </a>
+    <a id="detected-sha-link" href="#" class="download-sha-link">SHA256</a>
+  </div>
+  <div id="download-macos-dual" class="download-detected-content" style="display: none;">
+    <span class="download-detected-label">Download for macOS:</span>
+    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
+      <a id="macos-arm64-link" href="#" class="download-detected-btn" style="min-width: 160px; text-align: center; justify-content: center;">
+        <i class="fa-solid fa-download"></i>
+        Apple Silicon
+      </a>
+      <a id="macos-x86-link" href="#" class="download-detected-btn" style="min-width: 160px; text-align: center; justify-content: center;">
+        <i class="fa-solid fa-download"></i>
+        Intel
+      </a>
+    </div>
+  </div>
+  <p id="detected-os-info" class="download-detected-info"></p>
+
+  <details class="download-all-platforms" style="margin-top: 1rem;">
+    <summary>All platforms</summary>
+    <ul class="download-list">
+    {{- range $files }}
+        {{ if not (or (hasSuffix .Name "_checksums.txt") (hasSuffix .Name ".sha256")) }}
+        <li class="download-list-item">
+            <a href="/download/{{ $version }}/{{ .Name }}" class="download-list-link">{{ .Name }}</a>
+            <a class="download-list-sha" href="/download/{{ $version }}/{{ .Name }}.sha256"><i class="fa-solid fa-download"></i> sha256</a>
+        </li>
+        {{ end }}
+    {{- end }}
+    </ul>
+  </details>
+</div>
+
+<script>
+(function() {
+  const version = "{{ $version }}";
+
+  function detectOS() {
+    const ua = navigator.userAgent.toLowerCase();
+    const platform = navigator.platform.toLowerCase();
+
+    // Detect OS
+    let os = 'linux';
+    if (platform.includes('mac') || ua.includes('mac')) {
+      os = 'darwin';
+    } else if (platform.includes('win') || ua.includes('win')) {
+      os = 'windows';
+    }
+
+    // Detect architecture (unreliable for macOS)
+    let arch = 'x86_64';
+    if (platform.includes('arm') || ua.includes('arm') || ua.includes('aarch64')) {
+      arch = 'arm64';
+    }
+
+    return { os, arch };
+  }
+
+  function getDisplayName(os, arch) {
+    const osNames = {
+      'darwin': 'macOS',
+      'windows': 'Windows',
+      'linux': 'Linux'
+    };
+    const archNames = {
+      'arm64': 'ARM64',
+      'x86_64': '64-bit (x86_64)',
+      'i386': '32-bit (x86)'
+    };
+    return osNames[os] + ' ' + archNames[arch];
+  }
+
+  function updateDownloadLink() {
+    const { os, arch } = detectOS();
+    const ext = os === 'windows' ? '.zip' : '.tar.gz';
+    const versionNum = version.replace('v', '');
+
+    const singleEl = document.getElementById('download-single');
+    const macDualEl = document.getElementById('download-macos-dual');
+    const infoEl = document.getElementById('detected-os-info');
+
+    if (os === 'darwin') {
+      // macOS: Show both Apple Silicon and Intel buttons
+      singleEl.style.display = 'none';
+      macDualEl.style.display = 'flex';
+
+      const armLink = document.getElementById('macos-arm64-link');
+      const x86Link = document.getElementById('macos-x86-link');
+
+      if (armLink) {
+        armLink.href = '/download/' + version + '/maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
+      }
+      if (x86Link) {
+        x86Link.href = '/download/' + version + '/maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
+      }
+      if (infoEl) {
+        infoEl.textContent = 'Not sure? Apple Silicon is for M1/M2/M3/M4 Macs. Intel is for older Macs.';
+      }
+    } else {
+      // Windows/Linux: Show single download button
+      singleEl.style.display = 'flex';
+      macDualEl.style.display = 'none';
+
+      const filename = 'maybe-dont_' + versionNum + '_' + os + '_' + arch + ext;
+      const downloadUrl = '/download/' + version + '/' + filename;
+      const shaUrl = downloadUrl + '.sha256';
+
+      const linkEl = document.getElementById('detected-download-link');
+      const textEl = document.getElementById('detected-download-text');
+      const shaEl = document.getElementById('detected-sha-link');
+
+      if (linkEl && textEl && shaEl) {
+        linkEl.href = downloadUrl;
+        textEl.textContent = 'Download for ' + getDisplayName(os, arch);
+        shaEl.href = shaUrl;
+      }
+      if (infoEl) {
+        infoEl.textContent = 'Detected: ' + getDisplayName(os, arch);
+      }
+    }
+  }
+
+  // Run on page load
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', updateDownloadLink);
+  } else {
+    updateDownloadLink();
+  }
+})();
+</script>
+{{ end }}
+

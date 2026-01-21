@@ -1,0 +1,100 @@
+{{ define "main" }}
+  {{- $readMore := (T "readMore") | default "Read more →" -}}
+  <div class="hx:mx-auto hx:flex hx:justify-center hextra-max-page-width">
+    {{ partial "sidebar.html" (dict "context" . "disableSidebar" true "displayPlaceholder" false) }}
+    <article class="hx:w-full hx:break-words hx:flex hx:min-h-[calc(100vh-var(--navbar-height))] hx:min-w-0 hx:justify-center hx:pb-8">
+      <main class="hx:w-full hx:min-w-0 hx:max-w-6xl hx:px-6 hx:pt-4 hx:md:px-12">
+        {{ partial "breadcrumb.html" (dict "page" . "enable" false) }}
+        <br class="hx:mt-1.5 hx:text-sm" />
+        {{ if .Title }}<h1 class="hx:mt-2 hx:mb-8 hx:text-4xl hx:font-bold hx:tracking-tight hx:text-slate-900 hx:dark:text-slate-100">{{ .Title }}</h1>{{ end }}
+        <div class="content">{{ .Content }}</div>
+
+        {{- $pages := partial "utils/sort-pages" (dict "page" . "by" site.Params.blog.list.sortBy "order" site.Params.blog.list.sortOrder) -}}
+        {{- $pagerSize := site.Params.blog.list.pagerSize | default 10 -}}
+        {{- $paginator := .Paginate $pages $pagerSize -}}
+
+        {{/* Featured Post - First/Most Recent */}}
+        {{- $featured := index $paginator.Pages 0 -}}
+        {{- if $featured }}
+        <div class="blog-featured hx:mb-12 hx:pb-8 hx:border-b hx:border-gray-200 hx:dark:border-neutral-700">
+          <div class="hx:flex hx:flex-col hx:lg:flex-row hx:gap-8">
+            {{/* Featured image placeholder or actual image */}}
+            {{ with $featured.Params.image }}
+            <div class="hx:lg:w-1/2">
+              <a href="{{ $featured.RelPermalink }}">
+                <img src="{{ . }}" alt="{{ $featured.Title }}" class="hx:rounded-lg hx:w-full hx:h-64 hx:object-cover" />
+              </a>
+            </div>
+            {{ end }}
+            <div class="{{ with $featured.Params.image }}hx:lg:w-1/2{{ else }}hx:w-full{{ end }}">
+              <h2 class="hx:text-2xl hx:lg:text-3xl hx:font-bold hx:mb-4">
+                <a href="{{ $featured.RelPermalink }}" class="hx:text-gray-900 hx:dark:text-white hx:hover:text-primary-600 hx:dark:hover:text-primary-400 hx:no-underline">
+                  {{ $featured.Title }}
+                </a>
+              </h2>
+              {{- /* Get first paragraph or truncate to ~60 words */ -}}
+              {{- $content := $featured.Content | plainify -}}
+              {{- $firstPara := "" -}}
+              {{- $paragraphs := split $content "\n\n" -}}
+              {{- if gt (len $paragraphs) 0 -}}
+                {{- $firstPara = index $paragraphs 0 -}}
+              {{- end -}}
+              {{- /* Use first paragraph if reasonable length, otherwise truncate */ -}}
+              {{- $preview := "" -}}
+              {{- if and $firstPara (le (len (split $firstPara " ")) 80) -}}
+                {{- $preview = $firstPara -}}
+              {{- else -}}
+                {{- $preview = $content | truncate 350 -}}
+              {{- end -}}
+              <p class="hx:text-gray-600 hx:dark:text-gray-300 hx:text-lg hx:leading-relaxed hx:mb-4">
+                {{- $preview -}}
+              </p>
+              <div class="hx:flex hx:items-center hx:gap-4">
+                <span class="hx:text-sm hx:text-gray-500 hx:dark:text-gray-400">
+                  {{ partial "utils/format-date" $featured.Date }}
+                </span>
+                <a href="{{ $featured.RelPermalink }}" class="hx:text-primary-600 hx:dark:text-primary-400 hx:font-medium hx:hover:underline">
+                  {{ $readMore }}
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        {{- end }}
+
+        {{/* Rest of the posts */}}
+        <div class="blog-post-grid hx:mt-10">
+          {{- range $index, $page := $paginator.Pages }}
+            {{- if gt $index 0 }}{{/* Skip first post since it's featured */}}
+            <article class="blog-post-item">
+              <h3 class="blog-post-title">
+                <a href="{{ $page.RelPermalink }}">
+                  {{ $page.Title }}
+                </a>
+              </h3>
+              {{ if site.Params.blog.list.displayTags }}
+                <div class="hx:text-sm hx:leading-7 hx:mb-2">
+                  {{ partial "tags.html" (dict "context" $page) }}
+                </div>
+              {{ end }}
+              <p class="blog-post-excerpt">
+                {{- partial "utils/page-description" $page -}}
+              </p>
+              <div class="blog-post-meta">
+                <span class="blog-post-date">{{ partial "utils/format-date" $page.Date }}</span>
+                <a href="{{ $page.RelPermalink }}" class="blog-post-link">{{ $readMore }}</a>
+              </div>
+            </article>
+            {{- end }}
+          {{ end -}}
+        </div>
+
+        {{- if gt $paginator.TotalPages 1 -}}
+          <div class="hx:mt-12">
+            {{ partial "components/blog-pager.html" $paginator }}
+          </div>
+        {{- end -}}
+      </main>
+    </article>
+  </div>
+{{- end -}}

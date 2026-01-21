@@ -23,4 +23,4 @@ Don't wait to build your own defenses. Use one that already works.
 
 **Download Maybe Don’t AI today.**
 
-[Get it here](https://www.maybedont.ai/download/), and give us feedback so we can make it better.
+[Get it here](/docs/download/), and give us feedback so we can make it better.
