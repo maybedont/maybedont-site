@@ -1,6 +1,7 @@
 ---
 title: Download
 weight: 0
+draft: true
 ---
 
 ## Download the Package

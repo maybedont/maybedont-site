@@ -1,6 +1,9 @@
 ---
 title: Documentation
+linkTitle: Home
 toc: false
+aliases:
+  - /download/   # Redirect old download URL until we decide to re-publish /docs/download.md
 ---
 
 ## What is Maybe Don't?
@@ -12,9 +15,7 @@ Maybe Don't is a security gateway that sits between AI assistants (like Claude) 
 {{< /callout >}}
 
 {{< cards >}}
-  {{< card link="installation" title="Installation" icon="download" subtitle="Get started with Maybe Don't on your platform" >}}
   {{< card link="configuration" title="Configuration" icon="cog" subtitle="Configure the gateway and downstream servers" >}}
   {{< card link="policies" title="Policy Configuration" icon="shield-check" subtitle="Set up CEL and AI-powered validation rules" >}}
   {{< card link="containers" title="Container Deployment" icon="cube" subtitle="Run with Docker or Podman" >}}
-  {{< card link="debugging" title="Testing & Debugging" icon="beaker" subtitle="Use MCP Inspector to test your setup" >}}
 {{< /cards >}}

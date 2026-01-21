@@ -6,6 +6,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 This project uses Hugo to generate static content. The generated content will be served at https://maybedont.ai.
 
+Hugo documentation: https://gohugo.io/documentation/
+
 ## Working Guidelines
 
 1. **Build a spec first for larger tasks.** Before starting significant work, create a specification document so we can iterate on the approach before implementation begins.

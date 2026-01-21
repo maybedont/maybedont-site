@@ -16,9 +16,6 @@ AI agents don't act in predictable ways. Your development processes should stop 
   <a href="https://cal.com/kmillermd/30min" class="cta-primary">
     Book a Demo
   </a>
-  <a href="/docs/download/" class="cta-secondary">
-    Download Now
-  </a>
 </div>
 
 </div>
@@ -37,13 +34,5 @@ AI agents don't act in predictable ways. Your development processes should stop 
   {{< card title="Rollback Without Panic" icon="clock" subtitle="Full operation history. Know exactly what changed, when, and by which agent. Debug AI like you debug code." >}}
   {{< card title="Your Rules, Your Stack" icon="cog" subtitle="Custom policies per repo, per environment, per risk tolerance. Block what matters to YOU, not generic 'best practices.'" >}}
 {{< /cards >}}
-
-</div>
-
-<div class="home-section video-section">
-
-## See It In Action
-
-{{< youtube 3cdMtk-90Oo >}}
 
 </div>

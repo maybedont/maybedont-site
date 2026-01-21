@@ -1,5 +1,6 @@
 {{ define "main" }}
   <div class='hx:mx-auto hx:flex hx:justify-center hextra-max-page-width'>
+    {{ partial "sidebar.html" (dict "context" . "disableSidebar" true "displayPlaceholder" false) }}
     <article class="hx:w-full hx:break-words hx:flex hx:min-h-[calc(100vh-var(--navbar-height))] hx:min-w-0 hx:justify-center hx:pb-8">
       <main class="hx:w-full hx:min-w-0 hx:max-w-6xl hx:px-6 hx:pt-4 hx:md:px-12">
         <div class="page-header hx:text-center hx:mb-16 hx:mt-12">
@@ -11,42 +12,6 @@
 
         <!-- Pricing Cards -->
         <div class="pricing-grid hx:mx-auto hx:mb-20">
-
-          <!-- Free Tier -->
-          <div class="pricing-card">
-            <div class="pricing-card-header">
-              <h3 class="pricing-tier-name">Free</h3>
-              <div class="pricing-amount">
-                <span class="pricing-price">$0</span>
-              </div>
-              <p class="pricing-description">Perfect for individual developers and small teams</p>
-            </div>
-
-            <ul class="pricing-features">
-              <li>
-                <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Community support</span>
-              </li>
-              <li>
-                <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Basic policy validation</span>
-              </li>
-              <li>
-                <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Audit logging</span>
-              </li>
-              <li>
-                <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Self-hosted deployment</span>
-              </li>
-            </ul>
-
-            <div class="pricing-cta">
-              <a href="/docs/download/" class="pricing-btn pricing-btn-secondary">
-                Download Free
-              </a>
-            </div>
-          </div>
 
           <!-- Professional Tier (Featured) -->
           <div class="pricing-card pricing-card-featured">
@@ -63,7 +28,11 @@
             <ul class="pricing-features">
               <li>
                 <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Everything in Free</span>
+                <span>Policy validation</span>
+              </li>
+              <li>
+                <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
+                <span>Audit logging</span>
               </li>
               <li>
                 <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
@@ -99,7 +68,7 @@
             <ul class="pricing-features">
               <li>
                 <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>
-                <span>Everything in Professional</span>
+                <span>All Professional features</span>
               </li>
               <li>
                 <svg class="pricing-check" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/></svg>

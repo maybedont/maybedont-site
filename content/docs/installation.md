@@ -1,6 +1,7 @@
 ---
 title: Installation
 weight: 1
+draft: true
 ---
 
 Maybe Don't can be installed through several methods depending on your environment.

@@ -14,10 +14,6 @@ title = "Maybe Don't, AI"
     pageRef = "/docs"
     weight = 1
   [[menu.main]]
-    name = "Download"
-    pageRef = "/docs/download"
-    weight = 2
-  [[menu.main]]
     name = "Pricing"
     pageRef = "/pricing"
     weight = 3

@@ -16,9 +16,9 @@ This site is built using Hugo. If you want to build this locally, you will need 
 brew install hugo
 ```
 
-
 ### Start the site locally
 
+Note that `--gc --cleanDestinationDir` is not required but will ensure that old files are cleaned up.
 ```
-hugo server 
+hugo --gc --cleanDestinationDir server 
 ```
