@@ -20,5 +20,5 @@ brew install hugo
 
 Note that `--gc --cleanDestinationDir` is not required but will ensure that old files are cleaned up.
 ```
-hugo --gc --cleanDestinationDir server 
+hugo server --gc --cleanDestinationDir
 ```

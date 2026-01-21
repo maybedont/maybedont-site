@@ -1,7 +1,18 @@
-{{ $version     := .Get "version" }}
-{{ $filepath := printf "/static/download/%s" $version }}
-{{ $files    := readDir $filepath }}
-{{ if (fileExists $filepath)}}
+{{ $version := .Get "version" }}
+{{ $versionNum := strings.TrimPrefix "v" $version }}
+{{ $baseURL := printf "https://github.com/maybedont/maybe-dont/releases/download/%s" $version }}
+
+<!-- Platform definitions -->
+{{ $platforms := slice
+  (dict "os" "darwin" "arch" "arm64" "ext" "tar.gz" "display" "macOS (Apple Silicon)")
+  (dict "os" "darwin" "arch" "x86_64" "ext" "tar.gz" "display" "macOS (Intel)")
+  (dict "os" "linux" "arch" "arm64" "ext" "tar.gz" "display" "Linux (ARM64)")
+  (dict "os" "linux" "arch" "x86_64" "ext" "tar.gz" "display" "Linux (x86_64)")
+  (dict "os" "linux" "arch" "i386" "ext" "tar.gz" "display" "Linux (32-bit)")
+  (dict "os" "windows" "arch" "arm64" "ext" "zip" "display" "Windows (ARM64)")
+  (dict "os" "windows" "arch" "x86_64" "ext" "zip" "display" "Windows (x86_64)")
+  (dict "os" "windows" "arch" "i386" "ext" "zip" "display" "Windows (32-bit)")
+}}
 
 <!-- Auto-detected download recommendation -->
 <div id="detected-download" class="download-detected">
@@ -31,13 +42,12 @@
   <details class="download-all-platforms" style="margin-top: 1rem;">
     <summary>All platforms</summary>
     <ul class="download-list">
-    {{- range $files }}
-        {{ if not (or (hasSuffix .Name "_checksums.txt") (hasSuffix .Name ".sha256")) }}
-        <li class="download-list-item">
-            <a href="/download/{{ $version }}/{{ .Name }}" class="download-list-link">{{ .Name }}</a>
-            <a class="download-list-sha" href="/download/{{ $version }}/{{ .Name }}.sha256"><i class="fa-solid fa-download"></i> sha256</a>
-        </li>
-        {{ end }}
+    {{- range $platforms }}
+      {{ $filename := printf "maybe-dont_%s_%s_%s.%s" $versionNum .os .arch .ext }}
+      <li class="download-list-item">
+        <a href="{{ $baseURL }}/{{ $filename }}" class="download-list-link">{{ $filename }}</a>
+        <a class="download-list-sha" href="{{ $baseURL }}/{{ $filename }}.sha256"><i class="fa-solid fa-download"></i> sha256</a>
+      </li>
     {{- end }}
     </ul>
   </details>
@@ -46,6 +56,8 @@
 <script>
 (function() {
   const version = "{{ $version }}";
+  const versionNum = "{{ $versionNum }}";
+  const baseURL = "{{ $baseURL }}";
 
   function detectOS() {
     const ua = navigator.userAgent.toLowerCase();
@@ -85,7 +97,6 @@
   function updateDownloadLink() {
     const { os, arch } = detectOS();
     const ext = os === 'windows' ? '.zip' : '.tar.gz';
-    const versionNum = version.replace('v', '');
 
     const singleEl = document.getElementById('download-single');
     const macDualEl = document.getElementById('download-macos-dual');
@@ -100,10 +111,10 @@
       const x86Link = document.getElementById('macos-x86-link');
 
       if (armLink) {
-        armLink.href = '/download/' + version + '/maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
+        armLink.href = baseURL + '/maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
       }
       if (x86Link) {
-        x86Link.href = '/download/' + version + '/maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
+        x86Link.href = baseURL + '/maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
       }
       if (infoEl) {
         infoEl.textContent = 'Not sure? Apple Silicon is for M1/M2/M3/M4 Macs. Intel is for older Macs.';
@@ -114,7 +125,7 @@
       macDualEl.style.display = 'none';
 
       const filename = 'maybe-dont_' + versionNum + '_' + os + '_' + arch + ext;
-      const downloadUrl = '/download/' + version + '/' + filename;
+      const downloadUrl = baseURL + '/' + filename;
       const shaUrl = downloadUrl + '.sha256';
 
       const linkEl = document.getElementById('detected-download-link');
@@ -140,5 +151,3 @@
   }
 })();
 </script>
-{{ end }}
-
