@@ -21,6 +21,4 @@ If you’re running assistants or any AI that takes user input, **you are expose
 
 Don't wait to build your own defenses. Use one that already works.
 
-**Download Maybe Don’t AI today.**
-
-[Get it here](/docs/download/), and give us feedback so we can make it better.
+**[Let's talk](https://cal.com/kmillermd/30min)** about how Maybe Don't AI can protect your pipeline.

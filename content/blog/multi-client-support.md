@@ -50,13 +50,7 @@ This new architecture supports advanced use cases, such as federated management 
 
 ## Get Started Today
 
-To take advantage of multi-client support:
-
-1. **Update your Maybe Don’t client** to the latest version.
-2. **Configure your MCP connections** in the client dashboard or configuration file.
-3. **Enjoy streamlined management** for all your MCP servers.
-
-For setup instructions or more information, visit the [downloads](https://maybedont.ai/download).
+Want to take advantage of multi-client support and streamline your MCP security? [Schedule a call](https://cal.com/kmillermd/30min) with our team to learn more.
 
 ---
 
