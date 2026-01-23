@@ -4,7 +4,7 @@ subtitle: How Maybe Don't AI Protects Your Codebase From AI's Literal Interpreta
 date: 2026-01-20
 draft: false
 summary: |
-  AI agents are writing code faster than traditional guardrails can catch problems. Maybe Don't AI sits between your AI agents and MCP servers, blocking dangerous operations before execution and teaching agents your standards through verbose deny messages—because your codebase isn't a bowling game and gutter balls cost more than a rematch.
+  AI agents are writing code faster than traditional guardrails can catch problems. Maybe Don't AI sits between your AI agents and MCP servers, blocking dangerous operations before execution and teaching agents your standards through verbose deny messages—because your codebase isn't a bowling game and gutter balls cost more than buying the next round.
 ---
 
 When you go bowling with small children the bowling alley will either fill the gutters with inflatable bumpers, or modern places will have an automatic bumper that pops up. The purpose of the guardrails is clear—enable the child throwing the bowling ball to reach the pins without the danger of falling in a gutter. Help them be successful.
@@ -33,7 +33,7 @@ The agent learns. Course-corrects. Your standards become its standards—enforce
 
 Generic best practices don't account for your architecture, your compliance requirements, your definition of "dangerous." Maybe Don't lets you define custom policies per repo, per environment, per team. Block what matters to you. Allow what you've intentionally approved.
 
-Full operation history means you can debug AI behavior like you debug code. Know exactly what changed, when, and by which agent. Rollback without panic.
+Auditable operational history means you can debug AI behavior like you debug code. You'll know what changed, when, and by which agent. Rollback with confidence.
 
 ## The Stakes Are Real
 
@@ -41,4 +41,4 @@ AI agents will write more of your code this year than last year. That trend line
 
 Your engineers deserve to ship fast and sleep well. Your company deserves protection from the "DROP TABLE" moment that hasn't happened yet.
 
-**[Download Maybe Don't, AI today](https://www.maybedont.ai/download/) and put guardrails between your AI agents and your infrastructure. Because your codebase isn't a bowling game—and gutter balls cost more than a rematch.**
+**[Contact us about Maybe Don't, AI today](https://cal.com/kmillermd/30min) and put guardrails between your AI agents and your infrastructure. Because your codebase isn't a bowling game—and gutter balls cost more than a rematch.**
