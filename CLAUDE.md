@@ -18,9 +18,33 @@ Hugo documentation: https://gohugo.io/documentation/
 
 4. **Use consistent terminology in docs.** When writing or editing documentation, maintain consistent terminology throughout.
 
-5. **Honor the existing color palette.** When making changes, use the colors defined in `layouts/partials/custom/head-end.html` (CSS variables in `:root`). Do not introduce new colors without discussion.
+5. **Honor the existing color palette.** When making changes, use the colors defined in `assets/css/custom.css` (CSS variables in `:root`). Do not introduce new colors without discussion.
 
 6. **Verify completion** When asked to modify a width, or a layout change, do your best to verify changes by rendering the page before you mark the task complete.
+
+## Styling Strategy
+
+This site uses the Hextra Hugo theme but treats it as our own - we prioritize maintainability over easy theme upgrades.
+
+### CSS Organization
+
+- **`assets/css/custom.css`** - All custom CSS lives here. Hextra auto-loads this file last in the cascade.
+- **`layouts/partials/custom/head-end.html`** - Only for Font Awesome, Google Analytics, and JavaScript. No CSS.
+
+### Customization Approach
+
+1. **Custom component classes** (`.cta-primary`, `.pricing-card`, `.blog-post-grid`, etc.) go in `custom.css`. These don't conflict with Hextra.
+
+2. **Hextra overrides** - When Hextra's Tailwind utility classes (like `hx:text-sm`) conflict with our design, **override the template** rather than fighting with CSS specificity:
+   - Copy the Hextra template to `layouts/` (same path)
+   - Modify or remove the conflicting utility classes
+   - This is cleaner than using `!important` in CSS
+
+3. **Avoid `!important`** - It creates maintenance problems. If you need `!important` to make something work, consider overriding the template instead.
+
+### Reference Site
+
+Compare local changes against production: https://maybedont.ai/
 
 ## Essential Commands
 

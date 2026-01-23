@@ -41,4 +41,4 @@ AI agents will save your team countless hours and unlock new capabilities. But w
 
 **Don't wait for the 2,000-pound beef delivery to arrive.**
 
-**[Set up your AI policies with Maybe Don't, AI](https://maybedont.ai) before your next agent deployment. Because the best time to build guardrails is before you need them.**
+Because the best time to build guardrails is before you need them.

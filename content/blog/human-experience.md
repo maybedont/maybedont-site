@@ -44,12 +44,10 @@ One unchecked AI action can cost more than a year of guardrails. We've seen agen
 
 Maybe Don't sits between your agent and the world, applying the life experience it will never have.
 
-## Try It Today
+## Let's Talk
 
-Download Maybe Don't, AI and run it in your development workflow. See what it catches today. See what it flags as your AI agents start to ake bad decisions. Find out what it would have stopped.
+Your AI agent is powerful, fast, and utterly without scars.
 
-Because your AI agent is powerful, fast, and utterly without scars.
+Want to see how Maybe Don't can bring some borrowed wisdom? We'd love to show you.
 
-Give it some borrowed wisdom before it earns its own the hard way—at your expense.
-
-[Download Maybe Don't, AI →](/download)
+[Schedule a call with our team →](https://cal.com/kmillermd/30min)

@@ -24,6 +24,6 @@ The trust crisis Friedman describes won't be solved by government regulations al
 
 ## Time to Act
 
-The window for proactive AI oversight is narrowing rapidly. Download [Maybe Don't AI](https://www.maybedont.ai/download) today and start implementing the kind of third-party verification systems that will become essential infrastructure tomorrow. 
+The window for proactive AI oversight is narrowing rapidly. [Talk to us](https://cal.com/kmillermd/30min) about implementing the kind of third-party verification systems that will become essential infrastructure tomorrow.
 
 Don't wait for the trust crisis to arrive—prevent it.

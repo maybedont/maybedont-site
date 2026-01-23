@@ -83,9 +83,7 @@ It ends in burn.
 
 **So what now?**
 
-Go to [https://maybedont.ai](https://maybedont.ai).
-Download the binary.
-Drop it into your environment.
+[Let's talk](https://cal.com/kmillermd/30min)
 
 We’re early.
 We’re building fast.

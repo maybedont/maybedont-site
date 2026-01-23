@@ -55,10 +55,10 @@ The commands that hacker buried in Q’s AI system? The ones designed to wipe a 
 
 ### Your Call to Action
 
-**If Amazon can miss it, you will too.** Don’t let a human-reviewed PR be your only defense.
+**If Amazon can miss it, you will too.** Don't let a human-reviewed PR be your only defense.
 
-Install [Maybe Don’t’s MCP Gateway](https://maybedont.ai/download) and give your AI stack a line of defense that doesn’t rely on “hoping someone catches it.”
+Want to see how Maybe Don't's MCP Gateway can protect your AI stack? [Let's talk](https://cal.com/kmillermd/30min).
 
 When humans fail and AI obeys blindly, you need something that steps in and says—
 
-**“Maybe Don’t.”**
+**"Maybe Don't."**

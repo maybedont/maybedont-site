@@ -52,6 +52,6 @@ Maybe Don't AI isn't about limiting AI's potential. It's about unleashing it saf
 
 ## Start Taking Control Today
 
-The agentic revolution is happening now. Don't wait for a costly mistake to realize you need guardrails. Download Maybe Don't AI today and start defining your boundaries. Set up your first rules in minutes, connect to your existing MCP tools, and experience the peace of mind that comes from knowing your AI agents are working within your limits.
+The agentic revolution is happening now. Don't wait for a costly mistake to realize you need guardrails.
 
-**[Download Maybe Don't AI now](https://maybedont.ai/download)** and join others who are already using AI agents with confidence. Because the question isn't whether AI agents will transform our world—it's whether you'll be in control when they do.
+**[Talk to us](https://cal.com/kmillermd/30min)** about how Maybe Don't AI can help you define your boundaries. Because the question isn't whether AI agents will transform our world—it's whether you'll be in control when they do.
