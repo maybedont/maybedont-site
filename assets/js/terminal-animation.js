@@ -55,6 +55,13 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   ];
 
+  // Helper function to wrap sentences in nowrap spans
+  function wrapSentences(text) {
+    // Split on period followed by space, keeping the period with each phrase
+    const sentences = text.split(/(?<=\.)\s+/);
+    return sentences.map(s => '<span class="nowrap">' + s + '</span>').join(' ');
+  }
+
   // Set random hero tagline on page load
   const heroTitle = document.getElementById('hero-title');
   const heroSubtitle = document.getElementById('hero-subtitle');
@@ -62,7 +69,7 @@ document.addEventListener('DOMContentLoaded', function() {
   if (heroTitle && heroSubtitle) {
     const randomTagline = heroTaglines[Math.floor(Math.random() * heroTaglines.length)];
     heroTitle.textContent = randomTagline.problem;
-    heroSubtitle.textContent = randomTagline.solution;
+    heroSubtitle.innerHTML = wrapSentences(randomTagline.solution);
   }
 
   // Each scenario has a prompt, tool name, result, and the AI's response
