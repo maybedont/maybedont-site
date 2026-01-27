@@ -6,8 +6,8 @@ layout: home
 
 <div class="hero-with-terminal">
   <div class="hero-content">
-    <h1>All the intelligence. None of the lessons.</h1>
-    <p><strong>AI Guardrails that coach, not just block. Policy with a feedback loop.</strong></p>
+    <h1 id="hero-title">AI. All the intelligence. None of the lessons.</h1>
+    <p><strong id="hero-subtitle">Lessons learned. By proxy.</strong></p>
     <div class="hx:mt-8 hx:flex hx:flex-wrap hx:gap-4">
       <a href="https://cal.com/kmillermd/30min" class="cta-primary">
         Book a Demo
@@ -15,18 +15,22 @@ layout: home
     </div>
   </div>
   <div class="hero-terminal-wrapper">
-    <div class="hero-terminal">
-      <div class="hero-terminal-chrome">
+    <div class="hero-terminal hero-terminal-full">
+      <div class="terminal-chrome">
         <span class="terminal-dot red"></span>
         <span class="terminal-dot yellow"></span>
         <span class="terminal-dot green"></span>
       </div>
-      <div class="hero-terminal-input">
-        <span class="hero-terminal-prompt">&gt;</span>
-        <span class="hero-terminal-text" id="terminal-text"></span>
-        <span class="hero-terminal-cursor"></span>
+      <div class="hero-terminal-output" id="hero-output">
+        <!-- Content gets dynamically inserted here -->
+      </div>
+      <div class="hero-terminal-input-area">
+        <span class="prompt-char">❯</span>
+        <span class="input-text" id="hero-input-text"></span>
+        <span class="input-cursor" id="hero-cursor"></span>
       </div>
     </div>
+    <p class="hero-terminal-hint" id="hero-terminal-hint"><button class="hero-another-btn" id="hero-another-btn" title="See another example">Again! ↻</button></p>
   </div>
 </div>
 
@@ -83,24 +87,39 @@ layout: home
     <h3 class="feature-heading">Prevention</h3>
     <p class="feature-description">When AI does something stupid, Maybe Don't kindly responds with a no, and an explanation. It is sort of like parenting teenagers, we're not angry, just disappointed.</p>
     <div class="feature-graphic feature-graphic-regret">
-      <div class="terminal-window">
+      <div class="terminal-chrome">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+      </div>
+      <div class="terminal-output">
         <div class="command-line">
-          <span class="prompt">›</span>
-          <span class="command-text">clean up old user data</span>
+          <span class="command-text">› clean up old user data</span>
         </div>
         <div class="tool-call">
-          <span class="tool-icon">⏺</span>
+          <span class="tool-icon error">⏺</span>
           <span class="tool-name">maybedont</span>
           <span class="tool-type">(MCP)</span>
         </div>
         <div class="tool-error">
           <span class="error-corner">⎿</span>
           <span class="error-text">
-            <strong>Error:</strong> Request denied by policy 'stop deleting prod': Deleting prod data via MCP is not permitted.<br><br>    To proceed, consider: using a different tool, modifying parameters to                        
-    avoid restricted operations, or asking the user for guidance on allowed                      
+            <strong>Error:</strong> Request denied by policy 'stop deleting prod': Deleting prod data via MCP is not permitted.<br><br>    To proceed, consider: using a different tool, modifying parameters to
+    avoid restricted operations, or asking the user for guidance on allowed
     alternatives.  </span>
         </div>
-        <div class="response-text">I'm sorry, Dave.  I'm afraid I can't do that. I'm told this action was blocked because deleting production is bad.<br><br>Would you like me to propose a different way to help you clean up old user data that does not include deleting production data? </div>
+        <div class="prevention-response">
+          <span class="response-icon">⏺</span>
+          <span class="response-text">I'm sorry, Dave. I'm afraid I can't do that. I cannot allow you to take this restricted action.<br><br>Would you like me to propose an alternate solution that does not include deleting production data, or disconnecting me?</span>
+        </div>
+        <div class="prevention-thinking-done">
+          <span class="thinking-icon">✱</span>
+          <span class="thinking-text">Contemplated for 4.2s</span>
+        </div>
+      </div>
+      <div class="terminal-prompt-input">
+        <span class="prompt-char">❯</span>
+        <span class="prompt-text"></span>
       </div>
     </div>
   </div>
