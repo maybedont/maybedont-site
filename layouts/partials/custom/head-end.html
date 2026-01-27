@@ -68,3 +68,27 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 });
 </script>
+
+<!-- Terminal typing animation for homepage -->
+{{ $terminalJS := resources.Get "js/terminal-animation.js" }}
+{{ if $terminalJS }}
+<script>{{ $terminalJS.Content | safeJS }}</script>
+{{ end }}
+
+<!-- Toggle switches for feature grid -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  document.querySelectorAll('.toggle').forEach(function(toggle) {
+    toggle.style.cursor = 'pointer';
+    toggle.addEventListener('click', function() {
+      if (this.classList.contains('on')) {
+        this.classList.remove('on');
+        this.classList.add('off');
+      } else {
+        this.classList.remove('off');
+        this.classList.add('on');
+      }
+    });
+  });
+});
+</script>
