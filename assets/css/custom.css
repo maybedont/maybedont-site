@@ -1290,9 +1290,42 @@ body[class*="home"] article > h1:first-of-type {
   padding: 5rem 0 4rem;
 }
 
+/* Stacked hero layout: title on top, subtitle+terminal below */
+.hero-with-terminal.hero-stacked {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 1.5rem;
+}
+
+.hero-title-full {
+  font-size: 3.2rem;
+  line-height: 1.1;
+  font-weight: 700;
+  margin: 0;
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.hero-lower-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 2.5rem;
+}
+
+.hero-stacked .hero-content {
+  flex: 0 0 auto;
+  max-width: 320px;
+}
+
+.hero-stacked .hero-terminal-wrapper {
+  flex: 1;
+  max-width: calc(100% - 420px);
+  margin-left: auto;
+}
+
 .hero-content {
-  flex: 0 0 50%;
-  max-width: 560px;
+  flex: 0 0 45%;
+  max-width: 520px;
 }
 
 .hero-content h1 {
@@ -1399,8 +1432,8 @@ html.dark .hero-terminal {
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
   font-size: 0.875rem;
   line-height: 1.5;
-  height: 220px;
-  overflow: hidden;
+  height: 270px;
+  overflow-y: auto;
 }
 
 /* Command line that appears in output after typing */
@@ -1426,6 +1459,7 @@ html.dark .hero-terminal {
   font-style: italic;
   font-size: 0.875rem;
   line-height: 1.5;
+  order: 999;
 }
 
 .hero-thinking .thinking-icon {
@@ -1631,6 +1665,35 @@ html.dark .hero-terminal-hint {
     padding: 3rem 0 2rem;
   }
 
+  .hero-title-full {
+    font-size: 2.5rem;
+    text-align: center;
+  }
+
+  .hero-lower-row {
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+  }
+
+  .hero-stacked .hero-content {
+    max-width: 100%;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-stacked .hero-content .hx\:flex {
+    justify-content: center;
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-stacked .hero-terminal-wrapper {
+    max-width: 100%;
+    margin-left: 0;
+  }
+
   .hero-content {
     max-width: 100%;
     text-align: center;
@@ -1763,23 +1826,15 @@ html.dark a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextr
   padding-right: 0;
 }
 
-/* Internal borders only - right border on left column, bottom border on top row */
-.feature-cell:nth-child(1) {
-  border-right: 1px solid rgba(0, 0, 0, 0.08);
-  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
-}
-
+/* Horizontal border between rows only */
+.feature-cell:nth-child(1),
 .feature-cell:nth-child(2) {
   border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .dark .feature-cell:nth-child(1),
-html.dark .feature-cell:nth-child(1) {
-  border-right-color: rgba(255, 255, 255, 0.1);
-  border-bottom-color: rgba(255, 255, 255, 0.1);
-}
-
 .dark .feature-cell:nth-child(2),
+html.dark .feature-cell:nth-child(1),
 html.dark .feature-cell:nth-child(2) {
   border-bottom-color: rgba(255, 255, 255, 0.1);
 }

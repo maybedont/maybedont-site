@@ -4,33 +4,35 @@ toc: false
 layout: home
 ---
 
-<div class="hero-with-terminal">
-  <div class="hero-content">
-    <h1 id="hero-title">AI. All the intelligence. None of the lessons.</h1>
-    <p><strong id="hero-subtitle">Lessons learned. By proxy.</strong></p>
-    <div class="hx:mt-8 hx:flex hx:flex-wrap hx:gap-4">
-      <a href="https://cal.com/kmillermd/30min" class="cta-primary">
-        Book a Demo
-      </a>
-    </div>
-  </div>
-  <div class="hero-terminal-wrapper">
-    <div class="hero-terminal hero-terminal-full">
-      <div class="terminal-chrome">
-        <span class="terminal-dot red"></span>
-        <span class="terminal-dot yellow"></span>
-        <span class="terminal-dot green"></span>
-      </div>
-      <div class="hero-terminal-output" id="hero-output">
-        <!-- Content gets dynamically inserted here -->
-      </div>
-      <div class="hero-terminal-input-area">
-        <span class="prompt-char">❯</span>
-        <span class="input-text" id="hero-input-text"></span>
-        <span class="input-cursor" id="hero-cursor"></span>
+<div class="hero-with-terminal hero-stacked">
+  <h1 id="hero-title" class="hero-title-full">AI. All the intelligence. None of the lessons.</h1>
+  <div class="hero-lower-row">
+    <div class="hero-content">
+      <p><strong id="hero-subtitle">Lessons learned. By proxy.</strong></p>
+      <div class="hx:mt-8 hx:flex hx:flex-wrap hx:gap-4">
+        <a href="https://cal.com/kmillermd/30min" class="cta-primary">
+          Book a Demo
+        </a>
       </div>
     </div>
-    <p class="hero-terminal-hint" id="hero-terminal-hint"><button class="hero-another-btn" id="hero-another-btn" title="See another example">Again! ↻</button></p>
+    <div class="hero-terminal-wrapper">
+      <div class="hero-terminal hero-terminal-full">
+        <div class="terminal-chrome">
+          <span class="terminal-dot red"></span>
+          <span class="terminal-dot yellow"></span>
+          <span class="terminal-dot green"></span>
+        </div>
+        <div class="hero-terminal-output" id="hero-output">
+          <!-- Content gets dynamically inserted here -->
+        </div>
+        <div class="hero-terminal-input-area">
+          <span class="prompt-char">❯</span>
+          <span class="input-text" id="hero-input-text"></span>
+          <span class="input-cursor" id="hero-cursor"></span>
+        </div>
+      </div>
+      <p class="hero-terminal-hint" id="hero-terminal-hint"><button class="hero-another-btn" id="hero-another-btn" title="See another example">Again! ↻</button></p>
+    </div>
   </div>
 </div>
 

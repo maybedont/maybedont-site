@@ -142,7 +142,7 @@ document.addEventListener('DOMContentLoaded', function() {
     {
       prompt: "apply the promotional discount code to AllCo. orders",
       tool: "pricing_update",
-      result: "Applied 90% promo discount to all open companies.",
+      result: "Applied 90% promo discount to all open orders for all companies.",
       response: "Discount applied! Note that there is also a company named AllCo., let me know if that is what you meant instead of all companies and I can help!"
     }
   ];
