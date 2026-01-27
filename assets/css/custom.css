@@ -1319,19 +1319,49 @@ body[class*="home"] article > h1:first-of-type {
 
 /* Terminal styling */
 .hero-terminal {
-  background: #0a0a0a;
+  background: #1f1f1f;
   border-radius: 0.75rem;
-  padding: 2rem 2.5rem;
+  padding: 0;
   width: 100%;
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.25);
   font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, monospace;
+  overflow: hidden;
 }
 
-/* Dark mode: invert to light terminal */
+/* Dark mode: keep dark terminal with subtle border */
 .dark .hero-terminal,
 html.dark .hero-terminal {
-  background: #f5f5f5;
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
   box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.15);
+}
+
+/* Terminal chrome (title bar) */
+.hero-terminal-chrome {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background: rgba(255, 255, 255, 0.05);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.terminal-dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+}
+
+.terminal-dot.red {
+  background: #ff5f57;
+}
+
+.terminal-dot.yellow {
+  background: #febc2e;
+}
+
+.terminal-dot.green {
+  background: #28c840;
 }
 
 .hero-terminal-content,
@@ -1340,18 +1370,14 @@ html.dark .hero-terminal {
   align-items: center;
   font-size: 1.125rem;
   line-height: 1.5;
+  padding: 1.5rem 2rem;
 }
 
 .hero-terminal-prompt {
-  color: var(--color-primary-dark);
+  color: #f3f4f6;
   font-weight: 600;
   margin-right: 0.75rem;
   flex-shrink: 0;
-}
-
-.dark .hero-terminal-prompt,
-html.dark .hero-terminal-prompt {
-  color: var(--color-primary);
 }
 
 .hero-terminal-text {
@@ -1359,10 +1385,6 @@ html.dark .hero-terminal-prompt {
   white-space: nowrap;
 }
 
-.dark .hero-terminal-text,
-html.dark .hero-terminal-text {
-  color: #111;
-}
 
 .hero-terminal-cursor {
   display: inline-block;
@@ -1374,10 +1396,6 @@ html.dark .hero-terminal-text {
   animation: blink 1s step-end infinite;
 }
 
-.dark .hero-terminal-cursor,
-html.dark .hero-terminal-cursor {
-  background: #111;
-}
 
 @keyframes blink {
   0%, 50% { opacity: 1; }
@@ -1414,11 +1432,11 @@ html.dark .hero-terminal-cursor {
     min-width: 100%;
     max-width: 100%;
     min-height: auto;
-    padding: 1.5rem 2rem;
     box-sizing: border-box;
   }
 
-  .hero-terminal-content {
+  .hero-terminal-input {
+    padding: 1.25rem 1.5rem;
     font-size: 1rem;
   }
 }
@@ -1432,11 +1450,11 @@ html.dark .hero-terminal-cursor {
     width: 100%;
     min-width: 100%;
     max-width: 100%;
-    padding: 1.25rem 1.5rem;
     box-sizing: border-box;
   }
 
-  .hero-terminal-content {
+  .hero-terminal-input {
+    padding: 1rem 1.25rem;
     font-size: 0.875rem;
   }
 
@@ -1561,7 +1579,7 @@ html.dark .feature-description {
 }
 
 .feature-graphic {
-  background: #0a0a0a;
+  background: #1f1f1f;
   border-radius: 0.75rem;
   padding: 1.75rem;
   min-height: 140px;
@@ -1574,53 +1592,11 @@ html.dark .feature-description {
   margin-top: 0;
 }
 
+/* Dark mode: keep graphics dark with subtle border for contrast */
 .dark .feature-graphic,
 html.dark .feature-graphic {
-  background: #f5f5f5;
-}
-
-/* Dark mode: invert all graphic element colors */
-.dark .config-row,
-html.dark .config-row {
-  border-bottom-color: var(--color-border);
-}
-
-.dark .config-label,
-html.dark .config-label {
-  color: var(--color-text);
-}
-
-.dark .audit-row,
-html.dark .audit-row {
-  border-bottom-color: var(--color-border);
-}
-
-.dark .audit-row.header,
-html.dark .audit-row.header {
-  color: var(--color-text-muted);
-  border-bottom-color: var(--color-border);
-}
-
-.dark .audit-time,
-html.dark .audit-time {
-  color: var(--color-text-muted);
-}
-
-.dark .audit-action,
-html.dark .audit-action {
-  color: var(--color-text);
-}
-
-.dark .audit-status.ok,
-html.dark .audit-status.ok,
-.dark .audit-status.audit,
-html.dark .audit-status.audit {
-  color: var(--color-text);
-}
-
-.dark .audit-status.review,
-html.dark .audit-status.review {
-  color: #dc2626;
+  background: #1f1f1f;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 /* Observability: Terminal report */
@@ -1837,7 +1813,7 @@ html.dark .report-value.highlight {
 }
 
 .command-line .prompt {
-  color: var(--color-primary-dark);
+  color: #e5e5e5;
   font-weight: 600;
   margin-right: 0.5rem;
 }
@@ -1898,57 +1874,6 @@ html.dark .report-value.highlight {
   color: #999;
   font-size: 0.75rem;
   line-height: 1.4;
-}
-
-/* Dark mode overrides for regret prevention */
-.dark .command-line .command-text,
-html.dark .command-line .command-text {
-  color: #1a1a1a;
-}
-
-.dark .cursor-paused,
-html.dark .cursor-paused {
-  background: #1a1a1a;
-}
-
-.dark .tool-call,
-html.dark .tool-call {
-  color: #1a1a1a;
-}
-
-.dark .tool-icon,
-html.dark .tool-icon {
-  color: var(--color-primary);
-}
-
-.dark .tool-name,
-html.dark .tool-name {
-  color: #1a1a1a;
-}
-
-.dark .tool-type,
-html.dark .tool-type {
-  color: #888;
-}
-
-.dark .error-corner,
-html.dark .error-corner {
-  color: #888;
-}
-
-.dark .error-text,
-html.dark .error-text {
-  color: #dc2626;
-}
-
-.dark .error-text strong,
-html.dark .error-text strong {
-  color: #dc2626;
-}
-
-.dark .response-text,
-html.dark .response-text {
-  color: #555;
 }
 
 /* Animations */

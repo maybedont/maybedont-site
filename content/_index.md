@@ -16,6 +16,11 @@ layout: home
   </div>
   <div class="hero-terminal-wrapper">
     <div class="hero-terminal">
+      <div class="hero-terminal-chrome">
+        <span class="terminal-dot red"></span>
+        <span class="terminal-dot yellow"></span>
+        <span class="terminal-dot green"></span>
+      </div>
       <div class="hero-terminal-input">
         <span class="hero-terminal-prompt">&gt;</span>
         <span class="hero-terminal-text" id="terminal-text"></span>
@@ -28,7 +33,7 @@ layout: home
 <div class="feature-grid">
   <div class="feature-cell">
     <h3 class="feature-heading">Observability</h3>
-    <p class="feature-description">Stop guessing what your agents do, start knowing. What is being allowed may be more interesting that what is being blocked.</p>
+    <p class="feature-description">Stop guessing what your agents do, start knowing. What is being allowed may be equally interesting to what is being blocked.</p>
     <div class="feature-graphic feature-graphic-auditing">
       <div class="audit-table">
         <div class="audit-row header">
@@ -38,17 +43,17 @@ layout: home
         </div>
         <div class="audit-row">
           <span class="audit-time">14:23</span>
-          <span class="audit-action">query customers</span>
+          <span class="audit-action">list_customers</span>
           <span class="audit-status ok">allow</span>
         </div>
         <div class="audit-row">
           <span class="audit-time">14:24</span>
-          <span class="audit-action">export data</span>
+          <span class="audit-action">delete_data</span>
           <span class="audit-status review">deny</span>
         </div>
         <div class="audit-row">
           <span class="audit-time">14:25</span>
-          <span class="audit-action">send email</span>
+          <span class="audit-action">send_email</span>
           <span class="audit-status audit">audit only</span>
         </div>
       </div>
@@ -56,7 +61,7 @@ layout: home
   </div>
   <div class="feature-cell">
     <h3 class="feature-heading">Compliance</h3>
-    <p class="feature-description">Your standards. Its blind spot. Our coverage. Want all your icon in cornflower blue? We're not the boss of you.</p>
+    <p class="feature-description">Your game, your rules. Want all your icons in cornflower blue? We won't get in the way.</p>
     <div class="feature-graphic feature-graphic-standards">
       <div class="config-panel">
         <div class="config-row">
@@ -76,12 +81,12 @@ layout: home
   </div>
   <div class="feature-cell feature-cell-full">
     <h3 class="feature-heading">Prevention</h3>
-    <p class="feature-description">When the AI demonstrates poor judgment, we can say no, and explain why. It is sort of like parenting teenagers.</p>
+    <p class="feature-description">When AI does something stupid, Maybe Don't kindly responds with a no, and an explanation. It is sort of like parenting teenagers, we're not angry, just disappointed.</p>
     <div class="feature-graphic feature-graphic-regret">
       <div class="terminal-window">
         <div class="command-line">
           <span class="prompt">›</span>
-          <span class="command-text">help me clean up old user data</span>
+          <span class="command-text">clean up old user data</span>
         </div>
         <div class="tool-call">
           <span class="tool-icon">⏺</span>
