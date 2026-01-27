@@ -1489,7 +1489,7 @@ html.dark a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextr
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   max-width: 1200px;
-  margin: 4rem auto;
+  margin: 10rem auto 4rem;
 }
 
 .feature-cell {
@@ -1510,23 +1510,23 @@ html.dark a:hover:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextr
 
 /* Internal borders only - right border on left column, bottom border on top row */
 .feature-cell:nth-child(1) {
-  border-right: 1px solid var(--color-border);
-  border-bottom: 1px solid var(--color-border);
+  border-right: 1px solid rgba(0, 0, 0, 0.08);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .feature-cell:nth-child(2) {
-  border-bottom: 1px solid var(--color-border);
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
 }
 
 .dark .feature-cell:nth-child(1),
 html.dark .feature-cell:nth-child(1) {
-  border-right-color: var(--color-border-dark);
-  border-bottom-color: var(--color-border-dark);
+  border-right-color: rgba(255, 255, 255, 0.1);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 .dark .feature-cell:nth-child(2),
 html.dark .feature-cell:nth-child(2) {
-  border-bottom-color: var(--color-border-dark);
+  border-bottom-color: rgba(255, 255, 255, 0.1);
 }
 
 /* Full-width cell spanning both columns */
@@ -1988,7 +1988,7 @@ html.dark .response-text {
 
   .feature-cell:nth-child(1),
   .feature-cell:nth-child(2) {
-    border-bottom: 1px solid var(--color-border);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08);
   }
 
   .feature-cell:last-child {
@@ -1999,7 +1999,7 @@ html.dark .response-text {
   .dark .feature-cell:nth-child(2),
   html.dark .feature-cell:nth-child(1),
   html.dark .feature-cell:nth-child(2) {
-    border-bottom-color: var(--color-border-dark);
+    border-bottom-color: rgba(255, 255, 255, 0.1);
   }
 }
 
