@@ -1,8 +1,8 @@
 ---
-title: About Us
+title: ""
 ---
 
-# About Maybe Don't, AI
+# About Us
 
 We're building the common sense guardrails that AI agents need.
 

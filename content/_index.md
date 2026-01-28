@@ -1,5 +1,5 @@
 ---
-title: Maybe Don't, AI
+title: ""
 toc: false
 layout: home
 ---
@@ -43,9 +43,9 @@ layout: home
     <div class="feature-graphic feature-graphic-auditing">
       <div class="audit-table">
         <div class="audit-row header">
-          <span class="audit-time">time</span>
-          <span class="audit-action">action</span>
-          <span class="audit-status">result</span>
+          <span class="audit-time">Time</span>
+          <span class="audit-action">Action</span>
+          <span class="audit-status">Result</span>
         </div>
         <div class="audit-row">
           <span class="audit-time">14:23</span>
@@ -70,16 +70,20 @@ layout: home
     <p class="feature-description">Your game, your rules. Want all your icons in cornflower blue? We won't get in the way.</p>
     <div class="feature-graphic feature-graphic-standards">
       <div class="config-panel">
+        <div class="config-row header">
+          <span class="config-label">Policy</span>
+          <span class="config-header-toggle">Enabled</span>
+        </div>
         <div class="config-row">
-          <span class="config-label">coversheet on your TPS report</span>
+          <span class="config-label">Require coversheet on TPS reports</span>
           <span class="toggle on"></span>
         </div>
         <div class="config-row">
-          <span class="config-label">decimal point in the right place</span>
+          <span class="config-label">Verify decimal point in the right place</span>
           <span class="toggle off"></span>
         </div>
         <div class="config-row">
-          <span class="config-label">minimum flair >= 15</span>
+          <span class="config-label">Minimum uniform flair count >= 15</span>
           <span class="toggle on"></span>
         </div>
       </div>
