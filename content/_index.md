@@ -36,6 +36,12 @@ layout: home
   </div>
 </div>
 
+<div class="scroll-indicator">
+  <svg class="scroll-indicator-chevron" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+    <polyline points="6 9 12 15 18 9"></polyline>
+  </svg>
+</div>
+
 <div class="feature-grid">
   <div class="feature-cell">
     <h3 class="feature-heading">Observability</h3>
@@ -129,4 +135,10 @@ layout: home
       </div>
     </div>
   </div>
+</div>
+
+<div class="closing-cta">
+  <h2 class="closing-cta-heading">Ready to get started?</h2>
+  <p class="closing-cta-subtext">See how Maybe Don't can help you deploy AI agents with confidence.</p>
+  <a href="https://cal.com/kmillermd/30min" class="cta-primary">Book a Demo</a>
 </div>
