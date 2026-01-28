@@ -70,6 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- Terminal typing animation for homepage -->
+{{ with site.Data.terminal }}
+<script>window.terminalData = {{ . | jsonify | safeJS }};</script>
+{{ end }}
 {{ $terminalJS := resources.Get "js/terminal-animation.js" }}
 {{ if $terminalJS }}
 <script>{{ $terminalJS.Content | safeJS }}</script>
