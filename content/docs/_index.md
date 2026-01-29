@@ -8,11 +8,15 @@ aliases:
 
 ## What is Maybe Don't?
 
-Maybe Don't is a security gateway that sits between AI assistants (like Claude) and external tools/servers. It monitors and blocks potentially dangerous AI actions before they can affect your system. Think of it as a firewall for AI tool calls - it logs everything and stops risky operations like deleting files or accessing sensitive data.
+Maybe Don't AI is an MCP gateway that operates between AI agents such as Claude or ChatGPT and downstream MCP servers.
 
-{{< callout type="info" >}}
-**Why use it?** When AI assistants interact with your systems through MCP (Model Context Protocol) servers, you want protection against unintended consequences. Maybe Don't gives you that safety net with real-time monitoring and intelligent blocking.
-{{< /callout >}}
+Tools are discovered and called through Maybe Don't. Each tool call is audited, and you may run policy against the tool request and the tool response. 
+
+The gateway will then expose all downstream tools to the connecting agent. When a tool call is made, one or more policies evaluate the tool call. A tool can then be allowed, or denied.
+
+The diagram below illustrates the gateway architecture:
+
+<img src="/images/architecture-diagram.svg" alt="Maybe Don't MCP Gateway Architecture" style="max-width: 100%; height: auto; margin: 2rem 0;" />
 
 {{< cards >}}
   {{< card link="configuration" title="Configuration" icon="cog" subtitle="Configure the gateway and downstream servers" >}}

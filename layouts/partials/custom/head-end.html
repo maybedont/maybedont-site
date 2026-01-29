@@ -70,6 +70,9 @@ document.addEventListener('DOMContentLoaded', function() {
 </script>
 
 <!-- Terminal typing animation for homepage -->
+{{ with site.Data.hero }}
+<script>window.terminalData = {{ . | jsonify | safeJS }};</script>
+{{ end }}
 {{ $terminalJS := resources.Get "js/terminal-animation.js" }}
 {{ if $terminalJS }}
 <script>{{ $terminalJS.Content | safeJS }}</script>
@@ -90,5 +93,75 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     });
   });
+});
+</script>
+
+<!-- Scroll indicator logic (homepage only) -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  var indicator = document.querySelector('.scroll-indicator');
+  var featureGrid = document.querySelector('.feature-grid');
+
+  if (!indicator || !featureGrid) return;
+
+  var hasBeenDismissed = false;
+
+  function isMobile() {
+    return window.innerWidth <= 1024;
+  }
+
+  function hideIndicator() {
+    indicator.style.opacity = '0';
+    indicator.style.pointerEvents = 'none';
+    hasBeenDismissed = true;
+  }
+
+  function showIndicator() {
+    if (hasBeenDismissed) return;
+    indicator.style.display = 'flex';
+    // Small delay to ensure display:flex is applied before opacity transition
+    requestAnimationFrame(function() {
+      indicator.style.opacity = '1';
+    });
+  }
+
+  function checkAndUpdate() {
+    if (hasBeenDismissed) return;
+
+    // Hide on desktop
+    if (!isMobile()) {
+      indicator.style.display = 'none';
+      indicator.style.opacity = '0';
+      return;
+    }
+
+    // Check if feature grid top is well below the viewport (needs scrolling to see)
+    var rect = featureGrid.getBoundingClientRect();
+    var belowFold = rect.top > window.innerHeight * 0.9;
+
+    if (belowFold) {
+      showIndicator();
+    } else {
+      indicator.style.display = 'none';
+      indicator.style.opacity = '0';
+    }
+  }
+
+  // Hide on any scroll
+  window.addEventListener('scroll', function() {
+    if (!hasBeenDismissed && isMobile()) {
+      hideIndicator();
+    }
+  }, { passive: true });
+
+  // Re-check on resize (for responsive mode testing)
+  var resizeTimer;
+  window.addEventListener('resize', function() {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(checkAndUpdate, 100);
+  });
+
+  // Initial check with small delay for layout settling
+  setTimeout(checkAndUpdate, 100);
 });
 </script>
