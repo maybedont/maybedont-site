@@ -29,7 +29,8 @@ title = "Maybe Don't, AI"
 
 # Site parameters
 [params]
-  description = "AI Security Guardrails - Real-time monitoring and intelligent blocking for AI agents"
+  description = "AI Guardrails - Real-time monitoring and intelligent blocking for AI agents"
+  images = ["/images/og-image.png"]
 
   # Navbar settings
   [params.navbar]
