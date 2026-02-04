@@ -1,10 +1,18 @@
 ---
-title: Download
+title: Get Started
 weight: 0
-draft: true
+draft: false
+#aliases:
+#  - /download/   # Redirect old download URL until we decide to re-publish /docs/download.md
 ---
 
-## Download the Package
+## Downloading 
+
+### macOS
+
+### Linux
+
+### Windows
 
 ### v0.7.2
 
