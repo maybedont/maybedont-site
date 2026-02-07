@@ -1,0 +1,13 @@
+{{- $path := .Get "path" -}}
+{{- $class := .Get "class" | default "" -}}
+{{- $style := .Get "style" | default "" -}}
+{{- $file := printf "static/%s" $path -}}
+{{- $svg := readFile $file -}}
+{{- /* Add class and style to the SVG root element if provided */ -}}
+{{- if or $class $style -}}
+  {{- $attrs := "" -}}
+  {{- if $class }}{{ $attrs = printf `class="%s"` $class }}{{ end -}}
+  {{- if $style }}{{ $attrs = printf `%s style="%s"` $attrs $style }}{{ end -}}
+  {{- $svg = replaceRE `<svg\s` (printf "<svg %s " $attrs) $svg -}}
+{{- end -}}
+{{ $svg | safeHTML }}

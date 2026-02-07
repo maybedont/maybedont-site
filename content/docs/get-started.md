@@ -1,72 +1,130 @@
 ---
 title: Get Started
-weight: 0
-draft: false
-#aliases:
-#  - /download/   # Redirect old download URL until we decide to re-publish /docs/download.md
+weight: 1
 ---
 
-## Downloading 
-
-### macOS
-
-### Linux
-
-### Windows
-
-### v0.7.2
-
-You can download the package below, click on the link that matches your system architecture. Note that the file will be in the form of a `.tar.gz` for all platforms except Windows which will be a `.zip` file.
-
-{{< list-files-for-version version = v0.7.2 >}}
+Let's get Maybe Don't running. This guide takes you from zero to a working gateway in just a few steps.
 
 ## Prerequisites
 
-Before starting, you'll need:
-- **OpenAI account with billing enabled** - The gateway uses OpenAI's API which requires a payment method on file
-  - If you want to skip AI validation, you can set `ai_validation.enabled: false` in the config
-  - You can also use any openAI-compatible API, but you'll need to override the URL via config
-  - Currently, we find that OpenAI's API is much more reliable for running checks than Anthropic
-- A [**GitHub Personal Access Token (PAT)**](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens)
-  - Used to authenticate requests to GitHub via the MCP server
-  - Can be a fine-grained token with minimal permissions (really anything you want to give it)
+- **Docker** (or Podman) installed and running
+- **An AI API key** for validation (OpenAI recommended, but Anthropic works too)
+- **At least one MCP server** you want to connect to (we'll use GitHub in this example)
 
-## Quickstart
+{{< callout type="info" >}}
+If you just want to try Maybe Don't without AI validation, you can skip the API key and run in audit-only mode. More on that below.
+{{< /callout >}}
 
-After you extract the downloaded file, you should see a binary and a `gateway-config.yaml`. The default configuration connects to both the GitHub MCP server and AWS documentation server, exposing them on `http://localhost:8080/mcp` with security rules in place. All tool calls are logged to `./audit.log`.
-
-You'll need to set your OpenAI API key as an [environment variable](https://en.wikipedia.org/wiki/Environment_variable):
+## Pull the Image
 
 ```bash
-# An OpenAI API key for AI-based rule validation
-export OPENAI_API_KEY="Insert Key Here"
+docker pull ghcr.io/maybedont/maybe-dont:v0.7.2
 ```
 
-_Need help getting your key?_ [_Get OpenAI API Key_](https://platform.openai.com/docs/quickstart)
+## Create Your Config Directory
 
-## Running Maybe Don't
+Maybe Don't needs a configuration directory. Let's set one up:
 
-1. **Start the gateway:**
-   ```bash
-   ./maybe-dont start
-   ```
+```bash
+mkdir -p ./config
+```
 
-2. **Connect with Claude Code:**
-   - [Install Claude Code](https://code.claude.com/docs/en/get-started/installation) if you haven't already
-   - Set your GitHub PAT as an environment variable:
-   ```bash
-   export GITHUB_TOKEN="YOUR_GITHUB_PAT_HERE"
-   ```
-   - Add the MCP server to Claude Code:
-   ```bash
-   claude mcp add maybe-dont http://localhost:8080/mcp --transport http --header "X-GitHub-Token: $GITHUB_TOKEN"
-   ```
+## Export the Default Configuration
 
-3. **Verify the connection:**
-   ```bash
-   claude mcp list
-   ```
-   This will attempt to connect to the server and show you the configured MCP servers.
+Maybe Don't ships with a default configuration and policy files. Export them into your config directory:
 
-4. **Start Claude Code** and you can now access both GitHub and AWS documentation MCP servers securely through the gateway with AI guardrails.
-   - You can also verify it's working from within Claude by running `/mcp` to see available MCP tools
+```bash
+docker run --rm \
+  -v $(pwd)/config:/config \
+  ghcr.io/maybedont/maybe-dont:v0.7.2 defaults export /config
+```
+
+This creates `maybe-dont.yaml` along with the default CEL and AI policy rule files.
+
+## Configure Your Downstream Server
+
+Open `./config/maybe-dont.yaml` and update the `downstream_mcp_servers` section with the MCP server you want to proxy. For example, to connect to GitHub's MCP server:
+
+```yaml
+downstream_mcp_servers:
+  github:
+    type: http
+    url: "https://api.githubcopilot.com/mcp/"
+    auth:
+      pass_through:
+        enabled: true
+        headers:
+          - source_header: "X-GitHub-Token"
+            target_header: "Authorization"
+            format: "Bearer {value}"
+```
+
+You'll also want to set your AI validation provider under `validation.ai`. The default config uses OpenAI — just make sure `api_key` references your environment variable:
+
+```yaml
+validation:
+  ai:
+    endpoint: "https://api.openai.com/v1/chat/completions"
+    model: "gpt-4o-mini"
+    api_key: "${OPENAI_API_KEY}"
+```
+
+## Start the Gateway
+
+Set your API key and run:
+
+```bash
+export OPENAI_API_KEY="your-api-key-here"
+
+docker run \
+  -e OPENAI_API_KEY \
+  -v $(pwd)/config:/config \
+  -p 8080:8080 \
+  ghcr.io/maybedont/maybe-dont:v0.7.2 start --config-dir /config
+```
+
+You should see output indicating the gateway has started and is listening on port 8080.
+
+## Verify It's Working
+
+The gateway is now ready to accept MCP connections at `http://localhost:8080/mcp`.
+
+To test it, you can connect your AI agent (see [Examples](/docs/examples/)) or use curl:
+
+```bash
+curl -X POST http://localhost:8080/mcp \
+  -H "Content-Type: application/json" \
+  -H "X-GitHub-Token: your-github-token" \
+  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}'
+```
+
+## Running Without AI Validation
+
+Don't have an OpenAI API key yet? No problem. You can run Maybe Don't with just CEL-based policies:
+
+```yaml
+# In your maybe-dont.yaml, disable AI validation:
+request_validation:
+  cel:
+    enabled: true
+    mode: audit_only
+    rules_file: "cel_request_rules.yaml"
+  ai:
+    enabled: false  # Disable AI validation
+
+# Also disable native tools that require AI
+native_tools:
+  audit_report:
+    enabled: false
+```
+
+This still gives you audit logging and deterministic policy evaluation.
+
+## What's Next?
+
+Now that you're up and running:
+
+- **[Configuration](/docs/configuration/)** - Learn about all configuration options
+- **[Policies](/docs/policies/)** - Understand how validation policies work
+- **[Audit Log](/docs/audit-log/)** - Explore what's being logged
+- **[Examples](/docs/examples/)** - Connect your specific AI agent (Claude Code, Cursor, etc.)
