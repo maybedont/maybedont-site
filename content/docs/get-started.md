@@ -3,6 +3,8 @@ title: Get Started
 weight: 1
 aliases:
   - /docs/containers/
+  - /docs/download/
+  - /docs/installation/
 ---
 
 Let's get Maybe Don't running. Pick your installation method, then follow the same first-run steps regardless of how you installed.
