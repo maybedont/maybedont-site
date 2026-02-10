@@ -3,7 +3,7 @@ title: Audit Log
 weight: 30
 ---
 
-The audit log is Maybe Don't's record of everything that happens. Every tool call, every validation decision, every action taken - it's all here.
+The audit log records everything that happens through the gateway. Every tool call, every validation decision, every action taken - it's all here.
 
 ## Why It Matters
 
@@ -81,7 +81,7 @@ Audit entries are JSON, one per line. Here's a simplified example:
 }
 ```
 
-For the complete schema with all fields, see [Log Schema](/docs/audit-log/log-schema/).
+For the complete schema with all fields, see [Schema](/docs/audit-log/log-schema/).
 
 ## Docker Considerations
 
@@ -99,12 +99,12 @@ If you need file-based logs in Docker, mount a volume:
 ```bash
 docker run \
   -v $(pwd)/logs:/home/maybedont/.local/state/maybe-dont \
-  ghcr.io/maybedont/maybe-dont:v0.7.2 start
+  ghcr.io/maybedont/maybe-dont:v1.0.0 start
 ```
 
 ## Next Steps
 
 {{< cards >}}
-  {{< card link="log-schema" title="Log Schema" icon="code" subtitle="Complete field reference" >}}
-  {{< card link="siem-integration" title="SIEM Integration" icon="server" subtitle="Ingesting into your SIEM" >}}
+  {{< card link="log-schema" title="Schema" icon="code" subtitle="Complete field reference" >}}
+  {{< card link="siem-integration" title="SIEM" icon="server" subtitle="Ingesting into your SIEM" >}}
 {{< /cards >}}

@@ -3,16 +3,20 @@ title: Policies
 weight: 20
 ---
 
-Policies are the rules that determine whether a tool call should be allowed, denied, or modified. Maybe Don't supports two policy engines that can work together.
+Policies are the rules that determine whether an operation — MCP tool call or CLI command — should be allowed, denied, or modified. Maybe Don't supports two policy engines that work together.
 
 ## Two Engines, One Goal
 
-| Engine | Best For | How It Works |
-|--------|----------|--------------|
-| **CEL** | Exact matches, known patterns | Deterministic expressions evaluated locally |
-| **AI** | Complex scenarios, nuance | Natural language prompts evaluated by an LLM |
+| | AI Policies | CEL Policies |
+|---|---|---|
+| **Best for** | Nuanced judgment, intent-based rules, broad categories | Specific known patterns, exact matches, explicit blocklists |
+| **Example** | "Block operations that could leak credentials" | "Block the `github__delete_file` tool" |
+| **Speed** | Seconds (LLM API call) | Microseconds (local eval) |
+| **Cost** | Per-API-call | Free |
+| **Determinism** | Probabilistic (temperature=0.0 helps) | 100% deterministic |
+| **MCP + CLI** | One policy covers both (generic) | Needs separate expressions per surface |
 
-You can use one or both. CEL is fast and predictable. AI handles the edge cases that are hard to express as code.
+**Recommendation:** Start with AI policies for broad coverage. Add CEL rules only for specific, concrete patterns you want to enforce deterministically. Most users will get the majority of their value from AI policies.
 
 ## Request vs Response Validation
 
@@ -80,7 +84,7 @@ Both engines must agree to allow. If either denies, the request is denied.
 
 ## Blocking Budget
 
-AI validation takes time (network round-trip to an LLM). To prevent requests from hanging forever, Maybe Don't enforces a blocking budget:
+AI validation takes time (network round-trip to an LLM). To prevent requests from hanging forever, the gateway enforces a blocking budget:
 
 | Setting | Default | Description |
 |---------|---------|-------------|
@@ -103,9 +107,10 @@ request_validation:
     rules_file: "ai_request_rules.yaml"
 ```
 
-Learn more about each engine:
+Learn more:
 
 {{< cards >}}
-  {{< card link="cel-policies" title="CEL Policies" icon="code" subtitle="Deterministic expression-based rules" >}}
-  {{< card link="ai-policies" title="AI Policies" icon="sparkles" subtitle="Natural language validation" >}}
+  {{< card link="ai-policies" title="AI" icon="sparkles" subtitle="The primary policy engine" >}}
+  {{< card link="cel-policies" title="CEL" icon="code" subtitle="Fast, deterministic rules" >}}
+  {{< card link="writing-policies" title="How-To" icon="pencil" subtitle="Practical guide to writing policies" >}}
 {{< /cards >}}

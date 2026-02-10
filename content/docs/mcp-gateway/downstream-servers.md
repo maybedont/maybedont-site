@@ -3,7 +3,7 @@ title: Downstream Servers
 weight: 1
 ---
 
-Downstream MCP servers are the services you want to proxy through Maybe Don't. You can configure multiple servers, and all their tools will be exposed to connecting AI agents (with prefixed names to avoid collisions).
+Downstream MCP servers are the services you want to proxy through the gateway. You can configure multiple servers, and all their tools will be exposed to connecting AI agents (with prefixed names to avoid collisions).
 
 ## Basic Structure
 
@@ -34,7 +34,11 @@ downstream_mcp_servers:
 
 ### SSE (Server-Sent Events)
 
-For MCP servers using SSE streaming:
+{{< callout type="warning" >}}
+SSE transport is **deprecated** in the MCP specification, replaced by Streamable HTTP. Use `type: http` for new configurations. SSE support remains for backward compatibility with older MCP servers that haven't migrated yet.
+{{< /callout >}}
+
+For MCP servers that still use SSE streaming:
 
 ```yaml
 downstream_mcp_servers:
@@ -48,7 +52,7 @@ downstream_mcp_servers:
 
 ### STDIO
 
-For local processes that communicate via stdin/stdout:
+For MCP servers that run as local processes. The gateway spawns the process and communicates via stdin/stdout. This is the most common transport for MCP servers installed locally — tools like filesystem access, database connectors, and custom scripts typically use STDIO.
 
 ```yaml
 downstream_mcp_servers:
@@ -57,8 +61,12 @@ downstream_mcp_servers:
     command: "/usr/local/bin/mcp-server"
     args:
       - "--verbose"
-      - "--port=8080"
+    env:
+      HOME: "${HOME}"
+      PATH: "${PATH}"
 ```
+
+The `env` field passes environment variables to the spawned process. Use `${VAR}` syntax to reference variables from the gateway's environment.
 
 ## Pass-Through Authentication
 
@@ -81,8 +89,8 @@ downstream_mcp_servers:
 **How it works:**
 
 1. Client sends request with `X-GitHub-Token: ghp_abc123`
-2. Maybe Don't extracts the value
-3. Maybe Don't sends `Authorization: Bearer ghp_abc123` to the downstream server
+2. The gateway extracts the value
+3. The gateway sends `Authorization: Bearer ghp_abc123` to the downstream server
 
 {{< callout type="warning" >}}
 Pass-through authentication only works with HTTP and SSE transports. STDIO servers don't have HTTP headers to pass through.

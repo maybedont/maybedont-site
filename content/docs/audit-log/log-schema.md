@@ -1,5 +1,5 @@
 ---
-title: Log Schema
+title: Schema
 weight: 1
 ---
 
@@ -83,13 +83,13 @@ Present when AI validation is enabled:
 
 ## Validation Objects
 
-Both `request_validation` and `response_validation` share the same structure:
+Both `request_validation` and `response_validation` share the same structure. Each contains a `cel` and/or `ai` object with per-engine results:
 
 ```json
 {
   "request_validation": {
-    "cel": { /* CEL results */ },
-    "ai": { /* AI results */ }
+    "cel": {},
+    "ai": {}
   }
 }
 ```

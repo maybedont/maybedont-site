@@ -1,49 +1,79 @@
 ---
 title: Get Started
 weight: 1
+aliases:
+  - /docs/containers/
 ---
 
-Let's get Maybe Don't running. This guide takes you from zero to a working gateway in just a few steps.
+Let's get Maybe Don't running. Pick your installation method, then follow the same first-run steps regardless of how you installed.
 
-## Prerequisites
+## Install
 
-- **Docker** (or Podman) installed and running
-- **An AI API key** for validation (OpenAI recommended, but Anthropic works too)
-- **At least one MCP server** you want to connect to (we'll use GitHub in this example)
+{{< tabs items="Docker,Homebrew,Packages" >}}
 
-{{< callout type="info" >}}
-If you just want to try Maybe Don't without AI validation, you can skip the API key and run in audit-only mode. More on that below.
-{{< /callout >}}
-
-## Pull the Image
+{{< tab >}}
+**Recommended for MCP server mode.** Docker keeps the gateway isolated and is the easiest way to get started if you're proxying MCP tool calls.
 
 ```bash
-docker pull ghcr.io/maybedont/maybe-dont:v0.7.2
+docker pull ghcr.io/maybedont/maybe-dont:v1.0.0
 ```
+{{< /tab >}}
 
-## Create Your Config Directory
+{{< tab >}}
+**Recommended for CLI gateway and local development.** Homebrew installs `maybe-dont` as a native binary — ideal if you're validating CLI commands or want the fastest startup.
 
-Maybe Don't needs a configuration directory. Let's set one up:
+```bash
+brew install maybedont/tap/maybe-dont
+```
+{{< /tab >}}
 
+{{< tab >}}
+{{< list-files-for-version version="v1.0.0" >}}
+
+After downloading, extract the archive and place the `maybe-dont` binary somewhere on your `PATH`.
+{{< /tab >}}
+
+{{< /tabs >}}
+
+## First Run
+
+On first startup, Maybe Don't writes the default configuration and policy files to your config directory. You don't need to create anything from scratch — just modify the defaults.
+
+{{< tabs items="Docker,Package" >}}
+
+{{< tab >}}
 ```bash
 mkdir -p ./config
-```
 
-## Export the Default Configuration
-
-Maybe Don't ships with a default configuration and policy files. Export them into your config directory:
-
-```bash
+# Run once to bootstrap defaults
 docker run --rm \
   -v $(pwd)/config:/config \
-  ghcr.io/maybedont/maybe-dont:v0.7.2 defaults export /config
+  ghcr.io/maybedont/maybe-dont:v1.0.0 start --config-dir /config
 ```
 
-This creates `maybe-dont.yaml` along with the default CEL and AI policy rule files.
+Stop the container after it starts up — the defaults are now written to `./config/`.
+{{< /tab >}}
 
-## Configure Your Downstream Server
+{{< tab >}}
+```bash
+# Run once to bootstrap defaults
+maybe-dont start
+```
 
-Open `./config/maybe-dont.yaml` and update the `downstream_mcp_servers` section with the MCP server you want to proxy. For example, to connect to GitHub's MCP server:
+Stop the process after it starts up. The defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont config info` to see the resolved paths.
+{{< /tab >}}
+
+{{< /tabs >}}
+
+{{< callout type="info" >}}
+**Read-only environments?** If your config directory isn't writable (e.g., mounted read-only in a container), use `maybe-dont defaults export -o <dir>` to extract the defaults to a writable location.
+{{< /callout >}}
+
+## Configure
+
+Open `maybe-dont.yaml` and make two changes:
+
+**1. Add a downstream MCP server** (if you're proxying MCP tool calls):
 
 ```yaml
 downstream_mcp_servers:
@@ -59,20 +89,26 @@ downstream_mcp_servers:
             format: "Bearer {value}"
 ```
 
-You'll also want to set your AI validation provider under `validation.ai`. The default config uses OpenAI — just make sure `api_key` references your environment variable:
+**2. Set your AI provider** for policy validation:
 
 ```yaml
 validation:
   ai:
+    provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
     model: "gpt-4o-mini"
     api_key: "${OPENAI_API_KEY}"
 ```
 
-## Start the Gateway
+{{< callout type="info" >}}
+Don't have an AI API key yet? You can skip this step and run with just CEL policies. Set `ai.enabled: false` under `request_validation` in your config. You'll still get audit logging and deterministic policy evaluation.
+{{< /callout >}}
 
-Set your API key and run:
+## Start
 
+{{< tabs items="Docker,Package" >}}
+
+{{< tab >}}
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
 
@@ -80,16 +116,27 @@ docker run \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:v0.7.2 start --config-dir /config
+  ghcr.io/maybedont/maybe-dont:v1.0.0 start --config-dir /config
 ```
+{{< /tab >}}
 
-You should see output indicating the gateway has started and is listening on port 8080.
+{{< tab >}}
+```bash
+export OPENAI_API_KEY="your-api-key-here"
 
-## Verify It's Working
+maybe-dont start
+```
+{{< /tab >}}
 
-The gateway is now ready to accept MCP connections at `http://localhost:8080/mcp`.
+{{< /tabs >}}
 
-To test it, you can connect your AI agent (see [Examples](/docs/examples/)) or use curl:
+Everything starts in `audit_only` mode by default — observe before enforcing. This means policies evaluate and log decisions, but nothing gets blocked until you're ready.
+
+## Verify
+
+Check the audit log for entries. If you see log output, the gateway is intercepting and evaluating operations.
+
+You can also test with curl:
 
 ```bash
 curl -X POST http://localhost:8080/mcp \
@@ -98,33 +145,16 @@ curl -X POST http://localhost:8080/mcp \
   -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}'
 ```
 
-## Running Without AI Validation
-
-Don't have an OpenAI API key yet? No problem. You can run Maybe Don't with just CEL-based policies:
-
-```yaml
-# In your maybe-dont.yaml, disable AI validation:
-request_validation:
-  cel:
-    enabled: true
-    mode: audit_only
-    rules_file: "cel_request_rules.yaml"
-  ai:
-    enabled: false  # Disable AI validation
-
-# Also disable native tools that require AI
-native_tools:
-  audit_report:
-    enabled: false
-```
-
-This still gives you audit logging and deterministic policy evaluation.
-
 ## What's Next?
 
-Now that you're up and running:
+Two paths depending on what you're here for:
 
-- **[Configuration](/docs/configuration/)** - Learn about all configuration options
-- **[Policies](/docs/policies/)** - Understand how validation policies work
-- **[Audit Log](/docs/audit-log/)** - Explore what's being logged
-- **[Examples](/docs/examples/)** - Connect your specific AI agent (Claude Code, Cursor, etc.)
+- **"I want to proxy MCP tool calls"** — Set up your [downstream servers](/docs/mcp-gateway/downstream-servers/) and connect your [AI agent](/docs/mcp-gateway/examples/)
+- **"I want to validate CLI commands"** — Set up the [CLI gateway](/docs/cli-gateway/)
+
+Then explore:
+
+- **[Policies](/docs/policies/)** — Define what's allowed and what isn't
+- **[Audit Log](/docs/audit-log/)** — See what your agents are doing
+- **[Configuration](/docs/configuration/)** — All configuration options
+- **[Testing](/docs/testing/)** — Test your policies before deploying

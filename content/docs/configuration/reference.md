@@ -1,162 +1,412 @@
 ---
-title: Configuration Reference
+title: Reference
 weight: 100
 ---
 
-This page lists all configuration options, their environment variable equivalents, and default values.
+Complete reference for `maybe-dont.yaml`. Every option is shown with its environment variable equivalent, default value, and available choices. This file is valid YAML — you can use it as a starting point for your own configuration.
 
 ## Configuration Precedence
 
-Values are resolved in this order (later overrides earlier):
+Values are resolved in this order, later overrides earlier:
 
-1. **Config file** (`maybe-dont.yaml`)
-2. **Environment variables** (`MAYBE_DONT_*`)
-3. **CLI flags** (`--config-dir`, etc.)
+1. **Default values** — built-in defaults
+2. **Config file** — `maybe-dont.yaml`
+3. **Environment variables** — `MAYBE_DONT_*`
 
-## Server Configuration
+## Config and Log Directories
 
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `server.type` | `MAYBE_DONT_SERVER_TYPE` | string | `stdio` | Server mode: `stdio`, `http`, `sse` |
-| `server.listen_addr` | `MAYBE_DONT_SERVER_LISTEN_ADDR` | string | `127.0.0.1:8080` | Listen address for http/sse modes |
-| `server.session_timeout_minutes` | `MAYBE_DONT_SERVER_SESSION_TIMEOUT_MINUTES` | int | `30` | Idle session timeout (0 to disable) |
-| `server.trusted_proxies` | `MAYBE_DONT_SERVER_TRUSTED_PROXIES` | []string | `[]` | CIDR blocks for trusted proxies |
+The gateway follows the [XDG Base Directory](https://specifications.freedesktop.org/basedir-spec/latest/) specification:
 
-### SSE TLS Configuration
+| Directory | Resolution Order |
+|-----------|-----------------|
+| **Config** | `--config-dir` flag / `MAYBE_DONT_CONFIG_DIR` > `$XDG_CONFIG_HOME/maybe-dont` > `~/.config/maybe-dont` |
+| **Logs** | `--log-dir` flag / `MAYBE_DONT_LOG_DIR` > `$XDG_STATE_HOME/maybe-dont` > `~/.local/state/maybe-dont` |
 
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `server.sse.tls.enabled` | `MAYBE_DONT_SERVER_SSE_TLS_ENABLED` | bool | `false` | Enable TLS for SSE |
-| `server.sse.tls.cert_file` | `MAYBE_DONT_SERVER_SSE_TLS_CERT_FILE` | string | | Path to TLS certificate |
-| `server.sse.tls.key_file` | `MAYBE_DONT_SERVER_SSE_TLS_KEY_FILE` | string | | Path to TLS private key |
+Run `maybe-dont config info` to see the resolved paths on your system.
 
-## Validation Configuration
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `validation.max_blocking_ms` | `MAYBE_DONT_VALIDATION_MAX_BLOCKING_MS` | int | `90000` | Max cumulative blocking time for all validations |
-| `validation.max_rule_evaluation_ms` | `MAYBE_DONT_VALIDATION_MAX_RULE_EVALUATION_MS` | int | `45000` | Max time for single rule evaluation |
-
-### AI Provider Configuration
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `validation.ai.provider` | `MAYBE_DONT_VALIDATION_AI_PROVIDER` | string | `openai` | AI provider: `openai`, `openai_compatible`, `anthropic` |
-| `validation.ai.endpoint` | `MAYBE_DONT_VALIDATION_AI_ENDPOINT` | string | | API endpoint (required for `openai_compatible`) |
-| `validation.ai.model` | `MAYBE_DONT_VALIDATION_AI_MODEL` | string | | Model name (e.g., `gpt-4o-mini`) |
-| `validation.ai.api_key` | `MAYBE_DONT_VALIDATION_AI_API_KEY` | string | | API key for AI provider |
-
-## Request Validation
-
-### CEL Request Validation
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `request_validation.cel.enabled` | `MAYBE_DONT_REQUEST_VALIDATION_CEL_ENABLED` | bool | `true` | Enable CEL request validation |
-| `request_validation.cel.mode` | `MAYBE_DONT_REQUEST_VALIDATION_CEL_MODE` | string | `audit_only` | Mode: `audit_only` or empty (enforce) |
-| `request_validation.cel.rules_file` | `MAYBE_DONT_REQUEST_VALIDATION_CEL_RULES_FILE` | string | | Path to CEL rules file |
-
-### AI Request Validation
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `request_validation.ai.enabled` | `MAYBE_DONT_REQUEST_VALIDATION_AI_ENABLED` | bool | `true` | Enable AI request validation |
-| `request_validation.ai.mode` | `MAYBE_DONT_REQUEST_VALIDATION_AI_MODE` | string | `audit_only` | Mode: `audit_only` or empty (enforce) |
-| `request_validation.ai.rules_file` | `MAYBE_DONT_REQUEST_VALIDATION_AI_RULES_FILE` | string | | Path to AI rules file |
-
-## Response Validation
-
-### CEL Response Validation
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `response_validation.cel.enabled` | `MAYBE_DONT_RESPONSE_VALIDATION_CEL_ENABLED` | bool | `false` | Enable CEL response validation |
-| `response_validation.cel.mode` | `MAYBE_DONT_RESPONSE_VALIDATION_CEL_MODE` | string | `audit_only` | Mode: `audit_only` or empty (enforce) |
-| `response_validation.cel.rules_file` | `MAYBE_DONT_RESPONSE_VALIDATION_CEL_RULES_FILE` | string | | Path to CEL response rules file |
-
-### AI Response Validation
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `response_validation.ai.enabled` | `MAYBE_DONT_RESPONSE_VALIDATION_AI_ENABLED` | bool | `false` | Enable AI response validation |
-| `response_validation.ai.mode` | `MAYBE_DONT_RESPONSE_VALIDATION_AI_MODE` | string | `audit_only` | Mode: `audit_only` or empty (enforce) |
-| `response_validation.ai.rules_file` | `MAYBE_DONT_RESPONSE_VALIDATION_AI_RULES_FILE` | string | | Path to AI response rules file |
-
-## Audit Configuration
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `audit.path` | `MAYBE_DONT_AUDIT_PATH` | string | `maybedont-audit.log` | Output: `stdout`, `stderr`, or filename |
-| `audit.filter` | `MAYBE_DONT_AUDIT_FILTER` | string | `all` | Filter: `all` or `deny_only` |
-| `audit.rotation.max_size_mb` | `MAYBE_DONT_AUDIT_ROTATION_MAX_SIZE_MB` | int | `100` | Max file size before rotation |
-| `audit.rotation.max_backups` | `MAYBE_DONT_AUDIT_ROTATION_MAX_BACKUPS` | int | `5` | Number of rotated files to keep |
-| `audit.rotation.max_age_days` | `MAYBE_DONT_AUDIT_ROTATION_MAX_AGE_DAYS` | int | `180` | Max age of rotated files |
-| `audit.rotation.compress` | `MAYBE_DONT_AUDIT_ROTATION_COMPRESS` | bool | `true` | Gzip rotated files |
-
-## Logger Configuration
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `logger.level` | `MAYBE_DONT_LOGGER_LEVEL` | string | `info` | Log level: `debug`, `info`, `warn`, `error` |
-| `logger.path` | `MAYBE_DONT_LOGGER_PATH` | string | `stderr` | Output: `stdout`, `stderr`, or filename |
-| `logger.rotation.max_size_mb` | `MAYBE_DONT_LOGGER_ROTATION_MAX_SIZE_MB` | int | `100` | Max file size before rotation |
-| `logger.rotation.max_backups` | `MAYBE_DONT_LOGGER_ROTATION_MAX_BACKUPS` | int | `5` | Number of rotated files to keep |
-| `logger.rotation.max_age_days` | `MAYBE_DONT_LOGGER_ROTATION_MAX_AGE_DAYS` | int | `180` | Max age of rotated files |
-| `logger.rotation.compress` | `MAYBE_DONT_LOGGER_ROTATION_COMPRESS` | bool | `true` | Gzip rotated files |
-
-## Native Tools Configuration
-
-| YAML Path | Environment Variable | Type | Default | Description |
-|-----------|---------------------|------|---------|-------------|
-| `native_tools.audit_log.enabled` | `MAYBE_DONT_NATIVE_TOOLS_AUDIT_LOG_ENABLED` | bool | `true` | Enable audit log tool |
-| `native_tools.audit_log.max_entries` | `MAYBE_DONT_NATIVE_TOOLS_AUDIT_LOG_MAX_ENTRIES` | int | `100` | Max entries returned (10-500) |
-| `native_tools.audit_report.enabled` | `MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_ENABLED` | bool | `true` | Enable audit report tool |
-| `native_tools.audit_report.max_entries` | `MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_MAX_ENTRIES` | int | `1000` | Max entries for report (10-2000) |
-| `native_tools.audit_report.timeout_seconds` | `MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_TIMEOUT_SECONDS` | int | `180` | AI API timeout (30-300) |
-| `native_tools.list_servers.enabled` | `MAYBE_DONT_NATIVE_TOOLS_LIST_SERVERS_ENABLED` | bool | `true` | Enable list servers tool |
-| `native_tools.list_sessions.enabled` | `MAYBE_DONT_NATIVE_TOOLS_LIST_SESSIONS_ENABLED` | bool | `true` | Enable list sessions tool |
-
-## Downstream MCP Server Configuration
-
-Each server under `downstream_mcp_servers` supports these fields:
-
-| Field | Type | Description |
-|-------|------|-------------|
-| `type` | string | Transport: `stdio`, `http`, `sse` |
-| `url` | string | Server URL (http/sse only) |
-| `command` | string | Command to run (stdio only) |
-| `args` | []string | Command arguments (stdio only) |
-| `startup_timeout_ms` | int | Startup timeout, default 30000 |
-| `initialization_retries` | int | Retry attempts, default 5 |
-| `retry_delay_ms` | int | Retry delay, default 100 |
-| `capability_discovery_delay_ms` | int | Discovery delay, default 1000 (stdio) |
-| `capability_discovery_retries` | int | Discovery retries, default 3 |
-| `capability_retry_delay_ms` | int | Discovery retry delay, default 500 |
-
-### HTTP/SSE Headers
+## Full Configuration
 
 ```yaml
+# =============================================================================
+# Server
+# =============================================================================
+
+server:
+  # Server transport mode
+  # Env: MAYBE_DONT_SERVER_TYPE
+  # Options: http, stdio, sse
+  # Default: http
+  type: http
+
+  # Listen address for http and sse modes (any host:port combination)
+  # Env: MAYBE_DONT_SERVER_LISTEN_ADDR
+  # Default: 127.0.0.1:8080
+  listen_addr: "127.0.0.1:8080"
+
+  # Idle session timeout in minutes; 0 to disable
+  # Env: MAYBE_DONT_SERVER_SESSION_TIMEOUT_MINUTES
+  # Default: 30
+  session_timeout_minutes: 30
+
+  # Trusted proxy CIDR blocks for X-Forwarded-For resolution
+  # Env: MAYBE_DONT_SERVER_TRUSTED_PROXIES
+  # Default: (none)
+  trusted_proxies: []
+
+  # TLS configuration (sse mode only)
+  sse:
+    tls:
+      # Enable TLS
+      # Env: MAYBE_DONT_SERVER_SSE_TLS_ENABLED
+      # Default: false
+      enabled: false
+
+      # Path to TLS certificate file
+      # Env: MAYBE_DONT_SERVER_SSE_TLS_CERT_FILE
+      cert_file: ""
+
+      # Path to TLS private key file
+      # Env: MAYBE_DONT_SERVER_SSE_TLS_KEY_FILE
+      key_file: ""
+
+# =============================================================================
+# Validation
+# =============================================================================
+
+validation:
+  # Max cumulative time (ms) across all policy evaluations per request.
+  # If total evaluation time exceeds this, remaining evaluations are skipped
+  # and the request fails open.
+  # Env: MAYBE_DONT_VALIDATION_MAX_BLOCKING_MS
+  # Default: 90000
+  max_blocking_ms: 90000
+
+  # Max time (ms) for a single rule evaluation
+  # Env: MAYBE_DONT_VALIDATION_MAX_RULE_EVALUATION_MS
+  # Default: 45000
+  max_rule_evaluation_ms: 45000
+
+  # AI provider configuration
+  ai:
+    # AI provider
+    # Env: MAYBE_DONT_VALIDATION_AI_PROVIDER
+    # Options: openai, anthropic, openai_compatible
+    # Default: openai
+    provider: openai
+
+    # API endpoint
+    # Env: MAYBE_DONT_VALIDATION_AI_ENDPOINT
+    # Default: provider-specific (openai: https://api.openai.com/v1/chat/completions,
+    #   anthropic: https://api.anthropic.com/v1/messages)
+    # Required for openai_compatible — set to your provider's chat completions URL
+    endpoint: ""
+
+    # Model name
+    # Env: MAYBE_DONT_VALIDATION_AI_MODEL
+    # Examples: gpt-4o-mini, gpt-5, claude-sonnet-4-5-20250929
+    model: ""
+
+    # API key — supports ${ENV_VAR} syntax
+    # Env: MAYBE_DONT_VALIDATION_AI_API_KEY
+    api_key: ""
+
+# =============================================================================
+# Request Validation
+# =============================================================================
+
+request_validation:
+  # CEL request validation
+  cel:
+    # Enable CEL request validation
+    # Env: MAYBE_DONT_REQUEST_VALIDATION_CEL_ENABLED
+    # Default: true
+    enabled: true
+
+    # Validation mode
+    # Env: MAYBE_DONT_REQUEST_VALIDATION_CEL_MODE
+    # Options: audit_only, enforce
+    # Default: audit_only
+    mode: audit_only
+
+    # Path to CEL request rules file or directory
+    # Env: MAYBE_DONT_REQUEST_VALIDATION_CEL_RULES_FILE
+    rules_file: ""
+
+  # AI request validation
+  ai:
+    # Enable AI request validation
+    # Env: MAYBE_DONT_REQUEST_VALIDATION_AI_ENABLED
+    # Default: true
+    enabled: true
+
+    # Validation mode
+    # Env: MAYBE_DONT_REQUEST_VALIDATION_AI_MODE
+    # Options: audit_only, enforce
+    # Default: audit_only
+    mode: audit_only
+
+    # Path to AI request rules file or directory
+    # Env: MAYBE_DONT_REQUEST_VALIDATION_AI_RULES_FILE
+    rules_file: ""
+
+# =============================================================================
+# Response Validation
+# =============================================================================
+
+response_validation:
+  # CEL response validation
+  cel:
+    # Enable CEL response validation
+    # Env: MAYBE_DONT_RESPONSE_VALIDATION_CEL_ENABLED
+    # Default: false
+    enabled: false
+
+    # Validation mode
+    # Env: MAYBE_DONT_RESPONSE_VALIDATION_CEL_MODE
+    # Options: audit_only, enforce
+    # Default: audit_only
+    mode: audit_only
+
+    # Path to CEL response rules file or directory
+    # Env: MAYBE_DONT_RESPONSE_VALIDATION_CEL_RULES_FILE
+    rules_file: ""
+
+  # AI response validation
+  ai:
+    # Enable AI response validation
+    # Env: MAYBE_DONT_RESPONSE_VALIDATION_AI_ENABLED
+    # Default: false
+    enabled: false
+
+    # Validation mode
+    # Env: MAYBE_DONT_RESPONSE_VALIDATION_AI_MODE
+    # Options: audit_only, enforce
+    # Default: audit_only
+    mode: audit_only
+
+    # Path to AI response rules file or directory
+    # Env: MAYBE_DONT_RESPONSE_VALIDATION_AI_RULES_FILE
+    rules_file: ""
+
+# =============================================================================
+# CLI Request Validation
+# =============================================================================
+
+cli_request_validation:
+  # Enable CLI command validation (requires http or sse mode)
+  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_ENABLED
+  # Default: false
+  enabled: false
+
+  # Commands to validate — others pass through without evaluation
+  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_VALIDATE_COMMANDS
+  # Default: (none)
+  validate_commands: []
+
+  # Include argument values in audit log entries
+  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_INCLUDE_ARGUMENT_VALUES
+  # Default: true
+  include_argument_values: true
+
+# =============================================================================
+# Audit Log
+# =============================================================================
+
+audit:
+  # Output destination: stdout, stderr, or a file path
+  # Env: MAYBE_DONT_AUDIT_PATH
+  # Default: maybedont-audit.log
+  path: maybedont-audit.log
+
+  # Filter which entries are logged
+  # Env: MAYBE_DONT_AUDIT_FILTER
+  # Options: all, deny_only
+  # Default: all
+  filter: all
+
+  # Log rotation settings (applies when path is a file)
+  rotation:
+    # Max file size in MB before rotation
+    # Env: MAYBE_DONT_AUDIT_ROTATION_MAX_SIZE_MB
+    # Default: 100
+    max_size_mb: 100
+
+    # Number of rotated files to keep
+    # Env: MAYBE_DONT_AUDIT_ROTATION_MAX_BACKUPS
+    # Default: 5
+    max_backups: 5
+
+    # Max age of rotated files in days
+    # Env: MAYBE_DONT_AUDIT_ROTATION_MAX_AGE_DAYS
+    # Default: 180
+    max_age_days: 180
+
+    # Gzip compress rotated files
+    # Env: MAYBE_DONT_AUDIT_ROTATION_COMPRESS
+    # Default: true
+    compress: true
+
+# =============================================================================
+# Application Logger
+# =============================================================================
+
+logger:
+  # Log level
+  # Env: MAYBE_DONT_LOGGER_LEVEL
+  # Options: debug, info, warn, error
+  # Default: info
+  level: info
+
+  # Output destination: stdout, stderr, or a file path
+  # Env: MAYBE_DONT_LOGGER_PATH
+  # Default: stderr
+  path: stderr
+
+  # Log rotation settings (applies when path is a file)
+  rotation:
+    # Max file size in MB before rotation
+    # Env: MAYBE_DONT_LOGGER_ROTATION_MAX_SIZE_MB
+    # Default: 100
+    max_size_mb: 100
+
+    # Number of rotated files to keep
+    # Env: MAYBE_DONT_LOGGER_ROTATION_MAX_BACKUPS
+    # Default: 5
+    max_backups: 5
+
+    # Max age of rotated files in days
+    # Env: MAYBE_DONT_LOGGER_ROTATION_MAX_AGE_DAYS
+    # Default: 180
+    max_age_days: 180
+
+    # Gzip compress rotated files
+    # Env: MAYBE_DONT_LOGGER_ROTATION_COMPRESS
+    # Default: true
+    compress: true
+
+# =============================================================================
+# Native Tools
+# =============================================================================
+
+native_tools:
+  audit_log:
+    # Enable the audit log query tool
+    # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_LOG_ENABLED
+    # Default: true
+    enabled: true
+
+    # Max entries returned per query (10-500)
+    # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_LOG_MAX_ENTRIES
+    # Default: 100
+    max_entries: 100
+
+  audit_report:
+    # Enable the AI-powered audit report tool
+    # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_ENABLED
+    # Default: true
+    enabled: true
+
+    # Max entries included in report (10-2000)
+    # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_MAX_ENTRIES
+    # Default: 1000
+    max_entries: 1000
+
+    # AI API timeout in seconds (30-300)
+    # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_TIMEOUT_SECONDS
+    # Default: 180
+    timeout_seconds: 180
+
+  list_servers:
+    # Enable the list downstream servers tool
+    # Env: MAYBE_DONT_NATIVE_TOOLS_LIST_SERVERS_ENABLED
+    # Default: true
+    enabled: true
+
+  list_sessions:
+    # Enable the list sessions tool
+    # Env: MAYBE_DONT_NATIVE_TOOLS_LIST_SESSIONS_ENABLED
+    # Default: true
+    enabled: true
+
+# =============================================================================
+# Downstream MCP Servers
+# =============================================================================
+
+# Each key is a server name used as the tool name prefix (e.g., "github" means
+# tools are exposed as github__<tool_name>).
 downstream_mcp_servers:
-  example:
+
+  # Example: stdio transport (launches a subprocess)
+  example_stdio:
+    # Transport type
+    # Options: stdio, http, sse
+    type: stdio
+
+    # Command to launch
+    command: "npx"
+
+    # Command arguments
+    args: ["-y", "@example/mcp-server"]
+
+    # Environment variables passed to the subprocess
+    env:
+      NODE_ENV: "production"
+
+    # Startup timeout in ms (default: 30000)
+    startup_timeout_ms: 30000
+
+    # MCP initialization retries (default: 5)
+    initialization_retries: 5
+
+    # Delay between retries in ms (default: 100)
+    retry_delay_ms: 100
+
+    # Delay before capability discovery in ms (default: 1000, stdio only)
+    capability_discovery_delay_ms: 1000
+
+    # Capability discovery retries (default: 3)
+    capability_discovery_retries: 3
+
+    # Delay between discovery retries in ms (default: 500)
+    capability_retry_delay_ms: 500
+
+  # Example: http transport with static auth header
+  example_http:
     type: http
     url: "https://example.com/mcp"
     http:
       headers:
         Authorization: "Bearer ${TOKEN}"
-```
 
-### Pass-Through Authentication
-
-```yaml
-downstream_mcp_servers:
-  example:
+  # Example: http transport with pass-through authentication
+  example_passthrough:
     type: http
-    url: "https://example.com/mcp"
+    url: "https://api.githubcopilot.com/mcp/"
     auth:
       pass_through:
         enabled: true
         headers:
-          - source_header: "X-Client-Token"
+          - source_header: "X-GitHub-Token"
             target_header: "Authorization"
             format: "Bearer {value}"
 ```
+
+## Environment Variable Naming
+
+Environment variables follow the pattern `MAYBE_DONT_<YAML_PATH>` where dots and nesting become underscores, converted to uppercase:
+
+- `server.type` &rarr; `MAYBE_DONT_SERVER_TYPE`
+- `audit.rotation.max_size_mb` &rarr; `MAYBE_DONT_AUDIT_ROTATION_MAX_SIZE_MB`
+
+Environment variables support `${VAR}` substitution syntax, just like config file values.
+
+### Exceptions
+
+Some environment variables don't follow the YAML path convention:
+
+| Variable | Purpose |
+|----------|---------|
+| `MAYBE_DONT_CONFIG_DIR` | Override the config directory |
+| `MAYBE_DONT_LOG_DIR` | Override the log directory |
+| `MAYBE_DONT_CONFIG_FILE_NAME` | Override the config filename (default: `maybe-dont.yaml`) |
+| `MAYBE_DONT_CLIENT_ID` | Client identifier for CLI audit attribution |

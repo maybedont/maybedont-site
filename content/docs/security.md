@@ -67,7 +67,7 @@ Maybe Don't collects anonymous usage metrics to help us improve the product. Her
 {
   "timestamp": "2025-02-04T15:30:00Z",
   "installation_id": "a1b2c3d4e5f6...",
-  "version": "v0.7.2",
+  "version": "v1.0.0",
   "tool_invocations": 1234,
   "gateway_starts": 5,
   "unique_request_count": 89,

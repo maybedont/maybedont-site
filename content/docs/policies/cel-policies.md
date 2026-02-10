@@ -1,16 +1,20 @@
 ---
-title: CEL Policies
+title: CEL
 weight: 1
 ---
 
-CEL (Common Expression Language) policies use deterministic expressions to evaluate requests. They're fast, predictable, and great for exact matches.
+CEL (Common Expression Language) policies use deterministic expressions to evaluate operations. They're fast, free, and 100% predictable — great for explicit pattern matching and known blocklists.
 
 ## When to Use CEL
 
-- Block specific tool names
-- Match exact patterns in arguments
-- Enforce allow/deny lists
+CEL rules are for narrow, explicit pattern matching:
+
+- Block a specific tool by name
+- Deny arguments that match a known dangerous pattern
+- Enforce allow/deny lists for tool names or commands
 - Any rule that can be expressed as "if X then deny"
+
+If you're trying to express something nuanced or intent-based, use an [AI policy](/docs/policies/ai-policies/) instead. CEL shines when you know exactly what you want to block.
 
 ## Policy Schema
 
@@ -18,16 +22,43 @@ CEL (Common Expression Language) policies use deterministic expressions to evalu
 
 ```yaml
 rules:
-  - name: "rule-name"              # Unique identifier
-    description: "What this does"  # Human-readable description
-    enabled: true                  # true/false (default: true)
-    expression: |                  # CEL expression (must return boolean)
-      get(request, "method", "") == "tools/call" &&
-      get(request.params, "name", "") == "dangerous_tool"
-    action: deny                   # deny or allow
-    message: "Tool blocked"        # Message returned when rule triggers
-    mode: ""                       # "" (enforce) or "audit_only"
+  - name: "rule-name"
+    description: "What this does"
+    enabled: true
+    mcp_expression: |
+      tool.name == "dangerous_tool"
+    cli_expression: |
+      cli.command == "dangerous-cmd"
+    action: deny
+    message: "Tool blocked"
+    mode: ""
 ```
+
+### Dual Expression Support
+
+Unlike AI policies, CEL requires **separate expressions** for MCP and CLI contexts because the data structures differ. A single rule can have both:
+
+```yaml
+rules:
+  - name: deny-delete-operations
+    description: Block file deletion across MCP and CLI
+    mcp_expression: |
+      tool.name == "github__delete_file"
+    cli_expression: |
+      cli.command == "gh" &&
+      cli.arguments.exists(a, a == "delete")
+    action: deny
+    message: Delete operations are not allowed
+```
+
+The engine evaluates the right expression based on the request type:
+- MCP tool call → evaluates `mcp_expression`
+- CLI command → evaluates `cli_expression`
+- If a rule only has one expression type, it only applies to that context
+
+{{< callout type="info" >}}
+The legacy `expression` field is treated as `mcp_expression` for backwards compatibility. New rules should use `mcp_expression` and `cli_expression` explicitly.
+{{< /callout >}}
 
 ### Response Policy
 
@@ -48,37 +79,49 @@ rules:
 
 ## Available Variables
 
-### Request Validation
+### MCP Request Context
 
 | Variable | Type | Description |
 |----------|------|-------------|
+| `tool.name` | string | Tool name (e.g., `github__delete_file`) |
+| `tool.arguments` | map | Tool arguments |
+| `request.params` | map | Full MCP request parameters |
 | `request` | map | The full MCP request object |
-| `request.method` | string | MCP method (e.g., `tools/call`) |
-| `request.params` | map | Method parameters |
-| `request.params.name` | string | Tool name (for `tools/call`) |
-| `request.params.arguments` | map | Tool arguments |
 
-### Response Validation
+### CLI Request Context
 
 | Variable | Type | Description |
 |----------|------|-------------|
-| `response` | map | The full MCP response object |
+| `cli.command` | string | Command name (e.g., `gh`, `aws`, `kubectl`) |
+| `cli.arguments` | list | Command arguments |
+| `cli.working_directory` | string | Working directory |
+| `cli.client_info.hostname` | string | Client hostname |
+| `cli.client_info.username` | string | Client username |
+| `cli.client_info.os` | string | Client OS |
+| `cli.client_info.arch` | string | Client architecture |
+
+### Response Context
+
+| Variable | Type | Description |
+|----------|------|-------------|
 | `response.content` | string | Response content |
 | `response.isError` | bool | Whether response is an error |
+| `response.meta` | map | Response metadata |
 
 ## CEL Functions
 
-CEL provides useful functions for working with data:
-
 | Function | Description | Example |
 |----------|-------------|---------|
-| `get(map, key, default)` | Safe map access with default | `get(request, "method", "")` |
-| `has(map, key)` | Check if key exists | `has(request.params, "arguments")` |
-| `contains(string, substr)` | String contains | `"hello".contains("ell")` |
-| `startsWith(string, prefix)` | String prefix check | `"hello".startsWith("he")` |
-| `endsWith(string, suffix)` | String suffix check | `"hello".endsWith("lo")` |
-| `matches(string, regex)` | Regex match | `"test".matches("t.*t")` |
-| `size(collection)` | Length of string/list/map | `size("hello") == 5` |
+| `get(map, key, default)` | Safe map access with default | `get(tool.arguments, "path", "")` |
+| `has(map, key)` | Check if key exists | `has(tool.arguments, "force")` |
+| `.contains(substr)` | String contains | `tool.name.contains("delete")` |
+| `.startsWith(prefix)` | String prefix check | `tool.name.startsWith("github__")` |
+| `.endsWith(suffix)` | String suffix check | `tool.name.endsWith("_file")` |
+| `.matches(regex)` | Regex match | `tool.name.matches(".*delete.*")` |
+| `.size()` | Length of string/list/map | `cli.arguments.size() > 5` |
+| `.exists(predicate)` | Any element matches | `cli.arguments.exists(a, a == "--force")` |
+| `.all(predicate)` | All elements match | `cli.arguments.all(a, !a.startsWith("-"))` |
+| `in` | Membership test | `tool.name in ["tool_a", "tool_b"]` |
 
 ## Examples
 
@@ -88,9 +131,8 @@ CEL provides useful functions for working with data:
 rules:
   - name: deny-delete-file
     description: Block file deletion
-    expression: |
-      get(request, "method", "") == "tools/call" &&
-      get(request.params, "name", "") == "github__delete_file"
+    mcp_expression: |
+      tool.name == "github__delete_file"
     action: deny
     message: File deletion is not allowed
 ```
@@ -101,27 +143,39 @@ rules:
 rules:
   - name: deny-all-delete-tools
     description: Block any tool with "delete" in the name
-    expression: |
-      get(request, "method", "") == "tools/call" &&
-      get(request.params, "name", "").contains("delete")
+    mcp_expression: |
+      tool.name.contains("delete")
     action: deny
     message: Delete operations are not allowed
 ```
 
-### Block Specific Arguments
+### Block CLI Commands with Dangerous Flags
 
 ```yaml
 rules:
   - name: deny-force-flag
     description: Block kubectl commands with --force
-    expression: |
-      get(request, "method", "") == "tools/call" &&
-      get(request.params, "name", "") == "kubectl__run" &&
-      has(request.params, "arguments") &&
-      has(request.params.arguments, "command") &&
-      request.params.arguments.command.contains("--force")
+    cli_expression: |
+      cli.command == "kubectl" &&
+      cli.arguments.exists(a, a == "--force")
     action: deny
     message: Force flag is not allowed
+```
+
+### Block Across Both MCP and CLI
+
+```yaml
+rules:
+  - name: deny-destructive-github
+    description: Block destructive GitHub operations everywhere
+    mcp_expression: |
+      tool.name.contains("delete") ||
+      tool.name.contains("remove")
+    cli_expression: |
+      cli.command == "gh" &&
+      cli.arguments.exists(a, a == "delete" || a == "remove")
+    action: deny
+    message: Destructive GitHub operations are not allowed
 ```
 
 ### Allow List (Block Everything Else)
@@ -130,10 +184,9 @@ rules:
 rules:
   - name: allow-only-read-tools
     description: Only allow read operations
-    expression: |
-      get(request, "method", "") == "tools/call" &&
-      !(get(request.params, "name", "").startsWith("github__get_") ||
-        get(request.params, "name", "").startsWith("github__list_"))
+    mcp_expression: |
+      !(tool.name.startsWith("github__get_") ||
+        tool.name.startsWith("github__list_"))
     action: deny
     message: Only read operations are allowed
 ```
@@ -143,28 +196,30 @@ rules:
 Individual rules can override the top-level mode:
 
 ```yaml
-request_validation:
-  cel:
-    enabled: true
-    mode: ""  # Enforce by default
-
 rules:
   - name: critical-rule
-    expression: |
-      # This rule enforces (inherits from top-level mode: "")
-      ...
+    # Inherits mode from request_validation.cel.mode
+    mcp_expression: ...
     action: deny
 
   - name: experimental-rule
     mode: audit_only  # This rule only logs, doesn't block
-    expression: |
-      ...
+    mcp_expression: ...
     action: deny
 ```
 
+## Common Mistakes
+
+| Mistake | Problem | Fix |
+|---------|---------|-----|
+| Using `mcp_expression` for CLI context | Variables don't exist, expression fails | Use `cli_expression` with `cli.*` variables |
+| Accessing nested fields without `has()` | Runtime error on missing field | Use `has()` or `get()` for optional fields |
+| Using `==` for partial string match | Only matches exact strings | Use `.contains()` for substrings |
+| Complex intent-based logic in CEL | Brittle, misses edge cases | Use an AI policy instead |
+
 ## Testing Your Rules
 
-Run Maybe Don't with `audit_only` mode and watch the audit log to see what your rules would do:
+Run with `audit_only` mode and watch the audit log:
 
 ```yaml
 request_validation:
@@ -174,4 +229,8 @@ request_validation:
     rules_file: "cel_request_rules.yaml"
 ```
 
-Then review `audit.log` for entries showing `"decision": "deny"` to understand what would be blocked.
+Review the [audit log](/docs/audit-log/) for entries showing `"decision": "deny"` to see what would be blocked. When you're ready to test systematically, see [Testing](/docs/testing/).
+
+{{< callout type="tip" >}}
+**Want help writing CEL policies?** The built-in `cel-policy` skill teaches your AI agent how to author rules. See [Skills](/docs/skills/) to learn how to export it, or run `maybe-dont skill view cel-policy` to see what it contains.
+{{< /callout >}}

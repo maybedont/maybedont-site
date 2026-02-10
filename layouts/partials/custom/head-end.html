@@ -55,17 +55,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.body.style.overflow = '';
     }
   });
-
-  // Handle expandable menu items (Documentation) - make entire row clickable
-  sidebar.querySelectorAll('button.hextra-sidebar-collapsible-button').forEach(function(btn) {
-    btn.addEventListener('click', function(e) {
-      e.preventDefault();
-      var li = btn.closest('li');
-      if (li) {
-        li.classList.toggle('open');
-      }
-    });
-  });
 });
 </script>
 

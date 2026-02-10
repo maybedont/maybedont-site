@@ -25,7 +25,7 @@ Technical users: DevOps engineers, Platform engineers, Security engineers. Assum
 ```
 /docs/
 ├── _index.md                        # What is Maybe Don't + architecture
-├── get-started.md                   # Docker → minimal config → running
+├── get-started.md                   # Install (Docker/Homebrew/binary) → first run → verify
 │
 ├── configuration/
 │   ├── _index.md                    # Overview, file locations, precedence hierarchy
@@ -39,21 +39,22 @@ Technical users: DevOps engineers, Platform engineers, Security engineers. Assum
 │   └── rest-api.md                  # REST endpoint reference, request/response schemas
 │
 ├── policies/
-│   ├── _index.md                    # Concepts, request vs response, truth table, blocking budget
-│   ├── cel-policies.md              # CEL: request rules, response rules, syntax, schema
-│   └── ai-policies.md               # AI: request rules, response rules, prompts, schema
+│   ├── _index.md                    # Concepts, AI vs CEL comparison, truth table, blocking budget
+│   ├── ai-policies.md               # AI: the primary policy engine, prompts, providers, schema
+│   ├── cel-policies.md              # CEL: narrow deterministic rules, expressions, schema
+│   └── writing-policies.md          # Guide: how to approach writing policies (AI-first, add CEL for specifics)
+│
+├── audit-log/                       # Elevated: audit logging is a key feature
+│   ├── _index.md                    # What's captured, why it matters, configuration
+│   ├── log-schema.md                # Entry format, fields, examples (MCP + CLI entries)
+│   └── siem-integration.md          # Future SIEM guidance (placeholder)
 │
 ├── testing/
-│   ├── _index.md                    # Philosophy: why test policies, thinking about test suites
+│   ├── _index.md                    # Philosophy, getting started recipe, test suite design
 │   ├── test-cases.md                # Test case schema, writing tests, examples
 │   └── test-suites.md               # Suite config, model matrix, running tests, CI/CD
 │
 ├── skills.md                        # Built-in AI skills: export, formats, using with agents
-│
-├── audit-log/
-│   ├── _index.md                    # What's captured, why it matters
-│   ├── log-schema.md                # Entry format, fields, examples
-│   └── siem-integration.md          # Future SIEM guidance (placeholder)
 │
 ├── native-tools.md                  # Experimental tools (single page, sections per tool)
 │
@@ -87,18 +88,64 @@ data/
 - Quick links to Get Started, Configuration, Policies, CLI Proxy, Testing
 
 ### `/docs/get-started.md` - Getting Started
-- Prerequisites (Docker, AI API key for validation)
-- Pull the image
-- Create minimal config (one downstream MCP, validation in audit_only mode)
-- Run it
-- Verify it's working
-- "Next steps" links
+
+Present two installation paths, then converge on the same first-run experience:
+
+- **Installation options:**
+  - **Docker** (recommended for MCP server mode):
+    `docker pull ghcr.io/maybedont/maybe-dont:v1.0.0`
+  - **Homebrew** (recommended for CLI proxy / local use):
+    `brew install maybedont/tap/maybe-dont`
+  - **Binary download** (alternative): Direct download from the public
+    `maybedont/releases` GitHub repository. Multi-platform: macOS, Linux, Windows
+    (amd64/arm64).
+- **First run experience:**
+  - On first run, Maybe Don't writes the default config and rule files to the config
+    directory. The user does NOT need to create a config from scratch.
+  - Walk the user through modifying the defaults:
+    1. Run `maybe-dont start` (or Docker equivalent) once — defaults are written
+    2. Open `maybe-dont.yaml` and add one downstream MCP server
+    3. Set your AI API key (env var or config)
+    4. Restart
+  - Everything starts in `audit_only` mode by default — observe before enforcing
+- **Two paths after setup:**
+  - "I want to proxy MCP tool calls" → link to downstream-servers.md
+  - "I want to validate CLI commands" → link to cli-proxy/
+- **Verify it's working** — check the audit log for entries
+- **"Next steps" links**
+
+### Author Notes: Initial Configuration
+
+When writing the get-started and configuration pages, keep these behaviors in mind:
+
+- **Config directory bootstrap:** Once the config directory is resolved, on startup the
+  default configuration file and default rules will be written if the directory is
+  read/write. This means a first-time user gets a working baseline automatically.
+- **Read-only environments:** If the config directory is not writable (e.g., mounted
+  read-only in a container), the user can use the `defaults` subcommand to extract the
+  default config and rules to a writable location.
+- **Source control:** Ideally the config directory — or at minimum the rules directories
+  and files — should be placed under source control. This gives teams version history,
+  code review, and rollback for policy changes.
+- **Rules file organization:** Rules can be individual files or directories of files.
+  This provides flexibility — a single `cel_request_rules.yaml` works for simple setups,
+  while a `cel_request_rules/` directory with multiple files works for teams managing
+  many rules across domains.
+- **Start in audit-only mode:** The get-started guide should recommend that everything
+  begin in `audit_only` mode. Let users observe what policies would do before enforcing
+  them. This reduces the risk of accidentally blocking legitimate operations on day one.
 
 ### `/docs/configuration/_index.md` - Configuration Overview
 - Config file location (XDG paths)
 - Precedence: CLI flags → env vars → config file
 - Environment variable naming pattern (`MAYBE_DONT_*`)
 - `${VAR}` substitution syntax
+- **Useful commands:**
+  - `maybe-dont config info` — Shows resolved config and log directory paths.
+    Useful for troubleshooting "where is my config?"
+  - `maybe-dont defaults export -o <dir>` — Exports the embedded default config
+    and rule files. Useful for read-only environments, upgrades, or getting a fresh
+    baseline to compare against customized files.
 - Links to sub-pages
 
 ### `/docs/configuration/downstream-servers.md`
@@ -118,11 +165,21 @@ data/
 - TLS configuration for sse
 - Listen address configuration
 
-### `/docs/configuration/logging.md`
-- Log levels
-- Output destinations (stderr, stdout, file)
-- Log rotation settings
-- Brief - points to audit-log for the important stuff
+### `/docs/configuration/logging.md` - Application Logging vs Audit Logging
+- **Lead with the distinction:** Maybe Don't has two separate logging systems with
+  different purposes, different configuration, and different output:
+  - **Application logs** (`logger.*`) — Operational events: startup messages, errors,
+    debug info. These are for operators troubleshooting the server itself.
+  - **Audit logs** (`audit.*`) — Security-relevant record of every operation that passes
+    through Maybe Don't: every MCP tool call, every CLI command validation, with the
+    full policy decision, timing, and context. This is the compliance and visibility
+    story. **Audit logging is a key feature of the product.**
+- Application log configuration:
+  - Log levels (debug, info, warn, error)
+  - Output destinations (stderr, stdout, file)
+  - Log rotation settings (max_size_mb, max_backups, max_age_days, compress)
+- Clear pointer: "For the audit trail of policy decisions, see [Audit Log](/docs/audit-log/).
+  That's where the important stuff is."
 
 ### `/docs/configuration/reference.md`
 - Table: YAML path | Env var | Type | Default | Description
@@ -142,7 +199,36 @@ data/
 - Why policies exist (guardrails, audit, control)
 - **Policies apply to operations** — frame broadly as "operations" (MCP tool calls and
   CLI commands), not just "MCP tool calls"
-- Two engines: CEL (deterministic) and AI (natural language)
+- **Two policy engines: AI and CEL**
+  - **AI policies are the primary policy engine.** They evaluate operations using natural
+    language prompts sent to an LLM. They can express nuanced, intent-based rules that
+    would be impossible to write deterministically. AI policies are generic — a single
+    AI policy works for both MCP tool calls and CLI commands because the engine
+    normalizes the operation into a standard format before injecting it into the prompt.
+  - **CEL policies are for narrow, explicit rules.** CEL (Common Expression Language)
+    evaluates deterministic expressions — fast, free, and 100% predictable. Use CEL when
+    you have a specific, concrete thing to block: a known tool name, a forbidden argument
+    pattern, a string match. CEL's scope is intentionally narrow. Don't try to use CEL
+    for nuanced judgment calls — that's what AI policies are for. Unlike AI policies,
+    CEL requires separate expressions for MCP and CLI contexts (`mcp_expression` and
+    `cli_expression`) because the data structures differ.
+- **When to use which:**
+
+  | | AI Policies | CEL Policies |
+  |---|---|---|
+  | **Best for** | Nuanced judgment, intent-based rules, broad categories | Specific known patterns, exact matches, explicit blocklists |
+  | **Example** | "Block operations that could leak credentials" | "Block the `github__delete_file` tool" |
+  | **Speed** | Seconds (LLM API call) | Microseconds (local eval) |
+  | **Cost** | Per-API-call | Free |
+  | **Determinism** | Probabilistic (temperature=0.0 helps) | 100% deterministic |
+  | **MCP + CLI** | One policy covers both (generic) | Needs separate expressions per surface |
+  | **Testability** | Needs model matrix testing | Always passes/fails the same way |
+
+  **Recommendation:** Start with AI policies for broad coverage. Add CEL rules only for
+  specific, concrete patterns you want to enforce deterministically (e.g., blocklisting
+  a known-dangerous tool by name). Most users will get the majority of their value from
+  AI policies.
+
 - Request vs response validation
 - Audit mode vs enforce mode (`mode: audit_only` per-engine or per-rule)
 - Truth tables showing how policies combine:
@@ -153,10 +239,16 @@ data/
 
 ### `/docs/policies/cel-policies.md`
 - What CEL is (brief)
+- **Scope framing:** CEL rules are for narrow, explicit pattern matching — blocking a
+  specific tool by name, denying arguments that match a known dangerous pattern, etc.
+  If you're trying to express something nuanced or intent-based, use an AI policy
+  instead. CEL shines when you know exactly what you want to block.
 - Request policies: schema, examples
 - **Dual expression support:** `mcp_expression` for MCP tool calls, `cli_expression` for CLI commands
   - A single rule can have both — the gateway evaluates the right one based on the request type
   - Legacy `expression` field is treated as `mcp_expression` for backwards compatibility
+  - **Unlike AI policies**, CEL requires separate expressions because the data structures
+    for MCP and CLI contexts are different
 - Response policies: schema, examples
 - Available fields/variables in expressions:
   - MCP context: `tool.name`, `tool.arguments`, `request.params.*`
@@ -166,19 +258,92 @@ data/
   `.matches()`, `.size()`, `.exists()`, `.all()`, `in`
 - Action types (allow, deny, redact for response)
 - Common mistakes table
+- **Skills cross-reference:** End with a callout pointing users to the built-in
+  `cel-policy` skill if they want their AI agent to help author CEL rules. Link to
+  `/docs/skills.md` and briefly mention `maybe-dont skill view cel-policy`.
 
 ### `/docs/policies/ai-policies.md`
 - How AI validation works
+- **AI policies are generic across surfaces.** A single AI policy applies to both MCP
+  tool calls and CLI commands. The engine normalizes the operation into a standard JSON
+  object and appends it to the prompt automatically. The policy author writes only the
+  detection logic — they don't need to know whether the operation came from MCP or CLI.
 - AI provider configuration (OpenAI, Anthropic, openai_compatible)
-- The `%s` prompt placeholder — replaced with a normalized operation object:
-  - MCP: `{"type": "mcp_tool", "name": "...", "arguments": {...}}`
-  - CLI: `{"type": "cli", "name": "...", "arguments": [...]}`
+  - The `openai_compatible` provider works with any OpenAI-compatible API: Google Gemini,
+    Groq, LiteLLM, Azure OpenAI, vLLM, Ollama, OpenRouter, etc.
+- **How prompts work:** The policy author writes the evaluation prompt. The engine
+  automatically appends the operation context — the author does NOT include any
+  placeholder. The engine appends:
+  ```
+  [Your policy prompt]
+
+  Tool call:
+  {"type": "mcp_tool", "name": "...", "arguments": {...}}
+  ```
+  or for CLI:
+  ```
+  [Your policy prompt]
+
+  CLI command:
+  {"type": "cli", "name": "...", "arguments": [...]}
+  ```
+  The label ("Tool call:" or "CLI command:") is context-appropriate. Do NOT include
+  `%s` in prompts — the engine will reject it.
+- **Temperature defaults to 0.0** for deterministic policy decisions. This can be
+  overridden via `validation.ai.parameters.temperature` but 0.0 is recommended for
+  consistent, repeatable policy evaluation.
 - Request policies: schema, prompt examples
 - Response policies: schema, prompt examples
 - Expected AI response format: `{"allowed": true/false, "message": "...", "redacted_content": "..."}`
 - Action types (deny, redact for response)
 - Prompt engineering best practices
 - Common mistakes table
+- **Skills cross-reference:** End with a callout pointing users to the built-in
+  `ai-policy` skill if they want their AI agent to help author AI rules. Link to
+  `/docs/skills.md` and briefly mention `maybe-dont skill view ai-policy`.
+
+### `/docs/policies/writing-policies.md` - Guide: Writing Policies
+
+A practical guide on how to approach writing policies. Not a schema reference — that's
+on the AI and CEL pages. This is the "how to think about it" guide.
+
+- **Start with AI policies.** Most policy goals are best expressed in natural language.
+  Write a prompt that describes what you want to allow or deny. AI policies are generic —
+  they cover both MCP tool calls and CLI commands with a single rule.
+- **Add CEL for specific, concrete patterns.** Once you have AI coverage, identify any
+  specific operations you want to enforce deterministically — tool names to blocklist,
+  argument patterns to reject, etc. These become CEL rules. CEL is a supplement to AI
+  policies, not a replacement.
+- **Pros and cons of each approach:**
+  - AI: Flexible, intent-based, handles edge cases, but adds latency and API cost.
+    Results are probabilistic — test with multiple models to find the right accuracy/cost
+    tradeoff.
+  - CEL: Instant, free, deterministic, but can only match explicit patterns. Can't
+    reason about intent. Over-broad rules are easy to write accidentally.
+- **Start in audit-only mode.** Write policies with `mode: audit_only` first. Review the
+  audit log to see what would have been blocked. When confident, remove `audit_only` to
+  start enforcing.
+- **Test your policies.** Write test cases for every policy — both positive (should allow)
+  and negative (should deny). See [Testing](/docs/testing/).
+- **Cross-reference:** Point to the skills page for agent-assisted policy authoring.
+
+### Author Notes: Writing Rules
+
+When writing the policies pages, incorporate these behavioral details:
+
+- **AI response rules can be slow:** The CLI or tool call response is not known ahead of
+  time and may be large. AI response validation has to wait for the full response and then
+  send it to the AI provider for evaluation. Document this latency tradeoff clearly.
+- **Response rule `deny` semantics:** AI response rules that use `deny` should be used
+  sparingly. A `deny` on a response is only meaningful if the request was read-only (e.g.,
+  a GET or list command). In this context, `deny` means "don't show the response to the
+  AI agent." Similarly, `redact` means "don't show parts of the response to the AI agent."
+  If the CLI or tool call created, modified, or deleted something, a `deny` is misleading
+  because the action already completed — we don't want to tell the AI agent it didn't
+  happen. Make this distinction explicit in the docs.
+- **Discrepancy check:** If during doc implementation you find that the code behavior
+  doesn't match what's described here (e.g., `deny` on a mutating response actually does
+  something different), flag it so the code can be corrected.
 
 ### `/docs/cli-proxy/_index.md` - CLI Proxy
 
@@ -222,9 +387,12 @@ CEL and AI policies against the command before it executes.
 - **Audit integration** — CLI validations appear in the audit log alongside MCP tool calls,
   using a `cli` field instead of `tool`
 - **Writing policies for CLI** — Brief cross-reference to policies section, noting:
-  - CEL rules use `cli_expression` (not `mcp_expression`) for CLI commands
-  - AI rules work the same way — the operation is normalized and injected into the prompt
-  - A single policy can cover both MCP and CLI with both expression fields
+  - **AI policies work automatically** — AI policies are generic across MCP and CLI.
+    The engine normalizes the operation and appends it to the prompt. A single AI policy
+    covers both surfaces with no extra work.
+  - **CEL rules need explicit expressions** — CEL rules use `cli_expression` for CLI
+    commands and `mcp_expression` for MCP tool calls. A single CEL rule can have both
+    fields — the engine evaluates the right one based on the request type.
 
 ### `/docs/cli-proxy/rest-api.md` - REST API Reference
 
@@ -272,11 +440,29 @@ This is the "how to think about it" page. Before diving into schemas, help reade
 understand _why_ and _how_ to approach policy testing.
 
 - **Why test policies?**
-  - CEL rules are deterministic — you write them, they should work. But do they match
-    what you _intend_? Test cases prove it.
-  - AI rules are probabilistic — different models, different results. You need to know
-    which models meet your accuracy bar before deploying.
+  - AI rules are probabilistic — different models produce different results. You need to
+    know which models meet your accuracy bar before deploying. Testing is essential for
+    AI policies.
+  - CEL rules are deterministic — they always produce the same result. But do they match
+    what you _intend_? Test cases prove it and catch over-broad or under-broad rules.
   - Policies evolve. Tests prevent regressions when you add or modify rules.
+
+- **Getting started: your first test suite**
+  This is a concrete "Day 1" recipe. Start small:
+  1. Create a suite directory with `suite.yaml` and a `cases/` folder
+  2. Configure one AI provider — pick whichever vendor you're already using for AI
+     validation (e.g., OpenAI or Anthropic)
+  3. Start with one or two models from that vendor (e.g., `gpt-4o-mini` or
+     `claude-sonnet-4-5-20250929`). Don't try to test everything at once.
+  4. Write 2-3 test cases per policy: one that should be denied and one that should
+     be allowed. This catches both false negatives and false positives.
+  5. Run CEL tests first — they're free and instant:
+     `maybe-dont test policies --suite-dir ./suite --engine cel`
+  6. Then add AI tests once CEL passes:
+     `maybe-dont test policies --suite-dir ./suite`
+  7. Expand to `--matrix` with multiple models later, when you want to compare accuracy
+     across models or find the most cost-effective option.
+
 - **The testing model:**
   - A **test suite** is a directory with a `suite.yaml` config and a `cases/` subdirectory
   - Each test case defines an operation (MCP tool call or CLI command) and the expected
@@ -303,7 +489,8 @@ understand _why_ and _how_ to approach policy testing.
 - **Using skills to bootstrap tests** — Brief pointer to `/docs/skills.md` explaining
   that the CLI ships AI prompts specifically designed to help write test cases. You can
   export the `test-case` skill and use it with your AI agent to generate test cases from
-  your policies.
+  your policies. Frame this as: the docs here teach you the best practices and mental
+  model, the skills give your AI agent the schema knowledge to do the heavy lifting.
 - Cross-reference links to test-cases.md and test-suites.md
 
 ### `/docs/testing/test-cases.md` - Writing Test Cases
@@ -359,6 +546,11 @@ The schema reference and practical guide for authoring test cases.
 - **Copy-pasteable schemas** — Include clean YAML blocks (no comments) that a user can
   copy into an AI skill prompt as context. Include both the policy rule schema and the
   test case schema side by side.
+- **Skills cross-reference:** End with a callout pointing users to the built-in
+  `test-case` skill if they want their AI agent to help write test cases. Link to
+  `/docs/skills.md` and briefly mention `maybe-dont skill view test-case`. This
+  complements the copy-pasteable schemas — the schemas are for manual use, the skill
+  is for agent-assisted authoring.
 
 ### `/docs/testing/test-suites.md` - Test Suites & Running Tests
 
@@ -437,6 +629,9 @@ Suite configuration, the test runner CLI, model matrix, and CI/CD integration.
 
   # Validate suite without running (check for schema errors)
   maybe-dont test policies --suite-dir ./suite --validate-only
+
+  # Show cached results without re-running tests
+  maybe-dont test policies --suite-dir ./suite --summary-only
   ```
 - **Incremental execution:**
   - `--incremental` — Skip unchanged tests, persist state
@@ -522,10 +717,30 @@ and test cases. This page documents how to extract and use them.
   - These are the same schemas embedded in the skills, surfaced here so users can
     copy-paste them into any AI chat (not just agent skills)
 
-### `/docs/audit-log/_index.md`
-- What gets logged (tool calls, validation decisions)
-- Why it matters (compliance, debugging, visibility)
-- Configuration recap (path, filter)
+### `/docs/audit-log/_index.md` - Audit Logging
+
+Audit logging is a core feature of Maybe Don't — not an afterthought. This page should
+make that clear from the first paragraph.
+
+- **What is the audit log?** Every operation that passes through Maybe Don't — every MCP
+  tool call, every CLI command validation — is recorded with the full policy decision,
+  timing, client context, and AI provider metadata. This is a complete, tamper-evident
+  record of what AI agents did and what Maybe Don't decided about it.
+- **Why it matters:**
+  - **Compliance** — Prove what your AI agents did (and didn't do)
+  - **Visibility** — See what tools agents are calling, how often, with what arguments
+  - **Debugging** — Understand why a policy allowed or denied an operation
+  - **Incident response** — Trace back from a bad outcome to the exact tool call
+- **Configuration:**
+  - `audit.path` — File path, `stdout`, or `stderr` (default: `maybedont-audit.log`)
+  - `audit.filter` — `all` (default) or `deny_only` (reduces volume for high-traffic
+    deployments by only logging denied operations)
+  - `audit.rotation` — Log rotation settings (max_size_mb, max_backups, max_age_days,
+    compress)
+- **Not the same as application logs.** Application logs (`logger.*`) record server
+  operational events (startup, errors). Audit logs record security-relevant policy
+  decisions. They are configured separately and serve different audiences. See
+  [Application Logging](/docs/configuration/logging/) for the operational side.
 - Future: SIEM integration intent
 
 ### `/docs/audit-log/log-schema.md`
@@ -543,6 +758,13 @@ and test cases. This page documents how to extract and use them.
 
 ### `/docs/native-tools.md`
 - Experimental disclaimer at top (subject to change, may be removed)
+- **Author note: These are all experimental. TBD if we want to document them at all.**
+  They are primarily for internal use and proof-of-concept testing, and will likely be
+  removed at some point in the future. If we do document them, keep it minimal.
+- **Audit tool limitation:** The `maybedont__get_audit_log` and
+  `maybedont__generate_audit_report` tools only work when the audit log is configured to
+  write to a file. If the audit log destination is set to `stderr` or `stdout`, these
+  tools will not function. Document this prerequisite prominently.
 - Section per tool:
   - `maybedont__get_audit_log` - Access audit log entries
   - `maybedont__generate_audit_report` - AI-powered audit analysis
@@ -636,15 +858,32 @@ When multiple CEL or AI policies exist:
 
 ## Implementation Notes
 
-1. **Docker-only for now** - No binary download documentation
-2. **Current version**: Reference `ghcr.io/maybedont/maybe-dont:v1.0.0` (update as needed).
+1. **Progressive disclosure for configuration** - The config reference page
+   (`reference.md`) should document everything, but individual feature pages and the
+   get-started guide should only reference the minimal config necessary to get going.
+   Don't front-load the full config surface on readers who just want to set up one thing.
+   Each feature page should show only the config keys relevant to that feature.
+2. **Flag spec-vs-code discrepancies** - During doc implementation, if you find something
+   specifically described in this spec that doesn't match the actual code behavior, flag
+   it rather than silently documenting the code behavior. The spec may be the intended
+   behavior and the code may need correction.
+3. **Distribution channels** — Document all three:
+   - **Docker**: `ghcr.io/maybedont/maybe-dont` — recommended for MCP server mode
+   - **Homebrew**: `brew install maybedont/tap/maybe-dont` — recommended for CLI proxy
+     and local development
+   - **Binary download**: Direct download from the public `maybedont/releases` GitHub
+     repository. Multi-platform: macOS (amd64/arm64), Linux (amd64/arm64), Windows
+     (amd64/arm64). _(Note: public download URL to be finalized before launch)_
+   - For MCP proxying, lean into Docker. For CLI proxy (which runs on the developer's
+     local machine), Homebrew or direct binary download makes more sense.
+4. **Current version**: Reference `ghcr.io/maybedont/maybe-dont:v1.0.0` (update as needed).
    Version 1.0.0 introduced XDG Base Directory support, self-contained binary, CLI proxy,
    policy test framework, and built-in skills.
-3. **Writing style**: Casual, friendly, technically precise. Light humor where appropriate.
-4. **Code examples**: Complete, runnable, with realistic values
-5. **CLI proxy examples**: Use realistic commands (gh, aws, kubectl) with the full
+5. **Writing style**: Casual, friendly, technically precise. Light humor where appropriate.
+6. **Code examples**: Complete, runnable, with realistic values
+7. **CLI proxy examples**: Use realistic commands (gh, aws, kubectl) with the full
    `maybe-dont cli -s ... -- <command>` syntax
-6. **Test suite examples**: Show both simple (single CEL test) and realistic
+8. **Test suite examples**: Show both simple (single CEL test) and realistic
    (multi-model matrix) configurations
 
 ### Future Download page
@@ -657,13 +896,13 @@ This is a great example of a clean download page:
 1. Create directory structure for new pages (including `cli-proxy/`, `testing/`, `skills.md`)
 2. Implement `data/mcp_examples.yaml` and supporting shortcode
 3. Write pages in order:
-   - `_index.md` and `get-started.md` first (the happy path)
-   - Configuration section
-   - Policies section (updated with CLI expression docs)
+   - `_index.md` and `get-started.md` first (the happy path, both Docker and binary)
+   - Configuration section (including logging vs audit logging distinction)
+   - Policies section (AI-first framing, CEL as supplement, writing guide)
+   - Audit log section (key feature — elevate early)
    - CLI proxy section
-   - Testing section
+   - Testing section (include Day 1 getting started recipe)
    - Skills page
-   - Audit log section
    - Security and native tools
    - Examples last (depend on data provider)
 4. Remove/archive deprecated pages
@@ -702,3 +941,91 @@ This is a great example of a clean download page:
    MCP-specific, or if MCP-specific pages are clearly scoped.
 3. **SEO review** — Review page names, titles, URLs, and meta descriptions for search optimization
 4. **Redirect audit** — Diff against main branch to identify pages being moved/removed; set up Hugo aliases or redirects to avoid 404s damaging site reputation
+5. **Full site copy review** — Do a sweep of the entire site (docs, homepage, landing
+   pages, footers, meta descriptions) for consistent messaging and tone. Specifically:
+   - Hunt for stale references to "MCP Gateway", "MCP Security Gateway", or any
+     MCP-first framing that hasn't been updated to the broader product identity
+   - Ensure the tone is consistent: casual, friendly, technically precise, light humor
+     where appropriate — not corporate, not salesy, not overly formal
+   - Check that the persona is consistent across pages — the site should read like it
+     was written by one voice, not stitched together from different drafts
+   - Look for copy that contradicts itself across pages (e.g., one page says "security
+     gateway" while another says "guardrails") and unify the language
+   - **Help find the right language.** "MCP gateway" and "CLI proxy" are features, not
+     the product story. We need language that describes the problem we're solving and how
+     we solve it at a higher level — independent of the specific transports (MCP, CLI, and
+     whatever comes next). Research and propose vocabulary that captures what Maybe Don't
+     actually does: it sits between AI agents and the things they interact with, providing
+     visibility and control over agent actions. Think about how other categories describe
+     this kind of layer (e.g., firewalls don't call themselves "TCP proxies", API gateways
+     don't lead with "HTTP reverse proxy"). We want the same kind of abstraction —
+     language that stays true even as new integration surfaces are added. Present options
+     with tradeoffs so we can settle on a consistent vocabulary before launch.
+6. **About page / Our Team** — The current about page (`/about/`) uses a terminal-styled
+   layout with a brief mission statement, a "what we're building" paragraph, and a
+   contact CTA. It works as a company intro, but we need to decide whether to:
+   - **Option A:** Expand the existing `/about/` page to include a team section below the
+     current content, keeping everything on one page.
+   - **Option B:** Keep `/about/` as the company story and add a separate "Our Team" page
+     under the existing "Company" footer column (which already links to About and Contact).
+   - Either way, the team section should present the people behind Maybe Don't with a
+     leadership-focused design: headshots, name + title, and short bios that emphasize
+     relevant experience and credibility.
+   - **Style reference:** [groq.com/about-groq](https://groq.com/about-groq) — clean,
+     minimalist layout with generous whitespace. Leadership profiles with professional
+     headshots, name/title headers, and expandable bios. Credentials-forward tone that
+     establishes trust through team experience. We don't need to copy it exactly, but the
+     structural pattern (gallery of profiles, consistent presentation, experience-driven
+     narrative) is a good model. Adapt it to our voice — casual and friendly rather than
+     corporate, but still credibility-establishing.
+
+---
+
+## Next Phase — UI Polish & Remaining Items
+
+Items identified during the `degroff/messaging_round6` documentation restructure session
+(Feb 2025). These are ready to pick up in a future session.
+
+### Completed This Round
+- Sidebar: arrow rotation fix, nav click behavior (expand + navigate), FOUC prevention
+- Download widget: restyled (no border, platform detection label, sha256 under buttons)
+- Documentation restructure: new pages, shortcodes, sidebar improvements
+- Testing section: split into Cases + Suites & Running (matches spec structure)
+
+### Remaining Items
+
+1. **Split Testing sub-pages (3-way)**
+   - Currently `test-suites.md` combines suite config and runner CLI into "Suites & Running"
+   - Split into 3 child pages: Cases, Suites, Runner
+   - Move CLI reference, incremental execution, output formats, exit codes, CI/CD into
+     a new `test-runner.md`
+
+2. **Color palette refresh**
+   - Links, selected tab, hover states, prose links → blue family matching logo center
+   - CTA button harmonize with new palette
+   - Callout box colors: check Hextra green/blue/yellow fit
+   - Dark mode bold contrast: needs color discussion
+   - Prose links: color-only (no underline), scoped to `.content`
+
+3. **Light mode accessibility**
+   - Pure white background is harsh — explore off-white or warm-white
+   - Ensure WCAG AA contrast ratios maintained
+
+4. **Docs hero page**
+   - Improve impact of `content/docs/_index.md`
+   - Rethink architecture graphic (consider Mermaid)
+   - Sharpen value prop copy
+
+5. **Team page**
+   - LinkedIn photos, Kendal listed first
+   - Skeleton placeholders for future hires
+   - Fun, personable tone (not corporate)
+
+6. **Slack color palette + "Random" docs section**
+   - Generate Slack sidebar/accent colors matching brand
+   - Add fun non-technical section to docs
+
+7. **Packages tab copy**
+   - Docker and Homebrew tabs both lead with "Recommended for..." guidance
+   - Packages tab has no equivalent — add a recommendation line (e.g., "Best for
+     air-gapped environments or platforms without Docker/Homebrew.")

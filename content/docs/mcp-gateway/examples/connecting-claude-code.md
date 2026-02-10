@@ -1,5 +1,5 @@
 ---
-title: Connecting Claude Code
+title: Claude Code
 weight: 1
 ---
 
@@ -7,30 +7,30 @@ weight: 1
 
 ## Prerequisites
 
-- Maybe Don't running (see [Examples overview](/docs/examples/))
+- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
 - [Claude Code installed](https://docs.anthropic.com/en/docs/claude-code)
 - A GitHub Personal Access Token
 
 ## Configure Claude Code
 
-Claude Code uses the `claude mcp add` command to register MCP servers. Instead of connecting directly to GitHub, we'll point it at Maybe Don't:
+Claude Code uses the `claude mcp add` command to register MCP servers. Instead of connecting directly to GitHub, we'll point it at the gateway:
 
 ```bash
 # Set your GitHub token
 export GITHUB_TOKEN="ghp_your_token_here"
 
-# Add Maybe Don't as the MCP server
+# Add the gateway as the MCP server
 claude mcp add maybe-dont http://localhost:8080/mcp \
   --transport http \
   --header "X-GitHub-Token: $GITHUB_TOKEN"
 ```
 
 This tells Claude Code to:
-- Connect to `http://localhost:8080/mcp` (Maybe Don't)
+- Connect to `http://localhost:8080/mcp` (the gateway)
 - Use HTTP transport
 - Send your GitHub token in the `X-GitHub-Token` header
 
-Maybe Don't will forward this token to GitHub using pass-through authentication.
+The gateway will forward this token to GitHub using pass-through authentication.
 
 ## Verify the Connection
 
@@ -67,14 +67,14 @@ This shows all available MCP tools. You should see GitHub tools prefixed with `g
 When Claude Code calls a tool:
 
 1. Claude Code sends the request to `localhost:8080/mcp` with `X-GitHub-Token` header
-2. Maybe Don't receives the request and runs validation (CEL + AI policies)
-3. If allowed, Maybe Don't forwards to GitHub with `Authorization: Bearer <token>`
-4. The response flows back through Maybe Don't to Claude Code
+2. The gateway receives the request and runs validation (CEL + AI policies)
+3. If allowed, the gateway forwards to GitHub with `Authorization: Bearer <token>`
+4. The response flows back through the gateway to Claude Code
 5. Everything is logged to the audit log
 
 ## Removing the Configuration
 
-To disconnect Claude Code from Maybe Don't:
+To disconnect Claude Code from the gateway:
 
 ```bash
 claude mcp remove maybe-dont
@@ -84,11 +84,12 @@ claude mcp remove maybe-dont
 
 ### "Connection refused"
 
-Make sure Maybe Don't is running and listening on port 8080:
+Make sure the gateway is running and listening on port 8080:
 
 ```bash
 curl http://localhost:8080/mcp -X POST \
   -H "Content-Type: application/json" \
+  -H "X-GitHub-Token: $GITHUB_TOKEN" \
   -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
 ```
 
@@ -102,4 +103,4 @@ echo $GITHUB_TOKEN  # Should show your token
 
 ### Tools not showing up
 
-Verify Maybe Don't is correctly connecting to GitHub by checking its logs for successful tool discovery.
+Verify the gateway is correctly connecting to GitHub by checking its logs for successful tool discovery.

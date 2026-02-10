@@ -38,21 +38,13 @@
           {{- template "sidebar-item-label" dict "context" . "title" "Documentation" -}}
           {{- /* Children: Home link first, then doc pages */ -}}
           <div class="hx:ltr:pr-0 hx:overflow-hidden">
-            <ul class='hx:relative hx:flex hx:flex-col hx:gap-1 hx:before:absolute hx:before:inset-y-1 hx:before:w-px hx:before:bg-gray-200 hx:before:content-[""] hx:ltr:ml-3 hx:ltr:pl-3 hx:ltr:before:left-0 hx:rtl:mr-3 hx:rtl:pr-3 hx:rtl:before:right-0 hx:dark:before:bg-neutral-800'>
+            <ul class='hx:relative hx:flex hx:flex-col hx:gap-1 hx:before:absolute hx:before:inset-y-1 hx:before:w-px hx:before:bg-gray-200 hx:before:content-[""] hx:ltr:ml-2 hx:ltr:pl-3 hx:ltr:before:left-0 hx:rtl:mr-2 hx:rtl:pr-3 hx:rtl:before:right-0 hx:dark:before:bg-neutral-800'>
               {{- /* Home link to docs index */ -}}
               <li class="hx:flex hx:flex-col">
                 {{- template "sidebar-item-link" dict "active" $docsActive "title" "Home" "link" .RelPermalink -}}
               </li>
-              {{- /* Other doc pages */ -}}
-              {{- $items := union .RegularPages .Sections -}}
-              {{- $items = where $items "Params.sidebar.exclude" "!=" true -}}
-              {{- range $items.ByWeight -}}
-                {{- $active := eq $pageURL .RelPermalink -}}
-                {{- $linkTitle := partial "utils/title" . -}}
-                <li class="hx:flex hx:flex-col">
-                  {{- template "sidebar-item-link" dict "active" $active "title" $linkTitle "link" .RelPermalink -}}
-                </li>
-              {{- end -}}
+              {{- /* Doc pages - full tree with expand/collapse */ -}}
+              {{- template "sidebar-tree" (dict "context" . "page" $context "pageURL" $pageURL "level" 0) -}}
             </ul>
           </div>
         </li>
@@ -82,6 +74,35 @@
       </ul>
     {{ end -}}
   </div>
+  {{/* Inline script: restore sidebar state synchronously before paint to prevent FOUC.
+       This runs during HTML parse — before DOMContentLoaded — so the open/close state
+       is correct on first paint. The DOMContentLoaded handler in sidebar.js then attaches
+       click handlers and restores scroll position. */}}
+  <script>
+  (function() {
+    var STORAGE_KEY = 'hextra-sidebar-open';
+    var scrollbar = document.currentScript.closest('.hextra-sidebar-container').querySelector('.hextra-scrollbar');
+    if (!scrollbar) return;
+    try {
+      var saved = JSON.parse(sessionStorage.getItem(STORAGE_KEY) || '{}');
+      if (Object.keys(saved).length > 0) {
+        var currentPath = window.location.pathname;
+        scrollbar.querySelectorAll('li').forEach(function(li) {
+          var link = li.querySelector(':scope > a[href]');
+          var key = link ? link.getAttribute('href') : null;
+          if (!key || !(key in saved)) return;
+          var isAncestor = currentPath.startsWith(key) && key !== currentPath;
+          if (saved[key]) {
+            li.classList.add('open');
+          } else if (!isAncestor) {
+            li.classList.remove('open');
+          }
+        });
+      }
+    } catch(e) {}
+    scrollbar.classList.add('sidebar-ready');
+  })();
+  </script>
   {{/* Hide theme switch when sidebar is disabled */}}
   {{ $switchesClass := cond $disableSidebar "hx:md:hidden" "" -}}
   {{ $displayThemeToggle := (site.Params.theme.displayToggle | default true) -}}
@@ -155,12 +176,12 @@
     {{- if eq $level 0 -}}
       {{- range $items.ByWeight }}
         {{- if .Params.sidebar.separator -}}
-          <li class="[word-break:break-word] hx:mt-5 hx:mb-2 hx:px-2 hx:py-1.5 hx:text-sm hx:font-semibold hx:text-gray-900 hx:first:mt-0 hx:dark:text-gray-100">
-            <span class="hx:cursor-default">{{ partial "utils/title" . }}</span>
+          <li class="sidebar-separator" aria-hidden="true">
+            <hr class="hx:border-t hx:border-gray-200 hx:dark:border-neutral-700" />
           </li>
         {{- else -}}
           {{- $active := eq $pageURL .RelPermalink -}}
-          {{- $shouldOpen := or (.Params.sidebar.open) (.IsAncestor $page) $active | default true }}
+          {{- $shouldOpen := or (.Params.sidebar.open) (.IsAncestor $page) $active }}
           <li class="{{ if $shouldOpen }}open{{ end }}">
             {{- $linkTitle := partial "utils/title" . -}}
             {{- template "sidebar-item-link" dict "context" . "active" $active "title" $linkTitle "link" .RelPermalink -}}
@@ -173,10 +194,10 @@
       {{- end -}}
     {{- else -}}
       <div class="hx:ltr:pr-0 hx:overflow-hidden">
-        <ul class='hx:relative hx:flex hx:flex-col hx:gap-1 hx:before:absolute hx:before:inset-y-1 hx:before:w-px hx:before:bg-gray-200 hx:before:content-[""] hx:ltr:ml-3 hx:ltr:pl-3 hx:ltr:before:left-0 hx:rtl:mr-3 hx:rtl:pr-3 hx:rtl:before:right-0 hx:dark:before:bg-neutral-800'>
+        <ul class='hx:relative hx:flex hx:flex-col hx:gap-1 hx:before:absolute hx:before:inset-y-1 hx:before:w-px hx:before:bg-gray-200 hx:before:content-[""] hx:ltr:ml-2 hx:ltr:pl-3 hx:ltr:before:left-0 hx:rtl:mr-2 hx:rtl:pr-3 hx:rtl:before:right-0 hx:dark:before:bg-neutral-800'>
           {{- range $items.ByWeight }}
             {{- $active := eq $pageURL .RelPermalink -}}
-            {{- $shouldOpen := or (.Params.sidebar.open) (.IsAncestor $page) $active | default true }}
+            {{- $shouldOpen := or (.Params.sidebar.open) (.IsAncestor $page) $active }}
             {{- $linkTitle := partial "utils/title" . -}}
             <li class="hx:flex hx:flex-col {{ if $shouldOpen }}open{{ end }}">
               {{- template "sidebar-item-link" dict "context" . "active" $active "title" $linkTitle "link" .RelPermalink -}}
@@ -195,7 +216,7 @@
 {{- define "sidebar-toc" -}}
   {{ $page := .page }}
   {{ with $page.Fragments.Headings }}
-    <ul class='hx:flex hx:flex-col hx:gap-1 hx:relative hx:before:absolute hx:before:inset-y-1 hx:before:w-px hx:before:bg-gray-200 hx:before:content-[""] hx:dark:before:bg-neutral-800 hx:ltr:pl-3 hx:ltr:before:left-0 hx:rtl:pr-3 hx:rtl:before:right-0 hx:ltr:ml-3 hx:rtl:mr-3'>
+    <ul class='hx:flex hx:flex-col hx:gap-1 hx:relative hx:before:absolute hx:before:inset-y-1 hx:before:w-px hx:before:bg-gray-200 hx:before:content-[""] hx:dark:before:bg-neutral-800 hx:ltr:pl-3 hx:ltr:before:left-0 hx:rtl:pr-3 hx:rtl:before:right-0 hx:ltr:ml-2 hx:rtl:mr-2'>
       {{- range . }}
         {{- with .Headings }}
           {{- range . -}}

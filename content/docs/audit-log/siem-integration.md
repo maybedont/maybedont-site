@@ -1,9 +1,10 @@
 ---
-title: SIEM Integration
+title: SIEM
+linkTitle: SIEM
 weight: 2
 ---
 
-Maybe Don't's audit log is designed to be ingested into your Security Information and Event Management (SIEM) system.
+The audit log is designed to be ingested into your Security Information and Event Management (SIEM) system.
 
 ## Log Format
 
@@ -25,7 +26,7 @@ For production deployments, we recommend:
    ```
 
    {{< callout type="info" >}}
-   If your application logs also go to stdout, audit entries will be interleaved. To keep them separate, configure application logging to stderr (`log.output: stderr`) so your log driver can split by stream. Alternatively, write the audit log to a file on a separate mounted volume and collect it independently.
+   If your application logs also go to stdout, audit entries will be interleaved. To keep them separate, configure application logging to stderr via `log.output: stderr` so your log driver can split by stream. Alternatively, write the audit log to a file on a separate mounted volume and collect it independently.
    {{< /callout >}}
 
 2. **Let your orchestrator handle log collection** - Kubernetes, ECS, and Docker Compose all have built-in log drivers that can forward to your SIEM.
@@ -38,17 +39,7 @@ Consider creating alerts for:
 
 | Field | Condition | Alert |
 |-------|-----------|-------|
-| `action` | `== "deny"` | Tool call was blocked |
-| `action_reason` | `== "fail_open"` | Validation timed out |
+| `action` | `"deny"` | Tool call was blocked |
+| `action_reason` | `"fail_open"` | Validation timed out |
 | `duration_ms` | `> 10000` | Slow validation |
 | `request_validation.ai.results[].error` | exists | AI validation error |
-
-## Coming Soon
-
-We're working on:
-
-- Pre-built dashboards for popular SIEM platforms
-- Direct integrations for common log aggregators
-- Webhook support for real-time alerts
-
-In the meantime, the JSON audit log format works with any system that can ingest structured logs.

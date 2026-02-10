@@ -1,16 +1,18 @@
 ---
-title: AI Policies
+title: AI
 weight: 2
 ---
 
-AI policies use natural language prompts to evaluate requests. An LLM reads your prompt, analyzes the tool call, and returns a decision. This handles nuanced scenarios that are hard to express as CEL expressions.
+AI policies are the primary policy engine. They use natural language prompts to evaluate operations — an LLM reads your prompt, analyzes the tool call or CLI command, and returns a decision. This handles nuanced, intent-based scenarios that are impossible to express as deterministic rules.
 
 ## When to Use AI Policies
 
 - Complex security scenarios (e.g., "is this a mass deletion?")
-- Context-dependent decisions
-- Patterns that are hard to express in code
+- Context-dependent decisions where intent matters
+- Broad categories of behavior to allow or deny
 - Catching edge cases that slip past deterministic rules
+
+AI policies are **generic across MCP and CLI**. A single AI policy applies to both MCP tool calls and CLI commands — the engine normalizes the operation and appends it to your prompt automatically. You write the detection logic once.
 
 ## AI Provider Configuration
 
@@ -19,7 +21,7 @@ Configure your AI provider in the main config file:
 ```yaml
 validation:
   ai:
-    provider: openai          # openai, anthropic, or openai_compatible
+    provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
     model: "gpt-4o-mini"
     api_key: "${OPENAI_API_KEY}"
@@ -31,7 +33,42 @@ validation:
 |----------|-------------|
 | `openai` | OpenAI API (default) |
 | `anthropic` | Anthropic Claude API |
-| `openai_compatible` | Any OpenAI-compatible API (requires `endpoint`) |
+| `openai_compatible` | Any OpenAI-compatible API: Google Gemini, Groq, LiteLLM, Azure OpenAI, vLLM, Ollama, OpenRouter, etc. |
+
+The `openai_compatible` provider works with any API that speaks the OpenAI chat completions format. Set the `endpoint` to your provider's URL.
+
+### Temperature
+
+Temperature defaults to **0.0** for deterministic policy evaluation. This produces the most consistent, repeatable decisions. You can override it if needed:
+
+```yaml
+validation:
+  ai:
+    parameters:
+      temperature: 0.0  # Default — recommended for policy evaluation
+```
+
+## How Prompts Work
+
+You write the evaluation prompt. The engine automatically appends the operation context — you do **not** include any placeholder. The engine appends:
+
+For MCP tool calls:
+```
+[Your policy prompt]
+
+Tool call:
+{"type": "mcp_tool", "name": "github__delete_file", "arguments": {"owner": "myorg", "repo": "myrepo", "path": "README.md"}}
+```
+
+For CLI commands:
+```
+[Your policy prompt]
+
+CLI command:
+{"type": "cli", "name": "gh", "arguments": ["pr", "comment", "123", "--body", "Looks good!"]}
+```
+
+The label ("Tool call:" or "CLI command:") is context-appropriate. **Do not include `%s` in prompts** — the engine will reject it.
 
 ## Policy Schema
 
@@ -39,17 +76,21 @@ validation:
 
 ```yaml
 rules:
-  - name: "rule-name"              # Unique identifier
-    description: "What this does"  # Human-readable description
-    enabled: true                  # true/false (default: true)
-    action: deny                   # deny or allow (default: deny)
-    mode: ""                       # "" (enforce) or "audit_only"
-    prompt: |                      # Natural language prompt
+  - name: "rule-name"
+    description: "What this does"
+    enabled: true
+    action: deny
+    mode: ""
+    prompt: |-
       ANALYZE: Does this operation do something dangerous?
 
-      Tool call: %s
+      Look for: mass deletions, recursive deletes, wildcard patterns,
+      force flags, or operations targeting more than 5 items.
 
-      Return ONLY JSON: { "allowed": true/false, "message": "explanation" }
+      EXAMPLES:
+      - rm -rf /tmp/cache -> SAFE: Clearing a temp cache
+      - rm -rf * -> DANGEROUS: Wildcard recursive deletion
+      - delete_file path="README.md" -> SAFE: Single file deletion
 ```
 
 ### Response Policy
@@ -59,43 +100,61 @@ rules:
   - name: "check-sensitive-data"
     description: "Check if response contains sensitive data"
     action: deny
-    prompt: |
+    prompt: |-
       ANALYZE: Does this response contain sensitive information
       that should not be returned to the user?
 
       Look for: API keys, passwords, private keys, internal URLs,
       database connection strings, personal information.
+```
 
-      Response: %s
+{{< callout type="warning" >}}
+**Response `deny` semantics:** A `deny` on a response means "don't show the response to the AI agent." This only makes sense for read-only operations (queries, list commands). If the operation already created, modified, or deleted something, denying the response is misleading — the action already happened. Use `redact` for response policies when possible, and reserve `deny` for read-only contexts.
+{{< /callout >}}
 
-      Return ONLY JSON: { "allowed": true/false, "message": "explanation" }
+### Response Format
+
+The engine automatically enforces the response format using JSON Schema structured output — you do **not** need to include format instructions in your prompts. The AI provider returns:
+
+```json
+{ "allowed": true, "message": "Operation is safe" }
+```
+
+For response policies with redaction, the schema includes an additional field:
+
+```json
+{ "allowed": false, "message": "Contains API key", "redacted_content": "..." }
 ```
 
 ## Writing Effective Prompts
 
-Good AI prompts are clear, specific, and include examples. Here's a pattern that works well:
+Good AI prompts are clear, specific, and include examples:
 
 ```yaml
-prompt: |
-  ANALYZE: [Clear question about what to check]
+prompt: |-
+  ANALYZE: Does this operation delete multiple files or use dangerous
+  deletion patterns?
 
-  Look for: [Specific patterns or indicators]
+  Look for: delete_file, rm, remove_file with wildcards (*),
+  recursive flags (-r, --recursive), force flags (-f, --force),
+  or operations targeting more than 5 items.
 
   EXAMPLES:
-  - [safe example] → { "allowed": true, "message": "why safe" }
-  - [dangerous example] → { "allowed": false, "message": "why dangerous" }
-  - [edge case] → { "allowed": true/false, "message": "explanation" }
-
-  Tool call: %s
-
-  Return ONLY JSON in this exact format: { "allowed": true/false, "message": "your message" }
+  - kubectl get po -> SAFE: Not a deletion operation
+  - kubectl delete po --all -> DANGEROUS: Wildcard deletion of all pods
+  - kubectl delete po app-1234 -> SAFE: Single pod deletion
+  - delete_file path="*" -> DANGEROUS: Wildcard file deletion
 ```
 
-The `%s` placeholder is replaced with the actual tool call JSON at evaluation time.
+Tips:
+- Be specific about what constitutes a violation
+- Include both safe and dangerous examples — the model uses these as calibration
+- Keep prompts focused — one concern per policy
+- Use `|-` (strip trailing newline) for cleaner prompts
 
 ## Built-in AI Rules
 
-Maybe Don't includes default AI rules that cover common security scenarios:
+The default configuration includes AI rules that cover common security scenarios:
 
 | Rule | Description |
 |------|-------------|
@@ -109,30 +168,6 @@ Maybe Don't includes default AI rules that cover common security scenarios:
 
 These are in `ai_request_rules.yaml` generated on first run. Edit or replace as needed.
 
-## Example: Mass Deletion Detection
-
-```yaml
-rules:
-  - name: "check-mass-deletion"
-    description: "Prevent deletion of multiple files"
-    enabled: true
-    action: deny
-    prompt: |
-      ANALYZE: Does this operation delete multiple files or use dangerous deletion patterns?
-
-      Look for: delete_file, rm, remove_file with wildcards (*), recursive flags (-r, --recursive), force flags (-f, --force), or >5 files
-
-      EXAMPLES:
-      - kubectl get po → NOT deletion → { "allowed": true, "message": "Not a deletion operation" }
-      - kubectl delete po --all → IS dangerous → { "allowed": false, "message": "Wildcard deletion blocked" }
-      - kubectl delete po app-1234 → SAFE → { "allowed": true, "message": "Single pod deletion allowed" }
-      - delete_file path="*" → DANGEROUS → { "allowed": false, "message": "Wildcard deletion blocked" }
-
-      Tool call: %s
-
-      Return ONLY JSON: { "allowed": true/false, "message": "your message" }
-```
-
 ## Example: Custom Business Rule
 
 ```yaml
@@ -141,7 +176,7 @@ rules:
     description: "Require approval for production database access"
     enabled: true
     action: deny
-    prompt: |
+    prompt: |-
       ANALYZE: Does this operation access a production database?
 
       Production indicators:
@@ -149,25 +184,27 @@ rules:
       - Hostnames containing: prod, prd, production
       - Connection strings with production markers
 
-      If this accesses production data, deny unless the operation is read-only (SELECT).
+      If this accesses production data, deny unless the operation
+      is read-only (SELECT).
 
-      Tool call: %s
-
-      Return ONLY JSON: { "allowed": true/false, "message": "your message" }
+      EXAMPLES:
+      - SELECT * FROM prod.users WHERE id = 5 -> SAFE: Read-only query
+      - DELETE FROM production.logs -> DANGEROUS: Destructive operation on production
+      - psql -h dev-db.internal -> SAFE: Development database
 ```
 
 ## Performance Considerations
 
 AI validation adds latency (typically 1-5 seconds per rule). To optimize:
 
-1. **Order rules by likelihood** - Put commonly-triggered rules first
-2. **Use CEL for simple checks** - AI is overkill for exact matches
-3. **Disable unused rules** - Set `enabled: false` on rules you don't need
-4. **Tune the blocking budget** - Adjust `validation.max_blocking_ms` if needed
+1. **Use CEL for simple checks** — AI is overkill for exact matches
+2. **Disable unused rules** — Set `enabled: false` on rules you don't need
+3. **Tune the blocking budget** — Adjust `validation.max_blocking_ms` if needed
+4. **Choose efficient models** — Smaller models like `gpt-4o-mini` are faster and often sufficient for policy evaluation
 
 ## Per-Rule Mode Override
 
-Like CEL policies, individual AI rules can override the top-level mode:
+Individual AI rules can override the top-level mode:
 
 ```yaml
 rules:
@@ -189,4 +226,8 @@ logger:
   level: debug
 ```
 
-Or check the audit log for detailed validation results including the AI's reasoning.
+Or check the [audit log](/docs/audit-log/) for detailed validation results including the AI's reasoning.
+
+{{< callout type="tip" >}}
+**Want help writing AI policies?** The built-in `ai-policy` skill teaches your AI agent how to author policies. See [Skills](/docs/skills/) to learn how to export it, or run `maybe-dont skill view ai-policy` to see what it contains.
+{{< /callout >}}

@@ -1,9 +1,9 @@
 ---
 title: Logging
-weight: 3
+weight: 1
 ---
 
-Maybe Don't has two log streams: **application logs** (what the gateway is doing) and **audit logs** (what tool calls are happening). This page covers application logging. For audit logs, see [Audit Log](/docs/audit-log/).
+There are two log streams: **application logs** (what the gateway is doing) and **audit logs** (what tool calls are happening). This page covers application logging. For audit logs, see [Audit Log](/docs/audit-log/).
 
 ## Application Log Configuration
 
@@ -72,7 +72,7 @@ If you need file-based logs in Docker, mount a volume for the log directory:
 ```bash
 docker run \
   -v $(pwd)/logs:/home/maybedont/.local/state/maybe-dont \
-  ghcr.io/maybedont/maybe-dont:v0.7.2 start
+  ghcr.io/maybedont/maybe-dont:v1.0.0 start
 ```
 
 ## Environment Variables

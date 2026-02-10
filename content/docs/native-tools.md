@@ -1,6 +1,6 @@
 ---
 title: Native Tools
-weight: 40
+weight: 42
 ---
 
 {{< callout type="warning" >}}
@@ -9,7 +9,7 @@ weight: 40
 Native tools are experimental and subject to change. They may be modified or removed in future versions. Use them for testing and exploration, not production workflows.
 {{< /callout >}}
 
-Maybe Don't exposes built-in tools that let AI agents introspect the gateway itself. These are prefixed with `maybedont__` to distinguish them from downstream tools.
+The gateway exposes built-in tools that let AI agents introspect it. These are prefixed with `maybedont__` to distinguish them from downstream tools.
 
 ## Available Tools
 

@@ -1,13 +1,13 @@
 ---
 title: Configuration
-weight: 10
+weight: 35
 ---
 
 Maybe Don't is configured through a YAML file, environment variables, or a combination of both. This section covers how configuration works and the options available.
 
 ## Configuration File
 
-By default, Maybe Don't looks for `maybe-dont.yaml` in these locations (in order):
+By default, the gateway looks for `maybe-dont.yaml` in these locations (in order):
 
 1. Path specified by `--config-dir` CLI flag
 2. Path specified by `MAYBE_DONT_CONFIG_DIR` environment variable
@@ -65,8 +65,6 @@ This is expanded at load time, allowing you to keep secrets out of config files 
 ## Configuration Sections
 
 {{< cards >}}
-  {{< card link="downstream-servers" title="Downstream Servers" icon="server" subtitle="Configure MCP servers to proxy" >}}
-  {{< card link="server-modes" title="Server Modes" icon="chip" subtitle="stdio, HTTP, and SSE modes" >}}
   {{< card link="logging" title="Logging" icon="document-text" subtitle="Application log configuration" >}}
   {{< card link="reference" title="Reference" icon="book-open" subtitle="Complete configuration reference" >}}
 {{< /cards >}}
