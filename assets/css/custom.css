@@ -15,6 +15,16 @@
   white-space: nowrap;
 }
 
+/* ===== ARCHITECTURE DIAGRAM SVG - DARK MODE ===== */
+/* Dark mode overrides for inline SVG (Hextra uses .dark on html) */
+.dark .svg-bg-main { fill: #1f1f1f; }
+.dark .svg-bg-box { fill: #2a2a2a; stroke: #3a3a3a; }
+.dark .svg-bg-inner { fill: #1f1f1f; stroke: #444444; }
+.dark .svg-text-primary { fill: #e5e5e5; }
+.dark .svg-text-muted { fill: #666666; }
+.dark .svg-stroke-icon { stroke: #e5e5e5; }
+.dark .svg-fill-icon { fill: #e5e5e5; }
+
 /* ===== CSS VARIABLES ===== */
 :root {
   /* Primary brand colors - Light mode */
@@ -34,10 +44,24 @@
   /* Terminal styling */
   --terminal-radius: 0.5rem;
 
-  /* Text colors */
+  /* Text colors — light mode */
   --color-text: #111827;
-  --color-text-dark: #f3f4f6;
   --color-text-muted: #6b7280;
+
+  /* Dark mode palette
+   * Two-tier backgrounds: header/footer frame the lighter body (GitHub pattern).
+   * All backgrounds use a subtle cool tint (consistent +4B offset from R channel).
+   * Text dimmed from Hextra's ~#f3f3f5 to reduce contrast/eye strain.
+   * Headings brighter than body text but not glaring.
+   * Bold uses a subtle warm tint for emphasis without brightness, weight 700→600.
+   * Reference: atmos.style/blog/dark-mode-ui-best-practices
+   */
+  --color-dark-bg: #191a1d;
+  --color-dark-bg-header: #111215;
+  --color-dark-bg-footer: #111215;
+  --color-text-dark: #d1d1d6;
+  --color-text-dark-heading: #e0e0e4;
+  --color-text-dark-bold: #dedad6;
   --color-text-muted-dark: #9ca3af;
 
   /* Border colors */
@@ -295,48 +319,100 @@ html.dark .hextra-sidebar-container {
 }
 
 /*
- * Docs sidebar nav alignment - Auth0/Axiom style
- * Text aligns with header logo, but hover highlight extends to the left edge
+ * Sidebar FOUC prevention
+ * Hide collapsible content until JS has restored saved state
+ */
+.hextra-sidebar-container .hextra-scrollbar:not(.sidebar-ready) li > div {
+  visibility: hidden;
+  height: 0;
+  overflow: hidden;
+}
+
+.hextra-sidebar-container .hextra-scrollbar.sidebar-ready li > div {
+  visibility: visible;
+}
+
+/*
+ * Docs sidebar nav alignment
+ * Left padding handled by hextra-max-page-width container, not the sidebar itself.
  */
 .hextra-sidebar-container .hextra-scrollbar {
-  padding-left: 1.5rem;
+  padding-left: 0;
   padding-right: 1.5rem;
 }
 
-/* Nav items: negative margin pulls highlight left, extra padding keeps text in place */
+/* Sidebar section separators */
+.sidebar-separator {
+  padding: 0.75rem 0;
+}
+
+.sidebar-separator hr {
+  margin: 0;
+}
+
+/* Nav items: flush left edge, rounded right corner */
 .hextra-sidebar-container .hextra-scrollbar > ul > li > a,
 .hextra-sidebar-container .hextra-scrollbar > ul > li > button {
-  margin-left: -1.5rem;
-  padding-left: 1.5rem;
   border-radius: 0 0.375rem 0.375rem 0;
 }
 
-/* Expandable menu items (mobile Documentation menu) */
-.hextra-sidebar-container .hextra-scrollbar > ul > li > div {
+/* Expandable menu items - all sidebar levels */
+.hextra-sidebar-container .hextra-scrollbar li > div {
   display: none;
 }
 
-.hextra-sidebar-container .hextra-scrollbar > ul > li.open > div {
+.hextra-sidebar-container .hextra-scrollbar li.open > div {
   display: block;
 }
 
-/* Arrow rotation for expandable button items */
-.hextra-sidebar-container .hextra-scrollbar > ul > li.open > button > span > svg > path,
-.open > button > span > svg > path {
-  transform: rotate(90deg);
+/* Arrow rotation for button-based collapsible items (Hextra's built-in rule
+ * only covers li.open > a > span > svg > path; buttons need the same) */
+.hextra-sidebar-container li.open > button.hextra-sidebar-collapsible-button > svg > path {
+  rotate: 90deg;
+}
+
+/* Subtle expand arrows - reduce visual weight */
+.hextra-sidebar-collapsible-button svg {
+  opacity: 0.35;
+  transition: opacity 0.15s ease;
+}
+
+.hextra-sidebar-collapsible-button:hover svg,
+a:hover > .hextra-sidebar-collapsible-button svg,
+button:hover > .hextra-sidebar-collapsible-button svg {
+  opacity: 0.7;
 }
 
 /* Nested items in the sidebar div wrapper */
+/* No negative margin so hover background stops at the left border */
 .hextra-sidebar-container .hextra-scrollbar > ul > li > div ul > li > a {
-  margin-left: -1.5rem;
-  padding-left: 2.25rem;
-  border-radius: 0 0.375rem 0.375rem 0;
+  margin-left: 0;
+  padding-left: 0.5rem;
+  border-radius: 0.375rem;
 }
 
-/* Active item styling adjustments */
-.hextra-sidebar-container .hextra-sidebar-active-item {
+/* Active item styling adjustments - top level items extend to left edge.
+ * margin-left pulls the element left; padding-left must compensate for both
+ * the offset AND the original hx:px-2 (0.5rem) so text doesn't shift. */
+.hextra-sidebar-container .hextra-scrollbar > ul > li > a.hextra-sidebar-active-item {
   margin-left: -1.5rem;
-  padding-left: 1.5rem;
+  padding-left: 2rem;
+}
+
+/* Nested active items: no negative margin, stop at left border */
+.hextra-sidebar-container .hextra-scrollbar > ul > li > div ul > li > a.hextra-sidebar-active-item {
+  margin-left: 0;
+  padding-left: 0.5rem;
+}
+
+/* Mobile touch targets - larger tap area for sidebar links */
+@media (max-width: 1023px) {
+  .hextra-sidebar-container .hextra-scrollbar li > a,
+  .hextra-sidebar-container .hextra-scrollbar li > button {
+    padding-right: 1rem;
+    min-height: 2.75rem;
+    align-items: center;
+  }
 }
 
 /* ===== BREADCRUMBS ===== */
@@ -824,63 +900,78 @@ html.dark .pricing-btn-primary {
 /* ===== DOWNLOAD PAGE ===== */
 /* Auto-detected download section */
 .download-detected {
-  background: linear-gradient(135deg, rgba(16, 77, 235, 0.08) 0%, rgba(111, 68, 191, 0.08) 100%);
-  border: 2px solid var(--color-primary);
-  border-radius: 1rem;
-  padding: 1.5rem 2rem;
-  margin: 1.5rem 0 2rem;
-}
-
-.dark .download-detected {
-  background: linear-gradient(135deg, rgba(96, 165, 250, 0.1) 0%, rgba(139, 92, 246, 0.1) 100%);
-  border-color: var(--color-primary-dark);
+  padding: 0;
+  margin: 0 0 1rem;
 }
 
 .download-detected-content {
   display: flex;
-  align-items: center;
-  gap: 1rem;
-  flex-wrap: wrap;
+  flex-direction: column;
+  gap: 0.75rem;
 }
 
 .download-detected-label {
-  font-weight: 600;
-  color: #111827;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: #6b7280;
+  letter-spacing: 0.03em;
 }
 
 .dark .download-detected-label {
-  color: #f3f4f6;
+  color: #9ca3af;
+}
+
+.download-buttons-row {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.download-btn-group {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
 }
 
 .download-detected-btn {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
-  background: var(--gradient-primary);
-  color: white;
-  padding: 0.75rem 1.5rem;
-  border-radius: 0.5rem;
-  font-weight: 600;
-  font-size: 0.95rem;
+  background: transparent;
+  color: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  padding: 0.5rem 1.25rem;
+  border-radius: 0.375rem;
+  font-weight: 500;
+  font-size: 0.9rem;
   text-decoration: none;
-  box-shadow: 0 4px 14px var(--shadow-primary);
-  transition: box-shadow 0.2s ease;
+  transition: background 0.15s ease, color 0.15s ease;
 }
 
 .download-detected-btn:hover {
+  background: var(--color-primary);
   color: white;
-  box-shadow: 0 6px 20px var(--shadow-primary-hover);
 }
 
 .dark .download-detected-btn,
 html.dark .download-detected-btn {
-  color: white;
+  color: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
 }
 
-/* Ensure all child elements inside download button stay white */
-.download-detected-btn *,
+.dark .download-detected-btn:hover,
+html.dark .download-detected-btn:hover {
+  background: var(--color-primary-dark);
+  color: #111827;
+}
+
+/* Ensure child elements match button color */
+.download-detected-btn *{
+  color: inherit;
+}
 .download-detected-btn:hover * {
-  color: white;
+  color: inherit;
 }
 
 .download-sha-link {
@@ -915,6 +1006,16 @@ html.dark .download-detected-btn {
 /* All platforms dropdown */
 .download-all-platforms {
   margin-top: 1.5rem;
+}
+
+.download-all-platforms-desc {
+  margin: 0.5rem 0 0.75rem;
+  font-size: 0.875rem;
+  color: #6b7280;
+}
+
+.dark .download-all-platforms-desc {
+  color: #9ca3af;
 }
 
 .download-all-platforms summary {
@@ -1096,8 +1197,8 @@ html.dark .download-detected-btn {
 }
 
 .dark .custom-footer {
-  background: #0a0a0a;
-  color: #e5e5e5;
+  background: var(--color-dark-bg-footer);
+  color: var(--color-text-dark);
 }
 
 html:not(.dark) .custom-footer {
@@ -1314,6 +1415,11 @@ body[class*="home"] article > h1:first-of-type {
 
 .hero-content strong {
   font-weight: 600;
+}
+
+.dark .hero-title-full,
+.dark .hero-content h1 {
+  color: var(--color-text-dark-heading);
 }
 
 .hero-terminal-wrapper {
@@ -1822,7 +1928,7 @@ html.dark .feature-cell:nth-child(2) {
 
 .dark .feature-heading,
 html.dark .feature-heading {
-  color: var(--color-text-dark);
+  color: var(--color-text-dark-heading);
 }
 
 .feature-description {
@@ -2268,7 +2374,7 @@ html.dark .scroll-indicator-chevron {
 
 .dark .closing-cta-heading,
 html.dark .closing-cta-heading {
-  color: var(--color-text-dark);
+  color: var(--color-text-dark-heading);
 }
 
 .closing-cta-subtext {
@@ -2390,11 +2496,85 @@ html.dark .closing-cta-subtext {
 @media (max-width: 768px) {
   .about-terminal-container {
     margin: 1rem auto;
-    padding: 0 1rem;
+    padding: 0;
   }
 
   .about-terminal-output {
     padding: 1rem;
     font-size: 0.875rem;
   }
+}
+
+/* ===== DARK MODE READABILITY ===== */
+/*
+ * Hextra defaults to #111111 background with ~#f3f3f5 text — too much contrast,
+ * causes halation (white bleeding into dark) and eye strain.
+ *
+ * Our approach (per atmos.style/blog/dark-mode-ui-best-practices):
+ * 1. Lighten background (--color-dark-bg) to reduce contrast globally
+ * 2. Dim body text (--color-text-dark) for comfortable reading
+ * 3. Dim headings (--color-text-dark-heading) — brighter than body, not glaring
+ * 4. Warm tint on bold (--color-text-dark-bold) — emphasis without brightness
+ * 5. Drop bold weight 700→600 — compensates for dark-mode optical bolding
+ * All values defined as CSS variables in :root above.
+ * See: docs/style-guide.md for full rationale
+ */
+.dark body {
+  background-color: var(--color-dark-bg);
+  color: var(--color-text-dark);
+}
+
+/* Override Hextra's dark backgrounds so nav blur, sidebar bottom, etc. match.
+ * Hextra uses Tailwind hx:dark:bg-dark which resolves to #111111.
+ * We need high specificity to beat Tailwind's generated rules.
+ * Nav-specific rule comes AFTER generic rule so it wins the cascade. */
+html.dark [class*="dark\:bg-dark"] {
+  background-color: var(--color-dark-bg) !important;
+}
+
+html.dark .hextra-nav-container-blur {
+  background-color: var(--color-dark-bg-header) !important;
+}
+
+/* Remove Hextra's hardcoded #111 shadow on sticky sidebar/TOC bottoms */
+.dark [class*="dark\:shadow-\[0_-12px"] {
+  box-shadow: none;
+}
+
+.dark footer {
+  background-color: var(--color-dark-bg-footer);
+}
+
+.dark .docs .content h1,
+.dark .docs .content h2,
+.dark .docs .content h3,
+.dark .docs .content h4 {
+  color: var(--color-text-dark-heading);
+}
+
+.dark .docs .content strong,
+.dark .docs .content b {
+  color: var(--color-text-dark-bold);
+  font-weight: 600;
+}
+
+/* ===== TABLE ALIGNMENT ===== */
+/* Hextra centers th by default; left-align everything for consistency */
+.content th {
+  text-align: left;
+}
+
+/* ===== PROSE LINK COLORS ===== */
+/* Links inside doc content show primary color (no underline, underline on hover).
+ * Must match global rule's :not() list to win specificity. */
+.docs .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary) {
+  color: var(--color-primary);
+}
+
+.dark .docs .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary) {
+  color: var(--color-primary-dark);
+}
+
+.docs .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary):hover {
+  text-decoration: underline;
 }

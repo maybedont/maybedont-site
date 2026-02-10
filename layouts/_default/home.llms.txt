@@ -1,0 +1,58 @@
+{{ $base := .Site.BaseURL }}# {{ .Site.Title }}
+
+> {{ .Site.Params.description }}
+
+Maybe Don't provides guardrails and observability for agentic AI. It sits between AI agents and the tools they use — MCP servers and CLI commands — evaluating every operation against your policies before it executes. You define the rules, Maybe Don't enforces them.
+
+## Getting Started
+
+- [Get Started]({{ $base }}docs/get-started/): Install, configure, and run Maybe Don't
+- [Configuration Reference]({{ $base }}docs/configuration/reference/): Complete reference for maybe-dont.yaml
+
+## MCP Gateway
+
+- [MCP Gateway Overview]({{ $base }}docs/mcp-gateway/): How the MCP proxy works
+- [Downstream Servers]({{ $base }}docs/mcp-gateway/downstream-servers/): Configure MCP servers to proxy
+- [Server Configuration]({{ $base }}docs/mcp-gateway/server-modes/): Transport modes, listen address, and trusted proxies
+
+## CLI Gateway
+
+- [CLI Gateway Overview]({{ $base }}docs/cli-gateway/): Validate CLI commands from AI agents
+- [Validate API]({{ $base }}docs/cli-gateway/rest-api/): REST endpoint for CLI command validation
+
+## Policies
+
+- [AI Policies]({{ $base }}docs/policies/ai-policies/): Natural language policies evaluated by an LLM
+- [CEL Policies]({{ $base }}docs/policies/cel-policies/): Deterministic policies using Common Expression Language
+- [How-To]({{ $base }}docs/policies/writing-policies/): Practical guide for writing policies
+
+## Audit Log
+
+- [Audit Log]({{ $base }}docs/audit-log/): The record of everything
+- [Log Schema]({{ $base }}docs/audit-log/log-schema/): Complete field reference for audit log entries
+- [SIEM]({{ $base }}docs/audit-log/siem-integration/): Ingesting audit logs into your SIEM
+
+## Testing
+
+- [Test Cases]({{ $base }}docs/testing/test-cases/): Define operations and expected policy decisions
+- [Suites and Running]({{ $base }}docs/testing/test-suites/): Suite configuration, test runner CLI, and CI/CD
+
+## Configuration
+
+- [Logging]({{ $base }}docs/configuration/logging/): Application and audit log configuration
+
+## Agent Setup Guides
+
+- [Claude Code]({{ $base }}docs/mcp-gateway/examples/connecting-claude-code/): Connect Anthropic's CLI assistant
+- [GitHub Copilot]({{ $base }}docs/mcp-gateway/examples/connecting-github-copilot/): Connect GitHub's AI assistant in VS Code
+- [Cursor]({{ $base }}docs/mcp-gateway/examples/connecting-cursor/): Connect the AI-powered code editor
+- [OpenAI Codex]({{ $base }}docs/mcp-gateway/examples/connecting-openai-codex/): Connect OpenAI's coding CLI
+- [Gemini Code Assist]({{ $base }}docs/mcp-gateway/examples/connecting-gemini/): Connect Google's AI assistant
+- [OpenHands]({{ $base }}docs/mcp-gateway/examples/connecting-openhands/): Connect the open-source AI developer
+- [Cody]({{ $base }}docs/mcp-gateway/examples/connecting-cody/): Connect Sourcegraph's coding assistant
+
+## Other
+
+- [Skills]({{ $base }}docs/skills/): Pre-written instructions that teach AI agents how to use Maybe Don't
+- [Native Tools]({{ $base }}docs/native-tools/): Experimental MCP tools built into Maybe Don't
+- [Security]({{ $base }}docs/security/): Security model, telemetry, and deployment considerations

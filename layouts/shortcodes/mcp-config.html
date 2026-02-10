@@ -1,0 +1,37 @@
+{{/*
+  MCP Config Shortcode
+
+  Renders a Maybe Don't configuration snippet for a specific MCP server.
+
+  Usage:
+    {{< mcp-config server="github" >}}
+
+  Parameters:
+    - server: The MCP server ID from data/mcp_examples.yaml (required)
+*/}}
+
+{{ $serverId := .Get "server" }}
+{{ $server := index (where .Site.Data.mcp_examples.mcp_servers "id" $serverId) 0 }}
+
+{{ if $server }}
+```yaml
+downstream_mcp_servers:
+  {{ $server.id }}:
+    type: {{ $server.type }}
+    url: "{{ $server.url }}"
+{{- if eq $server.auth.type "pass_through" }}
+    auth:
+      pass_through:
+        enabled: true
+        headers:
+          - source_header: "{{ $server.auth.source_header }}"
+            target_header: "{{ $server.auth.target_header }}"
+            format: "{{ $server.auth.format }}"
+{{- end }}
+```
+{{ if $server.env_var }}
+> **Required:** Set the `{{ $server.env_var }}` environment variable{{ if $server.env_var_description }} ({{ $server.env_var_description }}){{ end }}.{{ if $server.docs_url }} [Get your token]({{ $server.docs_url }}){{ end }}
+{{ end }}
+{{ else }}
+> **Error:** MCP server "{{ $serverId }}" not found in data/mcp_examples.yaml
+{{ end }}

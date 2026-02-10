@@ -1,0 +1,99 @@
+# MCP Server Examples
+# These definitions are used across all agent example pages to maintain consistency.
+# Each server definition provides the details needed to generate config snippets.
+
+mcp_servers:
+  - id: github
+    name: "GitHub"
+    description: "GitHub's official MCP server for repository operations"
+    type: http
+    url: "https://api.githubcopilot.com/mcp/"
+    auth:
+      type: pass_through
+      source_header: "X-GitHub-Token"
+      target_header: "Authorization"
+      format: "Bearer {value}"
+    env_var: "GITHUB_TOKEN"
+    env_var_description: "Your GitHub Personal Access Token"
+    docs_url: "https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens"
+
+  - id: aws-docs
+    name: "AWS Documentation"
+    description: "AWS documentation MCP server for searching AWS docs"
+    type: http
+    url: "https://knowledge-mcp.global.api.aws"
+    auth:
+      type: none
+    env_var: ""
+    env_var_description: ""
+    docs_url: ""
+
+# AI Agents
+# These definitions provide agent-specific setup instructions.
+
+ai_agents:
+  - id: claude-code
+    name: "Claude Code"
+    description: "Anthropic's CLI coding assistant"
+    install_url: "https://docs.anthropic.com/en/docs/claude-code"
+    config_type: "cli"  # cli, json, yaml, env
+    config_instructions: |
+      Claude Code uses the `claude mcp add` command to register MCP servers.
+
+  - id: cursor
+    name: "Cursor"
+    description: "AI-powered code editor"
+    install_url: "https://cursor.sh"
+    config_type: "json"
+    config_path: "~/.cursor/mcp.json"
+    config_instructions: |
+      Cursor stores MCP configuration in `~/.cursor/mcp.json`.
+
+  - id: openai-codex
+    name: "OpenAI Codex CLI"
+    description: "OpenAI's command-line coding assistant"
+    install_url: "https://github.com/openai/codex"
+    config_type: "json"
+    config_path: "~/.codex/mcp.json"
+    config_instructions: |
+      Codex stores MCP configuration in `~/.codex/mcp.json`.
+
+  - id: gemini
+    name: "Gemini Code Assist"
+    description: "Google's AI coding assistant"
+    install_url: "https://cloud.google.com/gemini/docs/codeassist"
+    config_type: "json"
+    config_instructions: |
+      Gemini Code Assist uses a JSON configuration file.
+
+  - id: openhands
+    name: "OpenHands"
+    description: "Open-source AI software development agent"
+    install_url: "https://github.com/All-Hands-AI/OpenHands"
+    config_type: "yaml"
+    config_instructions: |
+      OpenHands uses a YAML configuration file.
+
+  - id: windsurf
+    name: "Windsurf"
+    description: "Codeium's AI-powered IDE"
+    install_url: "https://codeium.com/windsurf"
+    config_type: "json"
+    config_instructions: |
+      Windsurf stores MCP configuration in its settings.
+
+  - id: cody
+    name: "Cody"
+    description: "Sourcegraph's AI coding assistant"
+    install_url: "https://sourcegraph.com/cody"
+    config_type: "json"
+    config_instructions: |
+      Cody uses a JSON configuration for MCP servers.
+
+  - id: aider
+    name: "Aider"
+    description: "AI pair programming in your terminal"
+    install_url: "https://aider.chat"
+    config_type: "yaml"
+    config_instructions: |
+      Aider can be configured via command-line flags or a YAML config file.

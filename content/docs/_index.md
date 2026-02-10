@@ -1,25 +1,32 @@
 ---
 title: Documentation
 linkTitle: Home
-toc: false
-aliases:
-  - /download/   # Redirect old download URL until we decide to re-publish /docs/download.md
+toc: true
 ---
 
 ## What is Maybe Don't?
 
-Maybe Don't AI is an MCP gateway that operates between AI agents such as Claude or ChatGPT and downstream MCP servers.
+Maybe Don't provides guardrails and observability for agentic AI. It sits between AI agents and the tools they use — MCP servers and CLI commands — evaluating every operation against your policies before it executes. You define the rules, Maybe Don't enforces them.
 
-Tools are discovered and called through Maybe Don't. Each tool call is audited, and you may run policy against the tool request and the tool response. 
+Think of it as a security checkpoint for your AI's actions. Every tool call and CLI command is audited, validated, and logged.
 
-The gateway will then expose all downstream tools to the connecting agent. When a tool call is made, one or more policies evaluate the tool call. A tool can then be allowed, or denied.
+{{< inline-svg path="images/architecture-diagram.svg" style="max-width: 100%; height: auto; margin: 2rem 0;" >}}
 
-The diagram below illustrates the gateway architecture:
+## Why Use It?
 
-<img src="/images/architecture-diagram.svg" alt="Maybe Don't MCP Gateway Architecture" style="max-width: 100%; height: auto; margin: 2rem 0;" />
+- **Audit everything** — See exactly what your AI agents are doing, across MCP tool calls and CLI commands
+- **Set guardrails** — Block dangerous operations before they happen, using AI or deterministic policies
+- **Stay in control** — Enforce policies, review decisions, and trace any action back to its source
+- **Observe and learn** — Run in audit-only mode to understand agent behavior before enforcing rules
+
+## Get Started
 
 {{< cards >}}
-  {{< card link="configuration" title="Configuration" icon="cog" subtitle="Configure the gateway and downstream servers" >}}
-  {{< card link="policies" title="Policy Configuration" icon="shield-check" subtitle="Set up CEL and AI-powered validation rules" >}}
-  {{< card link="containers" title="Container Deployment" icon="cube" subtitle="Run with Docker or Podman" >}}
+  {{< card link="get-started" title="Get Started" icon="play" subtitle="Up and running in minutes" >}}
+  {{< card link="mcp-gateway" title="MCP Gateway" icon="server" subtitle="Validate MCP tool calls" >}}
+  {{< card link="cli-gateway" title="CLI Gateway" icon="terminal" subtitle="Validate CLI commands" >}}
+  {{< card link="configuration" title="Configuration" icon="cog" subtitle="Global settings, logging, and reference" >}}
+  {{< card link="policies" title="Policies" icon="shield-check" subtitle="Define what's allowed and what isn't" >}}
+  {{< card link="audit-log" title="Audit Log" icon="document-text" subtitle="The record of everything" >}}
+  {{< card link="testing" title="Testing" icon="beaker" subtitle="Test your policies before deploying" >}}
 {{< /cards >}}

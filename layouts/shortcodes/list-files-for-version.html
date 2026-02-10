@@ -1,9 +1,7 @@
-{{ $version := .Get "version" }}
-{{ $versionNum := strings.TrimPrefix "v" $version }}
-{{ $baseURL := printf "https://github.com/maybedont/maybe-dont/releases/download/%s" $version }}
-
-<!-- Platform definitions -->
-{{ $platforms := slice
+{{- $version := .Get "version" -}}
+{{- $versionNum := strings.TrimPrefix "v" $version -}}
+{{- $baseURL := printf "https://github.com/maybedont/releases/releases/download/%s" $version -}}
+{{- $platforms := slice
   (dict "os" "darwin" "arch" "arm64" "ext" "tar.gz" "display" "macOS (Apple Silicon)")
   (dict "os" "darwin" "arch" "x86_64" "ext" "tar.gz" "display" "macOS (Intel)")
   (dict "os" "linux" "arch" "arm64" "ext" "tar.gz" "display" "Linux (ARM64)")
@@ -12,45 +10,52 @@
   (dict "os" "windows" "arch" "arm64" "ext" "zip" "display" "Windows (ARM64)")
   (dict "os" "windows" "arch" "x86_64" "ext" "zip" "display" "Windows (x86_64)")
   (dict "os" "windows" "arch" "i386" "ext" "zip" "display" "Windows (32-bit)")
-}}
-
-<!-- Auto-detected download recommendation -->
+-}}
 <div id="detected-download" class="download-detected">
-  <div id="download-single" class="download-detected-content" style="display: none;">
-    <span class="download-detected-label">Recommended for your system:</span>
-    <a id="detected-download-link" href="#" class="download-detected-btn">
-      <i class="fa-solid fa-download"></i>
-      <span id="detected-download-text">Detecting...</span>
-    </a>
-    <a id="detected-sha-link" href="#" class="download-sha-link">SHA256</a>
-  </div>
-  <div id="download-macos-dual" class="download-detected-content" style="display: none;">
-    <span class="download-detected-label">Download for macOS:</span>
-    <div style="display: flex; gap: 0.75rem; flex-wrap: wrap; align-items: center;">
-      <a id="macos-arm64-link" href="#" class="download-detected-btn" style="min-width: 160px; text-align: center; justify-content: center;">
-        <i class="fa-solid fa-download"></i>
-        Apple Silicon
-      </a>
-      <a id="macos-x86-link" href="#" class="download-detected-btn" style="min-width: 160px; text-align: center; justify-content: center;">
-        <i class="fa-solid fa-download"></i>
-        Intel
-      </a>
-    </div>
-  </div>
-  <p id="detected-os-info" class="download-detected-info"></p>
-
-  <details class="download-all-platforms" style="margin-top: 1rem;">
-    <summary>All platforms</summary>
-    <ul class="download-list">
-    {{- range $platforms }}
-      {{ $filename := printf "maybe-dont_%s_%s_%s.%s" $versionNum .os .arch .ext }}
-      <li class="download-list-item">
-        <a href="{{ $baseURL }}/{{ $filename }}" class="download-list-link">{{ $filename }}</a>
-        <a class="download-list-sha" href="{{ $baseURL }}/{{ $filename }}.sha256"><i class="fa-solid fa-download"></i> sha256</a>
-      </li>
-    {{- end }}
-    </ul>
-  </details>
+<div id="download-single" class="download-detected-content" style="display: none;">
+<span class="download-detected-label" id="detected-os-info">Detecting platform…</span>
+<div class="download-buttons-row">
+<div class="download-btn-group">
+<a id="detected-download-link" href="#" class="download-detected-btn">
+<i class="fa-solid fa-download"></i>
+<span id="detected-download-text">Download</span>
+</a>
+<a id="detected-sha-link" href="#" class="download-sha-link"><i class="fa-solid fa-download"></i> sha256</a>
+</div>
+</div>
+</div>
+<div id="download-macos-dual" class="download-detected-content" style="display: none;">
+<span class="download-detected-label" id="macos-detected-label">Detecting platform…</span>
+<div class="download-buttons-row">
+<div class="download-btn-group">
+<a id="macos-arm64-link" href="#" class="download-detected-btn" style="min-width: 160px; text-align: center; justify-content: center;">
+<i class="fa-solid fa-download"></i>
+Apple Silicon
+</a>
+<a id="macos-arm64-sha" href="#" class="download-sha-link"><i class="fa-solid fa-download"></i> sha256</a>
+</div>
+<div class="download-btn-group">
+<a id="macos-x86-link" href="#" class="download-detected-btn" style="min-width: 160px; text-align: center; justify-content: center;">
+<i class="fa-solid fa-download"></i>
+Intel
+</a>
+<a id="macos-x86-sha" href="#" class="download-sha-link"><i class="fa-solid fa-download"></i> sha256</a>
+</div>
+</div>
+</div>
+<details class="download-all-platforms" style="margin-top: 1rem;">
+<summary>All platforms</summary>
+<p class="download-all-platforms-desc">Multi-platform packages from the <a href="https://github.com/maybedont/releases">releases repository</a>. Supports macOS, Linux, and Windows.</p>
+<ul class="download-list">
+{{- range $platforms -}}
+{{- $filename := printf "maybe-dont_%s_%s_%s.%s" $versionNum .os .arch .ext -}}
+<li class="download-list-item">
+<a href="{{ $baseURL }}/{{ $filename }}" class="download-list-link">{{ $filename }}</a>
+<a class="download-list-sha" href="{{ $baseURL }}/{{ $filename }}.sha256"><i class="fa-solid fa-download"></i> sha256</a>
+</li>
+{{- end -}}
+</ul>
+</details>
 </div>
 
 <script>
@@ -62,88 +67,65 @@
   function detectOS() {
     const ua = navigator.userAgent.toLowerCase();
     const platform = navigator.platform.toLowerCase();
-
-    // Detect OS
     let os = 'linux';
     if (platform.includes('mac') || ua.includes('mac')) {
       os = 'darwin';
     } else if (platform.includes('win') || ua.includes('win')) {
       os = 'windows';
     }
-
-    // Detect architecture (unreliable for macOS)
     let arch = 'x86_64';
     if (platform.includes('arm') || ua.includes('arm') || ua.includes('aarch64')) {
       arch = 'arm64';
     }
-
     return { os, arch };
   }
 
-  function getDisplayName(os, arch) {
-    const osNames = {
-      'darwin': 'macOS',
-      'windows': 'Windows',
-      'linux': 'Linux'
-    };
-    const archNames = {
-      'arm64': 'ARM64',
-      'x86_64': '64-bit (x86_64)',
-      'i386': '32-bit (x86)'
-    };
-    return osNames[os] + ' ' + archNames[arch];
+  function getOSName(os) {
+    return { 'darwin': 'macOS', 'windows': 'Windows', 'linux': 'Linux' }[os] || os;
+  }
+
+  function getArchName(arch) {
+    return { 'arm64': 'ARM64', 'x86_64': 'x86_64', 'i386': 'x86' }[arch] || arch;
   }
 
   function updateDownloadLink() {
     const { os, arch } = detectOS();
     const ext = os === 'windows' ? '.zip' : '.tar.gz';
-
     const singleEl = document.getElementById('download-single');
     const macDualEl = document.getElementById('download-macos-dual');
-    const infoEl = document.getElementById('detected-os-info');
 
     if (os === 'darwin') {
-      // macOS: Show both Apple Silicon and Intel buttons
       singleEl.style.display = 'none';
       macDualEl.style.display = 'flex';
-
+      const macLabel = document.getElementById('macos-detected-label');
+      if (macLabel) macLabel.textContent = 'Detected platform: macOS';
       const armLink = document.getElementById('macos-arm64-link');
       const x86Link = document.getElementById('macos-x86-link');
-
-      if (armLink) {
-        armLink.href = baseURL + '/maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
-      }
-      if (x86Link) {
-        x86Link.href = baseURL + '/maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
-      }
-      if (infoEl) {
-        infoEl.textContent = 'Not sure? Apple Silicon is for M1/M2/M3/M4 Macs. Intel is for older Macs.';
-      }
+      const armSha = document.getElementById('macos-arm64-sha');
+      const x86Sha = document.getElementById('macos-x86-sha');
+      const armUrl = baseURL + '/maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
+      const x86Url = baseURL + '/maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
+      if (armLink) armLink.href = armUrl;
+      if (x86Link) x86Link.href = x86Url;
+      if (armSha) armSha.href = armUrl + '.sha256';
+      if (x86Sha) x86Sha.href = x86Url + '.sha256';
     } else {
-      // Windows/Linux: Show single download button
       singleEl.style.display = 'flex';
       macDualEl.style.display = 'none';
-
       const filename = 'maybe-dont_' + versionNum + '_' + os + '_' + arch + ext;
       const downloadUrl = baseURL + '/' + filename;
       const shaUrl = downloadUrl + '.sha256';
-
       const linkEl = document.getElementById('detected-download-link');
       const textEl = document.getElementById('detected-download-text');
       const shaEl = document.getElementById('detected-sha-link');
-
-      if (linkEl && textEl && shaEl) {
-        linkEl.href = downloadUrl;
-        textEl.textContent = 'Download for ' + getDisplayName(os, arch);
-        shaEl.href = shaUrl;
-      }
-      if (infoEl) {
-        infoEl.textContent = 'Detected: ' + getDisplayName(os, arch);
-      }
+      const infoEl = document.getElementById('detected-os-info');
+      if (linkEl) linkEl.href = downloadUrl;
+      if (textEl) textEl.textContent = getOSName(os) + ' ' + getArchName(arch);
+      if (shaEl) shaEl.href = shaUrl;
+      if (infoEl) infoEl.textContent = 'Detected platform: ' + getOSName(os);
     }
   }
 
-  // Run on page load
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', updateDownloadLink);
   } else {

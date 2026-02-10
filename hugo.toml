@@ -29,7 +29,8 @@ title = "Maybe Don't, AI"
 
 # Site parameters
 [params]
-  description = "AI Security Guardrails - Real-time monitoring and intelligent blocking for AI agents"
+  description = "AI Guardrails - Real-time monitoring and intelligent blocking for AI agents"
+  images = ["/images/og-image.png"]
 
   # Navbar settings
   [params.navbar]
@@ -54,8 +55,12 @@ title = "Maybe Don't, AI"
 
   # Theme settings
   [params.theme]
-    default = "system"
+    default = "dark"
     displayToggle = true
+
+  # Tab selection persists across page reloads via localStorage
+  [params.page.tabs]
+    sync = true
 
   # Edit link for docs (optional)
   [params.editURL]
@@ -68,6 +73,21 @@ disableKinds = ["taxonomy", "term"]
 [caches]
   [caches.images]
     dir = ':cacheDir/images'
+
+# llms.txt output format
+[mediaTypes]
+  [mediaTypes."text/plain"]
+    suffixes = ["txt"]
+
+[outputFormats]
+  [outputFormats.llms]
+    mediaType = "text/plain"
+    baseName = "llms"
+    isPlainText = true
+    notAlternative = true
+
+[outputs]
+  home = ["HTML", "RSS", "llms"]
 
 # Markdown rendering
 [markup]
