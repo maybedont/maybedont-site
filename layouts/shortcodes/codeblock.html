@@ -1,4 +1,10 @@
 {{- $lang := .Get "lang" | default "bash" -}}
 {{- $version := site.Data.product.version -}}
 {{- $content := replace .Inner "{version}" $version -}}
-{{ highlight (trim $content "\n") $lang "" }}
+{{- $content = trim $content "\n" -}}
+<div class="hextra-code-block hx:relative hx:mt-6 hx:first:mt-0 hx:group/code">
+  {{- partial "components/codeblock" (dict "lang" $lang "content" $content) -}}
+  {{- if or (eq site.Params.highlight.copy.enable nil) (site.Params.highlight.copy.enable) -}}
+    {{- partialCached "components/codeblock-copy-button" (dict "filename" "") "" -}}
+  {{- end -}}
+</div>
