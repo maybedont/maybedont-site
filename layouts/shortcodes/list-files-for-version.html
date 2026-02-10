@@ -1,4 +1,4 @@
-{{- $version := .Get "version" -}}
+{{- $version := site.Data.product.version -}}
 {{- $versionNum := strings.TrimPrefix "v" $version -}}
 {{- $baseURL := printf "https://github.com/maybedont/releases/releases/download/%s" $version -}}
 {{- $platforms := slice

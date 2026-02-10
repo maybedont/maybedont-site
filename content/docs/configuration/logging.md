@@ -69,11 +69,11 @@ logger:
 
 If you need file-based logs in Docker, mount a volume for the log directory:
 
-```bash
+{{< codeblock lang="bash" >}}
 docker run \
   -v $(pwd)/logs:/home/maybedont/.local/state/maybe-dont \
-  ghcr.io/maybedont/maybe-dont:v1.1.0 start
-```
+  ghcr.io/maybedont/maybe-dont:{version} start
+{{< /codeblock >}}
 
 ## Environment Variables
 

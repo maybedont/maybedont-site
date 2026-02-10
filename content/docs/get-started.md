@@ -16,9 +16,9 @@ Let's get Maybe Don't running. Pick your installation method, then follow the sa
 {{< tab >}}
 **Recommended for MCP server mode.** Docker keeps the gateway isolated and is the easiest way to get started if you're proxying MCP tool calls.
 
-```bash
-docker pull ghcr.io/maybedont/maybe-dont:v1.1.0
-```
+{{< codeblock lang="bash" >}}
+docker pull ghcr.io/maybedont/maybe-dont:{version}
+{{< /codeblock >}}
 {{< /tab >}}
 
 {{< tab >}}
@@ -30,7 +30,7 @@ brew install maybedont/tap/maybe-dont
 {{< /tab >}}
 
 {{< tab >}}
-{{< list-files-for-version version="v1.1.0" >}}
+{{< list-files-for-version >}}
 
 After downloading, extract the archive and place the `maybe-dont` binary somewhere on your `PATH`.
 {{< /tab >}}
@@ -44,14 +44,14 @@ On first startup, Maybe Don't writes the default configuration and policy files 
 {{< tabs items="Docker,Package" >}}
 
 {{< tab >}}
-```bash
+{{< codeblock lang="bash" >}}
 mkdir -p ./config
 
 # Run once to bootstrap defaults
 docker run --rm \
   -v $(pwd)/config:/config \
-  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-dir /config
-```
+  ghcr.io/maybedont/maybe-dont:{version} start --config-dir /config
+{{< /codeblock >}}
 
 Stop the container after it starts up — the defaults are now written to `./config/`.
 {{< /tab >}}
@@ -111,15 +111,15 @@ Don't have an AI API key yet? You can skip this step and run with just CEL polic
 {{< tabs items="Docker,Package" >}}
 
 {{< tab >}}
-```bash
+{{< codeblock lang="bash" >}}
 export OPENAI_API_KEY="your-api-key-here"
 
 docker run \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-dir /config
-```
+  ghcr.io/maybedont/maybe-dont:{version} start --config-dir /config
+{{< /codeblock >}}
 {{< /tab >}}
 
 {{< tab >}}

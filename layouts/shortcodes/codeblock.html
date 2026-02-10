@@ -1,0 +1,4 @@
+{{- $lang := .Get "lang" | default "bash" -}}
+{{- $version := site.Data.product.version -}}
+{{- $content := replace .Inner "{version}" $version -}}
+{{ highlight (trim $content "\n") $lang "" }}
