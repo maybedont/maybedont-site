@@ -16,10 +16,10 @@ Maybe Don't is available as a container image from GitHub Container Registry:
 
 ```bash
 # Using Docker
-docker pull ghcr.io/maybedont/maybe-dont:v0.7.2
+docker pull ghcr.io/maybedont/maybe-dont:v1.1.0
 
 # Using Podman
-podman pull ghcr.io/maybedont/maybe-dont:v0.7.2
+podman pull ghcr.io/maybedont/maybe-dont:v1.1.0
 ```
 
 See the [Container Deployment](/docs/containers/) section for detailed usage instructions.

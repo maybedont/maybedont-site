@@ -6,11 +6,11 @@ draft: true
 
 ## Download the Package
 
-### v0.7.2
+### v1.1.0
 
 You can download the package below, click on the link that matches your system architecture. Note that the file will be in the form of a `.tar.gz` for all platforms except Windows which will be a `.zip` file.
 
-{{< list-files-for-version version = v0.7.2 >}}
+{{< list-files-for-version version = v1.1.0 >}}
 
 ## Prerequisites
 

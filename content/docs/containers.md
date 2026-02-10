@@ -3,7 +3,7 @@ title: Container Deployment
 weight: 4
 ---
 
-The latest container image is available at `ghcr.io/maybedont/maybe-dont:v0.7.2`.
+The latest container image is available at `ghcr.io/maybedont/maybe-dont:v1.1.0`.
 
 ## Basic Container Usage
 
@@ -15,14 +15,14 @@ docker run \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:v0.7.2 start --config-path /config
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-path /config
 
 # Using Podman
 podman run \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:v0.7.2 start --config-path /config
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-path /config
 ```
 
 **Your config directory should contain:**
