@@ -82,7 +82,7 @@ docker run \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:v1.0.0 start --config-dir /config
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-dir /config
 ```
 
 Now follow the guide for your specific AI agent.

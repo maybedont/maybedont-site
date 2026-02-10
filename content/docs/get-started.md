@@ -17,7 +17,7 @@ Let's get Maybe Don't running. Pick your installation method, then follow the sa
 **Recommended for MCP server mode.** Docker keeps the gateway isolated and is the easiest way to get started if you're proxying MCP tool calls.
 
 ```bash
-docker pull ghcr.io/maybedont/maybe-dont:v1.0.0
+docker pull ghcr.io/maybedont/maybe-dont:v1.1.0
 ```
 {{< /tab >}}
 
@@ -30,7 +30,7 @@ brew install maybedont/tap/maybe-dont
 {{< /tab >}}
 
 {{< tab >}}
-{{< list-files-for-version version="v1.0.0" >}}
+{{< list-files-for-version version="v1.1.0" >}}
 
 After downloading, extract the archive and place the `maybe-dont` binary somewhere on your `PATH`.
 {{< /tab >}}
@@ -50,7 +50,7 @@ mkdir -p ./config
 # Run once to bootstrap defaults
 docker run --rm \
   -v $(pwd)/config:/config \
-  ghcr.io/maybedont/maybe-dont:v1.0.0 start --config-dir /config
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-dir /config
 ```
 
 Stop the container after it starts up — the defaults are now written to `./config/`.
@@ -118,7 +118,7 @@ docker run \
   -e OPENAI_API_KEY \
   -v $(pwd)/config:/config \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:v1.0.0 start --config-dir /config
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-dir /config
 ```
 {{< /tab >}}
 

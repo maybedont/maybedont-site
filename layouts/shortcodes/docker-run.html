@@ -26,5 +26,5 @@ docker run \
 {{- end }}
   -v $(pwd)/config:{{ $configPath }} \
   -p {{ $port }}:{{ $port }} \
-  ghcr.io/maybedont/maybe-dont:v1.0.0 start --config-dir {{ $configPath }}
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start --config-dir {{ $configPath }}
 ```

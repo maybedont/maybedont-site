@@ -72,7 +72,7 @@ If you need file-based logs in Docker, mount a volume for the log directory:
 ```bash
 docker run \
   -v $(pwd)/logs:/home/maybedont/.local/state/maybe-dont \
-  ghcr.io/maybedont/maybe-dont:v1.0.0 start
+  ghcr.io/maybedont/maybe-dont:v1.1.0 start
 ```
 
 ## Environment Variables
