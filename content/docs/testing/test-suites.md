@@ -73,7 +73,7 @@ engines:
 | `bundle_id` | Yes | Unique identifier for this test suite |
 | `description` | No | Human-readable description |
 | `providers` | Yes | AI provider credentials |
-| `policies` | Yes | Paths to policy files (relative to suite directory). `../` is valid for referencing files in a parent directory. |
+| `policies` | Yes | Paths to policy files (relative to suite directory) |
 | `acceptance.min_match_rate` | No | Minimum pass rate, 0.0-1.0 (default: `1.0`) |
 | `acceptance.strict_policy_match` | No | Whether unexpected policy triggers fail (default: `true`) |
 | `execution.timeout_ms` | No | Per-test timeout in milliseconds (default: `30000`) |

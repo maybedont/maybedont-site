@@ -202,14 +202,6 @@ cli_request_validation:
   # Default: (none)
   validate_commands: []
 
-  # Include argument values in audit log entries.
-  # When false, only argument flag names are logged — values are omitted.
-  # This protects sensitive data (tokens, passwords, file contents) from
-  # appearing in audit logs.
-  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_INCLUDE_ARGUMENT_VALUES
-  # Default: true
-  include_argument_values: true
-
 # =============================================================================
 # Audit Log
 # =============================================================================
@@ -225,6 +217,14 @@ audit:
   # Options: all, deny_only
   # Default: all
   filter: all
+
+  # Include argument values in audit log entries.
+  # When false, only argument flag names are logged — values are omitted.
+  # This protects sensitive data (tokens, passwords, file contents) from
+  # appearing in audit logs.
+  # Env: MAYBE_DONT_AUDIT_INCLUDE_ARGUMENT_VALUES
+  # Default: true
+  include_argument_values: true
 
   # Log rotation settings (applies when path is a file)
   rotation:
