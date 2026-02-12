@@ -61,7 +61,7 @@
   --color-dark-bg-footer: #111215;
   --color-text-dark: #d1d1d6;
   --color-text-dark-heading: #e0e0e4;
-  --color-text-dark-bold: #dedad6;
+  --color-text-dark-bold: #e8e4e0;
   --color-text-muted-dark: #9ca3af;
 
   /* Border colors */
@@ -253,6 +253,17 @@ html.dark .hextra-sidebar-active-item {
 .hextra-sidebar-active-item {
   background: rgba(0, 0, 0, 0.05);
   font-weight: 700;
+}
+
+/* Sidebar hover — subtle blue tint */
+.hextra-sidebar-container .hextra-scrollbar li > a:hover,
+.hextra-sidebar-container .hextra-scrollbar li > button:hover {
+  background: rgba(26, 64, 229, 0.06);
+}
+
+.dark .hextra-sidebar-container .hextra-scrollbar li > a:hover,
+.dark .hextra-sidebar-container .hextra-scrollbar li > button:hover {
+  background: rgba(102, 153, 255, 0.1);
 }
 
 /* TOC: Hidden by default on all pages */
@@ -901,7 +912,7 @@ html.dark .pricing-btn-primary {
 /* Auto-detected download section */
 .download-detected {
   padding: 0;
-  margin: 0 0 1rem;
+  margin: 1rem 0 1rem;
 }
 
 .download-detected-content {

@@ -1,10 +1,6 @@
 ---
 title: Get Started
 weight: 1
-aliases:
-  - /docs/containers/
-  - /docs/download/
-  - /docs/installation/
 ---
 
 Let's get Maybe Don't running. Pick your installation method, then follow the same first-run steps regardless of how you installed.
@@ -30,6 +26,8 @@ brew install maybedont/tap/maybe-dont
 {{< /tab >}}
 
 {{< tab >}}
+**Recommended for CLI gateway mode.** A native binary — no Docker required. Also useful if you prefer managing your own installs.
+
 {{< list-files-for-version >}}
 
 After downloading, extract the archive and place the `maybe-dont` binary somewhere on your `PATH`.

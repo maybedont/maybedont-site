@@ -19,6 +19,9 @@ server.log
 # Hugo module vendor cache
 _vendor/
 
+# Git worktrees
+.worktrees/
+
 # macOS
 .DS_Store
 

@@ -34,7 +34,7 @@ Run `maybe-dont config info` to see the resolved paths on your system.
 server:
   # Server transport mode
   # Env: MAYBE_DONT_SERVER_TYPE
-  # Options: http, stdio, sse
+  # Options: http, stdio, sse (deprecated — use http instead)
   # Default: http
   type: http
 
@@ -48,26 +48,14 @@ server:
   # Default: 30
   session_timeout_minutes: 30
 
-  # Trusted proxy CIDR blocks for X-Forwarded-For resolution
+  # Trusted proxy CIDR blocks for X-Forwarded-For resolution.
+  # When configured, the gateway uses the rightmost untrusted IP in the
+  # X-Forwarded-For chain — the most secure strategy, since proxies you
+  # trust cannot spoof it. When empty, the leftmost (first) IP is used.
   # Env: MAYBE_DONT_SERVER_TRUSTED_PROXIES
   # Default: (none)
+  # Example: ["10.0.0.0/8", "172.16.0.0/12", "192.168.0.0/16"]
   trusted_proxies: []
-
-  # TLS configuration (sse mode only)
-  sse:
-    tls:
-      # Enable TLS
-      # Env: MAYBE_DONT_SERVER_SSE_TLS_ENABLED
-      # Default: false
-      enabled: false
-
-      # Path to TLS certificate file
-      # Env: MAYBE_DONT_SERVER_SSE_TLS_CERT_FILE
-      cert_file: ""
-
-      # Path to TLS private key file
-      # Env: MAYBE_DONT_SERVER_SSE_TLS_KEY_FILE
-      key_file: ""
 
 # =============================================================================
 # Validation
@@ -109,6 +97,17 @@ validation:
     # API key — supports ${ENV_VAR} syntax
     # Env: MAYBE_DONT_VALIDATION_AI_API_KEY
     api_key: ""
+
+    # Provider-specific parameters (e.g., max_tokens, temperature)
+    # Passed in the request body to the AI provider
+    parameters: {}
+
+    # URL query parameters appended to the endpoint
+    # Example: { "api-version": "2024-02-01" } for Azure OpenAI
+    query_params: {}
+
+    # Additional HTTP headers for the AI endpoint
+    headers: {}
 
 # =============================================================================
 # Request Validation
@@ -203,11 +202,6 @@ cli_request_validation:
   # Default: (none)
   validate_commands: []
 
-  # Include argument values in audit log entries
-  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_INCLUDE_ARGUMENT_VALUES
-  # Default: true
-  include_argument_values: true
-
 # =============================================================================
 # Audit Log
 # =============================================================================
@@ -223,6 +217,14 @@ audit:
   # Options: all, deny_only
   # Default: all
   filter: all
+
+  # Include argument values in audit log entries.
+  # When false, only argument flag names are logged — values are omitted.
+  # This protects sensitive data (tokens, passwords, file contents) from
+  # appearing in audit logs.
+  # Env: MAYBE_DONT_AUDIT_INCLUDE_ARGUMENT_VALUES
+  # Default: true
+  include_argument_values: true
 
   # Log rotation settings (applies when path is a file)
   rotation:
@@ -285,7 +287,7 @@ logger:
     compress: true
 
 # =============================================================================
-# Native Tools
+# Native Tools (experimental — subject to change or removal)
 # =============================================================================
 
 native_tools:
@@ -315,6 +317,11 @@ native_tools:
     # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_TIMEOUT_SECONDS
     # Default: 180
     timeout_seconds: 180
+
+    # Custom system prompt for AI-powered audit report generation.
+    # Overrides the built-in prompt. Leave empty to use the default.
+    # Env: MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_SYSTEM_PROMPT
+    system_prompt: ""
 
   list_servers:
     # Enable the list downstream servers tool
@@ -377,6 +384,8 @@ downstream_mcp_servers:
     http:
       headers:
         Authorization: "Bearer ${TOKEN}"
+    # SSE transport also supports sse.headers (same format) but SSE is
+    # deprecated in the MCP spec — prefer http transport for new servers.
 
   # Example: http transport with pass-through authentication
   example_passthrough:
