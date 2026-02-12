@@ -287,7 +287,7 @@ logger:
     compress: true
 
 # =============================================================================
-# Native Tools
+# Native Tools (experimental — subject to change or removal)
 # =============================================================================
 
 native_tools:
