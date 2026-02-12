@@ -193,5 +193,6 @@ The docs here teach you the best practices and mental model. The skills give you
 
 {{< cards >}}
   {{< card link="test-cases" title="Cases" icon="document-text" subtitle="Schema reference and examples" >}}
-  {{< card link="test-suites" title="Suites & Running" icon="collection" subtitle="Suite config, CLI, and CI/CD" >}}
+  {{< card link="test-suites" title="Suites" icon="collection" subtitle="Directory layout and suite.yaml config" >}}
+  {{< card link="test-runner" title="Runner" icon="play" subtitle="CLI commands, output formats, and CI/CD" >}}
 {{< /cards >}}

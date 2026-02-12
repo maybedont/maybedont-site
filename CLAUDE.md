@@ -46,6 +46,16 @@ This site uses the Hextra Hugo theme but treats it as our own - we prioritize ma
 
 Compare local changes against production: https://maybedont.ai/
 
+## Git Worktrees
+
+When working on a feature branch that needs isolation from the main working directory, use `git worktree` and place worktrees in the `.worktrees/` directory at the repo root:
+
+```bash
+git worktree add .worktrees/<branch-name> -b <branch-name>
+```
+
+This keeps worktrees co-located with the repo instead of scattered as sibling directories. The `.worktrees/` directory is gitignored.
+
 ## Essential Commands
 
 ### Image manipulation

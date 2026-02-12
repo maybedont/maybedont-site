@@ -35,7 +35,8 @@ Maybe Don't provides guardrails and observability for agentic AI. It sits betwee
 ## Testing
 
 - [Test Cases]({{ $base }}docs/testing/test-cases/): Define operations and expected policy decisions
-- [Suites and Running]({{ $base }}docs/testing/test-suites/): Suite configuration, test runner CLI, and CI/CD
+- [Suites]({{ $base }}docs/testing/test-suites/): Directory layout and suite.yaml configuration
+- [Runner]({{ $base }}docs/testing/test-runner/): CLI commands, output formats, and CI/CD integration
 
 ## Configuration
 

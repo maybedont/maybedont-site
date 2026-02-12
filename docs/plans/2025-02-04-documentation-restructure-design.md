@@ -981,51 +981,52 @@ This is a great example of a clean download page:
 
 ---
 
-## Next Phase — UI Polish & Remaining Items
+## Completed — Doc Restructure (PR #64, Feb 2025)
 
-Items identified during the `degroff/messaging_round6` documentation restructure session
-(Feb 2025). These are ready to pick up in a future session.
+Work from the `degroff/messaging_round6` branch, squash-merged as PR #64.
 
-### Completed This Round
 - Sidebar: arrow rotation fix, nav click behavior (expand + navigate), FOUC prevention
 - Download widget: restyled (no border, platform detection label, sha256 under buttons)
 - Documentation restructure: new pages, shortcodes, sidebar improvements
-- Testing section: split into Cases + Suites & Running (matches spec structure)
+- Testing section: split into Cases + Suites & Running
 
-### Remaining Items
+## Completed — Version Centralization (PR #66, Feb 2025)
 
-1. **Split Testing sub-pages (3-way)**
-   - Currently `test-suites.md` combines suite config and runner CLI into "Suites & Running"
-   - Split into 3 child pages: Cases, Suites, Runner
-   - Move CLI reference, incremental execution, output formats, exit codes, CI/CD into
-     a new `test-runner.md`
+- Single source of truth for version in `data/product.yaml`
+- Shortcodes (`version`, `codeblock`, `docker-run`, `list-files-for-version`) replace all hardcoded version strings
+- Bump to v1.1.0
 
-2. **Color palette refresh**
-   - Links, selected tab, hover states, prose links → blue family matching logo center
-   - CTA button harmonize with new palette
-   - Callout box colors: check Hextra green/blue/yellow fit
-   - Dark mode bold contrast: needs color discussion
-   - Prose links: color-only (no underline), scoped to `.content`
+## Completed — Doc Next Phase 1 (`degroff/doc_next_1`, Feb 2025)
 
-3. **Light mode accessibility**
+- **Testing 3-way split**: "Suites & Running" split into separate Suites and Runner pages.
+  Runner page covers CLI commands, incremental execution, output formats, exit codes, CI/CD.
+  Cards and llms.txt updated. Cross-refs between pages.
+- **Packages tab copy**: Added "Recommended for CLI gateway mode" guidance matching
+  Docker/Homebrew tabs.
+- **Color palette refresh**: Prose links already blue (confirmed). Dark mode bold brightened
+  (`#dedad6` → `#e8e4e0`). Sidebar hover gets subtle blue tint in both light and dark mode.
+  Tab indicators, CTA buttons, and callouts confirmed already using blue family — no changes needed.
+- **Git worktree convention**: Added `.worktrees/` to `.gitignore` and documented convention
+  in CLAUDE.md.
+
+## Next Phase — UI Polish & Remaining Items
+
+Items deferred from the doc restructure sessions. Ready to pick up in a future session.
+
+1. **Light mode accessibility**
    - Pure white background is harsh — explore off-white or warm-white
    - Ensure WCAG AA contrast ratios maintained
 
-4. **Docs hero page**
+2. **Docs hero page**
    - Improve impact of `content/docs/_index.md`
    - Rethink architecture graphic (consider Mermaid)
    - Sharpen value prop copy
 
-5. **Team page**
+3. **Team page**
    - LinkedIn photos, Kendal listed first
    - Skeleton placeholders for future hires
    - Fun, personable tone (not corporate)
 
-6. **Slack color palette + "Random" docs section**
+4. **Slack color palette + "Random" docs section**
    - Generate Slack sidebar/accent colors matching brand
    - Add fun non-technical section to docs
-
-7. **Packages tab copy**
-   - Docker and Homebrew tabs both lead with "Recommended for..." guidance
-   - Packages tab has no equivalent — add a recommendation line (e.g., "Best for
-     air-gapped environments or platforms without Docker/Homebrew.")
