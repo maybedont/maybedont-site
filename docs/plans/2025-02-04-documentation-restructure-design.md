@@ -1009,6 +1009,49 @@ Work from the `degroff/messaging_round6` branch, squash-merged as PR #64.
 - **Git worktree convention**: Added `.worktrees/` to `.gitignore` and documented convention
   in CLAUDE.md.
 
+## Completed — Doc Next Phase 2 (`degroff/doc_next_1`, Feb 2025)
+
+- **Config reference improvements**:
+  - Improved `trusted_proxies` description (security model, rightmost untrusted IP, example CIDRs)
+  - Improved `include_argument_values` description (privacy implications) and moved from
+    `cli_request_validation` to `audit` section (source code fix pending)
+  - Added missing `validation.ai` fields: `parameters`, `query_params`, `headers`
+  - Added missing `native_tools.audit_report.system_prompt`
+  - Removed deprecated `server.sse.tls` section (SSE is deprecated in MCP spec)
+  - Added SSE deprecation notes to `server.type` options and downstream server headers
+  - Marked Native Tools section as experimental (subject to change or removal)
+- **Packages tab spacing**: Added `margin-top: 1rem` to `.download-detected` for visual gap
+  between recommendation copy and download widget
+- **SEO alias removal**: Removed 3 Hugo aliases from `get-started.md` (`/docs/containers/`,
+  `/docs/download/`, `/docs/installation/`) that generated meta-refresh redirect pages
+  flagged by Google Search Console
+- **Investigation: suite.yaml path validation** — Found security asymmetry: config file paths
+  use strict `ValidateRelativePath()` (rejects `../`, absolute paths, hidden files) but
+  suite.yaml `resolvePath()` has no validation. Flagged for product team review.
+
+## Next Phase — SEO & Indexing
+
+Google Search Console reported issues. Analysis and fixes:
+
+### Already fixed (in Phase 2)
+- Removed Hugo aliases that generated meta-refresh redirect pages
+
+### Remaining redirect pages (no action needed)
+- `www.` → non-www and `http://` → `https://` are GitHub Pages 301 redirects — Google
+  handles these properly, they resolve over time
+
+### Duplicate without user-selected canonical (2 pages)
+- `https://www.maybedont.ai/terms/` and `https://www.maybedont.ai/pricing/`
+- These are www variants; canonical tags point to non-www. Should self-resolve.
+
+### Crawled - currently not indexed (10 pages)
+- All binary downloads and checksums — correct behavior, not indexable content.
+
+### TODO
+1. **robots.txt** — Hugo template to disallow binary downloads, reference sitemap
+2. **llms.txt** — Review/improve existing `layouts/_default/home.llms.txt`
+3. **sitemap.xml** — Verify Hugo-generated sitemap uses canonical URLs, excludes utility pages
+
 ## Next Phase — UI Polish & Remaining Items
 
 Items deferred from the doc restructure sessions. Ready to pick up in a future session.
