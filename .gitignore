@@ -21,3 +21,6 @@ _vendor/
 
 # macOS
 .DS_Store
+
+# Git Worktrees
+.worktrees
