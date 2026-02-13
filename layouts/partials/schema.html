@@ -1,0 +1,93 @@
+{{- if .IsHome }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  "name": "Maybe Don't, AI",
+  "url": {{ .Site.BaseURL }},
+  "logo": {{ "images/logo.png" | absURL }},
+  "description": {{ .Site.Params.description }},
+  "sameAs": [
+    "https://github.com/maybedont",
+    "https://www.linkedin.com/company/maybe-dont-ai/"
+  ]
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": {{ .Site.Title }},
+  "url": {{ .Site.BaseURL }}
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "Maybe Don't",
+  "applicationCategory": "SecurityApplication",
+  "operatingSystem": "macOS, Linux, Windows",
+  "description": {{ .Site.Params.description }},
+  "url": {{ .Site.BaseURL }},
+  "offers": {
+    "@type": "Offer",
+    "price": "0",
+    "priceCurrency": "USD",
+    "description": "Free tier available"
+  }
+}
+</script>
+{{- else if eq .Section "blog" }}
+{{- if .IsPage }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Article",
+  "headline": {{ .Title }},
+  "datePublished": {{ .Date.Format "2006-01-02" }},
+  "dateModified": {{ .Lastmod.Format "2006-01-02" }},
+  "description": {{ with .Params.summary }}{{ . }}{{ else }}{{ .Summary }}{{ end }},
+  "author": {
+    "@type": "Organization",
+    "name": "Maybe Don't, AI"
+  },
+  "publisher": {
+    "@type": "Organization",
+    "name": "Maybe Don't, AI",
+    "logo": {
+      "@type": "ImageObject",
+      "url": {{ "images/logo.png" | absURL }}
+    }
+  },
+  "mainEntityOfPage": {{ .Permalink }}
+}
+</script>
+{{- end }}
+{{- else if eq .Section "docs" }}
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {{- $ancestors := .Ancestors.Reverse }}
+    {{- range $i, $p := $ancestors }}
+    {
+      "@type": "ListItem",
+      "position": {{ add $i 1 }},
+      "name": {{ $p.Title }},
+      "item": {{ $p.Permalink }}
+    }{{ if not (eq $i (sub (len $ancestors) 1)) }},{{ end }}
+    {{- end }}
+    {{- if .IsPage }},
+    {
+      "@type": "ListItem",
+      "position": {{ add (len $ancestors) 1 }},
+      "name": {{ .Title }},
+      "item": {{ .Permalink }}
+    }
+    {{- end }}
+  ]
+}
+</script>
+{{- end }}

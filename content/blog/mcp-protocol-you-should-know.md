@@ -54,4 +54,6 @@ You need to see when an agent interprets "archive old files" as "delete customer
 
 Your engineers know MCP exists. Now you do too. The question is whether you'll deploy guardrails before you need them, or after.
 
+Learn more about [AI guardrails](/solutions/ai-guardrails/) and how Maybe Don't validates every MCP tool call against your policies at runtime.
+
 Schedule a demo [here.](https://cal.com/kmillermd/30min)

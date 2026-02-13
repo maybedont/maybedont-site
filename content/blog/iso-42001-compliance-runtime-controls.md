@@ -92,3 +92,5 @@ Your move: audit your current AI agent footprint. If you're running MCP-based ag
 ---
 
 *Maybe Don't AI sits between your agents and the damage they could do. Get in touch [here](https://cal.com/kmillermd/30min).*
+
+See how Maybe Don't helps teams meet [governance and compliance](/solutions/governance-compliance/) requirements with policy enforcement, audit trails, and documented controls.

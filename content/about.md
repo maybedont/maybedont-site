@@ -1,5 +1,6 @@
 ---
 title: ""
+description: "About Maybe Don't — the team building guardrails for AI agents. Real-time policy enforcement, audit logging, and observability for agentic AI."
 ---
 
 <div class="about-terminal-container">
