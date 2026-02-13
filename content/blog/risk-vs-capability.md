@@ -1,7 +1,7 @@
 ---
 title: "Risk and Progress: It's Complicated"
 subtitle: "Everyone is jumping first and looking later. That might actually be the right call."
-date: 2026-02-16
+date: 2026-02-12
 author: daniel
 draft: false
 summary: |
