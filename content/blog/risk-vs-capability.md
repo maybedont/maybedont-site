@@ -22,27 +22,27 @@ They're both right.
 
 ## An Uncomfortable Reality
 
-The uncomfortable truth about agentic AI is that progress and risk are two sides of the same coin. Turn up capability to get more done, and you're also increasing the chances of working the weekend and presenting an incident report on Monday. Dial it back to stay safe, and you're falling behind while you workshop your governance framework. Yikes, the Monday morning incident report isn't sounding so bad all of a sudden. 😆
+The uncomfortable truth about agentic AI is that progress and risk are two sides of the same coin. Turn up capability to get more done, and you're also increasing the chances of working the weekend and presenting an incident report on Monday. Dial it back to stay safe, and you're falling behind while you workshop your governance framework. Yikes, the incident report isn't sounding so bad all of a sudden. 😆
 
-This isn't a new dynamic — every technology boom has this duality. But agentic AI has compressed the timeline from "we should think about this" to "oh, it already did that" in ways we haven't seen before.
+This isn't a new dynamic — every technology boom has this duality. But agentic AI has compressed the timeline from "we should think about this" to "it already happened".
 
 <blockquote style="border-left: 3px solid var(--color-primary); padding: 1rem 1.5rem; margin: 2rem 0; font-size: 1.15em; font-style: italic; background: rgba(26, 64, 229, 0.06); border-radius: 0 6px 6px 0;">
 To increase competitive ability, you must take on additional risk. To reduce risk, you have to reduce capability, diminishing competitive ability.
 </blockquote>
 
-That's not a problem to solve. It's a risk to manage.
+That's not a problem to solve. It's a risk to manage. But if you can put a number on the risk, you can make a case for managing it.
 
 ## Quantifying the Uncomfortable
 
 This is where it gets interesting for the bean counters, the spreadsheet folks. If a business can quantify the competitive advantage of increasing AI capability, they've also quantified the value of risk mitigation.
 
-If deploying an AI agent saves your team 200 hours a month, that's real value. The guardrails aren't a line item — they're what let you keep the 200 hours. Without them, you keep the gains until something breaks, and then you're writing an incident report and rolling everything back. Maybe for six months. Maybe longer. And good luck getting approval for anything with "AI" in the name after that. The value of guardrails is the value of not losing the thing that's working.
+If deploying an AI agent saves your team 200 hours a month, that's real value. The guardrails aren't a line item — they're what let you keep your competitive advantage. Without them, you keep the gains until something breaks, and then you're writing an incident report and rolling everything back. Maybe for six months. Maybe longer. And good luck getting approval for anything with "AI" in the name after that.
 
 ## Nobody Is Waiting for Permission
 
 The pace of agentic AI adoption right now is genuinely wild. People are jumping first and looking later. Companies aren't running careful pilots with six months of evaluation. They're plugging agents into production systems because their competitors already did it last Tuesday.
 
-And there's a rational logic to it, even if it feels reckless. If you wait for the perfect security posture before deploying AI agents, you're not being cautious — you're being slow. And slow is its own kind of risk. The company that ships an imperfect but functional AI workflow today learns faster than the one still drafting requirements.
+And there's a rational logic to it, even if it feels reckless. If you wait for the perfect security posture before deploying AI agents, you're not being cautious — you're being slow. And slow is its own kind of risk. The company that ships an imperfect but functional AI workflow today learns faster than the one still drafting requirements. Talk to any team using agents in production without controls, and they'll have stories. Sometimes funny, sometimes expensive. Usually both.
 
 ## Perfect Is the Enemy of Good
 
@@ -57,8 +57,6 @@ Nobody can afford to wait for the perfect answer.
 ## No Awards for What Didn't Happen
 
 Guardrails are invisible when they're working. Nobody notices the agent that *didn't* delete the database, or the email that *wasn't* sent with hallucinated data. It's sort of like telling your spouse you didn't cheat — that's great, but don't expect any awards, it just means you're not a $!#%. 😎
-
-But talk to any team using agents in production without controls, and they'll have stories. Sometimes funny, sometimes expensive. Usually both.
 
 We're not in this for the fame — we know nobody will notice if we do it well. It's sort of like parenting. We don't want to be in the way, but when an agent does screw up, we can gently respond with a no, and an explanation. We're not angry, just disappointed, and we're worried about you.
 
