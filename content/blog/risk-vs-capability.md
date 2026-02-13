@@ -22,7 +22,7 @@ They're both right.
 
 ## An Uncomfortable Reality
 
-The uncomfortable truth about agentic AI is that progress and risk are two sides of the same coin. Turn up capability to get more done, and you're also increasing the chances of working the weekend and presenting an incident report on Monday. Dial it back to stay safe, and you're falling behind while you workshop your governance framework.
+The uncomfortable truth about agentic AI is that progress and risk are two sides of the same coin. Turn up capability to get more done, and you're also increasing the chances of working the weekend and presenting an incident report on Monday. Dial it back to stay safe, and you're falling behind while you workshop your governance framework. Yikes, the Monday morning incident report isn't sounding so bad all of a sudden. 😆
 
 This isn't a new dynamic — every technology boom has this duality. But agentic AI has compressed the timeline from "we should think about this" to "oh, it already did that" in ways we haven't seen before.
 
