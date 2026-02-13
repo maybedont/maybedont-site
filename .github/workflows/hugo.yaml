@@ -66,6 +66,13 @@ jobs:
             hugo-${{ hashFiles('go.sum') }}-
       - name: Configure Git
         run: git config core.quotepath false
+      - name: Fetch latest release version
+        run: |
+          VERSION=$(gh api repos/maybedont/releases/releases/latest --jq '.tag_name')
+          echo "version: ${VERSION}" > data/product.yaml
+          echo "Updated version to ${VERSION}"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - name: Build with Hugo
         run: |
           hugo \
