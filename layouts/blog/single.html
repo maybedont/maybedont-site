@@ -16,7 +16,7 @@
             {{- $avatar := resources.Get (printf "images/authors/%s.jpg" $authorKey) -}}
             {{- if not $avatar }}{{ $avatar = resources.Get (printf "images/authors/%s.png" $authorKey) }}{{ end -}}
             {{- if $avatar }}
-            <img src="{{ $avatar.RelPermalink }}" alt="{{ $author.name }}" class="blog-author-avatar" />
+            <img src="{{ $avatar.RelPermalink }}" alt="{{ $author.name }}" class="blog-author-avatar" width="44" height="44" style="width: 2.75rem; height: 2.75rem; max-width: 2.75rem; border-radius: 50%;" />
             {{- else }}
             <span class="blog-author-avatar blog-author-initials">{{ $author.initials }}</span>
             {{- end }}
