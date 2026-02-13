@@ -11,12 +11,10 @@
   Parameters:
     - env: Comma-separated list of environment variables to pass through (optional)
     - port: Port to expose (default: 8080)
-    - config-path: Config path inside container (default: /config)
 */}}
 
 {{ $env := .Get "env" | default "OPENAI_API_KEY" }}
 {{ $port := .Get "port" | default "8080" }}
-{{ $configPath := .Get "config-path" | default "/config" }}
 {{ $envVars := split $env "," }}
 
 ```bash
@@ -24,7 +22,10 @@ docker run \
 {{- range $envVars }}
   -e {{ . }} \
 {{- end }}
-  -v $(pwd)/config:{{ $configPath }} \
+  -e XDG_CONFIG_HOME=/config \
+  -e XDG_STATE_HOME=/state \
+  -v ${XDG_CONFIG_HOME:-$HOME/.config}/maybe-dont:/config/maybe-dont \
+  -v ${XDG_STATE_HOME:-$HOME/.local/state}/maybe-dont:/state/maybe-dont \
   -p {{ $port }}:{{ $port }} \
-  ghcr.io/maybedont/maybe-dont:{{ site.Data.product.version }} start --config-dir {{ $configPath }}
+  ghcr.io/maybedont/maybe-dont:{{ site.Data.product.version }}
 ```

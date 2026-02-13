@@ -22,7 +22,7 @@ The gateway follows the [XDG Base Directory](https://specifications.freedesktop.
 | **Config** | `--config-dir` flag / `MAYBE_DONT_CONFIG_DIR` > `$XDG_CONFIG_HOME/maybe-dont` > `~/.config/maybe-dont` |
 | **Logs** | `--log-dir` flag / `MAYBE_DONT_LOG_DIR` > `$XDG_STATE_HOME/maybe-dont` > `~/.local/state/maybe-dont` |
 
-Run `maybe-dont config info` to see the resolved paths on your system.
+Run `maybe-dont gateway config info` to see the resolved paths on your system.
 
 ## Full Configuration
 

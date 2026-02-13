@@ -43,24 +43,25 @@ On first startup, Maybe Don't writes the default configuration and policy files 
 
 {{< tab >}}
 {{< codeblock lang="bash" >}}
-mkdir -p ./config
-
 # Run once to bootstrap defaults
 docker run --rm \
-  -v $(pwd)/config:/config \
-  ghcr.io/maybedont/maybe-dont:{version} start --config-dir /config
+  -e XDG_CONFIG_HOME=/config \
+  -e XDG_STATE_HOME=/state \
+  -v ${XDG_CONFIG_HOME:-$HOME/.config}/maybe-dont:/config/maybe-dont \
+  -v ${XDG_STATE_HOME:-$HOME/.local/state}/maybe-dont:/state/maybe-dont \
+  ghcr.io/maybedont/maybe-dont:{version}
 {{< /codeblock >}}
 
-Stop the container after it starts up — the defaults are now written to `./config/`.
+Stop the container after it starts up — the defaults are now written to `~/.config/maybe-dont/`.
 {{< /tab >}}
 
 {{< tab >}}
 ```bash
 # Run once to bootstrap defaults
-maybe-dont start
+maybe-dont gateway start
 ```
 
-Stop the process after it starts up. The defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont config info` to see the resolved paths.
+Stop the process after it starts up. The defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont gateway config info` to see the resolved paths.
 {{< /tab >}}
 
 {{< /tabs >}}
@@ -114,9 +115,12 @@ export OPENAI_API_KEY="your-api-key-here"
 
 docker run \
   -e OPENAI_API_KEY \
-  -v $(pwd)/config:/config \
+  -e XDG_CONFIG_HOME=/config \
+  -e XDG_STATE_HOME=/state \
+  -v ${XDG_CONFIG_HOME:-$HOME/.config}/maybe-dont:/config/maybe-dont \
+  -v ${XDG_STATE_HOME:-$HOME/.local/state}/maybe-dont:/state/maybe-dont \
   -p 8080:8080 \
-  ghcr.io/maybedont/maybe-dont:{version} start --config-dir /config
+  ghcr.io/maybedont/maybe-dont:{version}
 {{< /codeblock >}}
 {{< /tab >}}
 
@@ -124,7 +128,7 @@ docker run \
 ```bash
 export OPENAI_API_KEY="your-api-key-here"
 
-maybe-dont start
+maybe-dont gateway start
 ```
 {{< /tab >}}
 

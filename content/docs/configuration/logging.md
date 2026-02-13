@@ -71,8 +71,11 @@ If you need file-based logs in Docker, mount a volume for the log directory:
 
 {{< codeblock lang="bash" >}}
 docker run \
-  -v $(pwd)/logs:/home/maybedont/.local/state/maybe-dont \
-  ghcr.io/maybedont/maybe-dont:{version} start
+  -e XDG_CONFIG_HOME=/config \
+  -e XDG_STATE_HOME=/state \
+  -v ${XDG_CONFIG_HOME:-$HOME/.config}/maybe-dont:/config/maybe-dont \
+  -v ${XDG_STATE_HOME:-$HOME/.local/state}/maybe-dont:/state/maybe-dont \
+  ghcr.io/maybedont/maybe-dont:{version}
 {{< /codeblock >}}
 
 ## Environment Variables
