@@ -52,6 +52,12 @@ Maybe Don't provides guardrails and observability for agentic AI. It sits betwee
 - [OpenHands]({{ $base }}docs/mcp-gateway/examples/connecting-openhands/): Connect the open-source AI developer
 - [Cody]({{ $base }}docs/mcp-gateway/examples/connecting-cody/): Connect Sourcegraph's coding assistant
 
+## Solutions
+
+- [AI Guardrails]({{ $base }}solutions/ai-guardrails/): Runtime policy enforcement for AI agents
+- [Agentic Observability]({{ $base }}solutions/agentic-observability/): Complete visibility into every MCP tool call and CLI command your AI agents execute
+- [Governance & Compliance]({{ $base }}solutions/governance-compliance/): Meet ISO 42001, SOX, HIPAA, and FINRA requirements for AI agent operations
+
 ## Other
 
 - [Skills]({{ $base }}docs/skills/): Pre-written instructions that teach AI agents how to use Maybe Don't

@@ -13,9 +13,9 @@ summary: |
 There's a conversation happening in every company right now that goes something like this:
 
 <blockquote style="margin-left: 1.5em; margin-top: 1.5em;">
-<p style="margin: 0.3em 0;"><strong>CTO:</strong> "We need to ship AI agents into production."</p>
+<p style="margin: 0.3em 0;"><strong>CTO:</strong> "We need to start using agentic AI in engineering and marketing."</p>
 <p style="margin: 0.3em 0;"><strong>CISO:</strong> "But we haven't figured out how to secure them yet."</p>
-<p style="margin: 0.3em 0;"><strong>CTO:</strong> "I know. Ship them anyway."</p>
+<p style="margin: 0.3em 0;"><strong>CTO:</strong> "I know. Do it anyway, we'll figure that out later."</p>
 </blockquote>
 
 They're both right.

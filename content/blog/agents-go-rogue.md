@@ -42,3 +42,5 @@ AI agents will save your team countless hours and unlock new capabilities. But w
 **Don't wait for the 2,000-pound beef delivery to arrive.**
 
 Because the best time to build guardrails is before you need them.
+
+Learn how [AI guardrails](/solutions/ai-guardrails/) enforce your policies at runtime — before every agent action.

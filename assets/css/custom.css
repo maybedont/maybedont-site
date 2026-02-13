@@ -282,6 +282,7 @@ html.dark .hextra-sidebar-active-item {
 .hextra-sidebar-container {
   position: fixed;
   top: 0;
+  left: 0;
   width: 100%;
   bottom: 0;
   z-index: 15;
@@ -376,9 +377,9 @@ html.dark .hextra-sidebar-container {
   display: block;
 }
 
-/* Arrow rotation for button-based collapsible items (Hextra's built-in rule
- * only covers li.open > a > span > svg > path; buttons need the same) */
-.hextra-sidebar-container li.open > button.hextra-sidebar-collapsible-button > svg > path {
+/* Arrow rotation — Hextra's built-in rule covers li.open > a > span > svg > path.
+ * Keep this rule for any future button-based collapsible items. */
+.hextra-sidebar-container li.open > button.hextra-sidebar-collapsible-button > span > svg > path {
   rotate: 90deg;
 }
 
@@ -416,13 +417,29 @@ button:hover > .hextra-sidebar-collapsible-button svg {
   padding-left: 0.5rem;
 }
 
-/* Mobile touch targets - larger tap area for sidebar links */
+/* Mobile touch targets and padding alignment */
 @media (max-width: 1023px) {
+  /* Match scrollbar left padding to navbar logo padding; remove right gap */
+  .hextra-sidebar-container .hextra-scrollbar {
+    padding-left: 1rem;
+    padding-right: 0;
+  }
+
   .hextra-sidebar-container .hextra-scrollbar li > a,
   .hextra-sidebar-container .hextra-scrollbar li > button {
     padding-right: 1rem;
     min-height: 2.75rem;
     align-items: center;
+  }
+
+
+
+  /* Reset the negative margin on mobile — the desktop trick to extend
+   * the active highlight to the left edge doesn't work in the mobile
+   * sidebar layout and creates a visible gap. */
+  .hextra-sidebar-container .hextra-scrollbar > ul > li > a.hextra-sidebar-active-item {
+    margin-left: 0;
+    padding-left: 0.5rem;
   }
 }
 
@@ -2635,16 +2652,284 @@ html.dark .hextra-nav-container-blur {
 }
 
 /* ===== PROSE LINK COLORS ===== */
-/* Links inside doc content show primary color (no underline, underline on hover).
- * Must match global rule's :not() list to win specificity. */
-.docs .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary) {
+/* Links inside rendered markdown content (docs, blog, solutions, etc.) show primary
+ * color with underline on hover. :not() list prevents styling CTA/card elements. */
+.content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary):not(.solutions-card-v2) {
   color: var(--color-primary);
 }
 
-.dark .docs .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary) {
+.dark .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary):not(.solutions-card-v2) {
   color: var(--color-primary-dark);
 }
 
-.docs .content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary):hover {
+.content a:not(.nav-cta):not(.cta-primary):not(.cta-secondary):not(.hextra-card):not(.pricing-btn-primary):not(.pricing-btn-secondary):not(.download-detected-btn):not(.blog-pagination-link):not(.navbar-logo):not(.link-primary):not(.solutions-card-v2):hover {
   text-decoration: underline;
+}
+
+/* ===== SOLUTIONS HERO ===== */
+.solutions-hero {
+  text-align: center;
+  margin-bottom: 3rem;
+}
+
+.solutions-hero-graphic {
+  background: #f3f4f6;
+  border-radius: var(--terminal-radius);
+  padding: 2.5rem 2rem;
+  margin-bottom: 1.5rem;
+  overflow-x: auto;
+}
+
+.dark .solutions-hero-graphic {
+  background: #1a1a1f;
+}
+
+.solutions-flow-svg {
+  width: 100%;
+  max-width: 800px;
+  height: auto;
+  margin: 0 auto;
+  display: block;
+}
+
+/* SVG flow diagram styles — light mode */
+.flow-box {
+  stroke-width: 1.5;
+}
+
+.flow-agent {
+  fill: rgba(26, 64, 229, 0.06);
+  stroke: rgba(26, 64, 229, 0.25);
+}
+
+.flow-shield {
+  fill: rgba(26, 64, 229, 0.08);
+  stroke: var(--color-primary);
+  stroke-width: 2;
+}
+
+.flow-tool {
+  fill: rgba(16, 185, 129, 0.06);
+  stroke: rgba(16, 185, 129, 0.25);
+}
+
+.flow-tool-deny {
+  fill: rgba(239, 68, 68, 0.06);
+  stroke: rgba(239, 68, 68, 0.25);
+}
+
+.flow-label {
+  fill: #555;
+  font-size: 14px;
+  font-family: inherit;
+}
+
+.flow-label-bold {
+  fill: var(--color-primary);
+  font-weight: 600;
+  font-size: 16px;
+}
+
+.flow-label-sm {
+  fill: #777;
+  font-size: 12px;
+}
+
+.flow-label-deny {
+  fill: rgba(239, 68, 68, 0.8);
+}
+
+.flow-line {
+  stroke: rgba(26, 64, 229, 0.2);
+  stroke-width: 1.5;
+}
+
+.flow-line-allow {
+  stroke: rgba(16, 185, 129, 0.3);
+}
+
+.flow-line-deny {
+  stroke: rgba(239, 68, 68, 0.3);
+  stroke-dasharray: 4 3;
+}
+
+.flow-dot {
+  opacity: 0.8;
+}
+
+.flow-dot-allow {
+  fill: var(--color-success);
+}
+
+.flow-dot-deny {
+  fill: var(--color-error);
+}
+
+/* SVG flow diagram — dark mode overrides */
+.dark .flow-agent {
+  fill: rgba(102, 153, 255, 0.08);
+  stroke: rgba(102, 153, 255, 0.3);
+}
+
+.dark .flow-shield {
+  fill: rgba(102, 153, 255, 0.12);
+  stroke: var(--color-primary-dark);
+}
+
+.dark .flow-tool {
+  fill: rgba(16, 185, 129, 0.08);
+  stroke: rgba(16, 185, 129, 0.3);
+}
+
+.dark .flow-tool-deny {
+  fill: rgba(239, 68, 68, 0.08);
+  stroke: rgba(239, 68, 68, 0.3);
+}
+
+.dark .flow-label {
+  fill: #bbb;
+}
+
+.dark .flow-label-bold {
+  fill: var(--color-primary-dark);
+}
+
+.dark .flow-label-sm {
+  fill: #888;
+}
+
+.dark .flow-line {
+  stroke: rgba(102, 153, 255, 0.25);
+}
+
+.dark .flow-line-allow {
+  stroke: rgba(16, 185, 129, 0.35);
+}
+
+.solutions-hero-sub {
+  color: var(--color-text-muted);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  max-width: 640px;
+  margin: 0 auto;
+}
+
+.dark .solutions-hero-sub {
+  color: var(--color-text-muted-dark);
+}
+
+/* ===== SOLUTIONS CARDS ===== */
+.solutions-cards {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 1.5rem;
+  margin: 2rem 0;
+}
+
+.solutions-cards-3col {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.solutions-card-v2 {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--color-border);
+  border-radius: 0.75rem;
+  padding: 2rem;
+  text-decoration: none;
+  color: inherit;
+  transition: border-color 0.2s;
+}
+
+.solutions-card-v2:hover {
+  border-color: var(--color-primary);
+  text-decoration: none;
+}
+
+.dark .solutions-card-v2 {
+  border-color: var(--color-border-dark);
+}
+
+.dark .solutions-card-v2:hover {
+  border-color: var(--color-primary-dark);
+}
+
+.solutions-card-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  margin-bottom: 1rem;
+  background: rgba(26, 64, 229, 0.08);
+  color: var(--color-primary);
+}
+
+.dark .solutions-card-icon {
+  background: rgba(102, 153, 255, 0.1);
+  color: var(--color-primary-dark);
+}
+
+.solutions-card-v2 h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
+  margin: 0 0 0.5rem;
+  color: var(--color-text);
+}
+
+.dark .solutions-card-v2 h3 {
+  color: var(--color-text-dark-heading);
+}
+
+.solutions-card-v2 p {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--color-text-muted);
+  margin: 0 0 1rem;
+  flex-grow: 1;
+}
+
+.dark .solutions-card-v2 p {
+  color: var(--color-text-muted-dark);
+}
+
+.solutions-card-link {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--color-primary);
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+
+.solutions-card-link i {
+  font-size: 0.75rem;
+}
+
+.dark .solutions-card-link {
+  color: var(--color-primary-dark);
+}
+
+@media (max-width: 768px) {
+  .solutions-cards {
+    grid-template-columns: 1fr;
+  }
+
+  .solutions-hero-graphic {
+    padding: 1.5rem 0.5rem;
+  }
+
+  .flow-label {
+    font-size: 11px;
+  }
+
+  .flow-label-bold {
+    font-size: 13px;
+  }
+
+  .flow-label-sm {
+    font-size: 10px;
+  }
 }

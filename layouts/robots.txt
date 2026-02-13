@@ -1,0 +1,8 @@
+User-agent: *
+Allow: /
+Disallow: /downloads/*.sha256
+Disallow: /downloads/*.tar.gz
+Disallow: /downloads/*.zip
+
+Sitemap: {{ "sitemap.xml" | absURL }}
+Host: {{ .Site.BaseURL }}

@@ -1,6 +1,7 @@
 baseURL = 'https://maybedont.ai/'
 languageCode = 'en-us'
 title = "Maybe Don't, AI"
+enableRobotsTXT = true
 
 # Use Hextra theme via Hugo modules
 [module]
@@ -13,6 +14,10 @@ title = "Maybe Don't, AI"
     name = "Documentation"
     pageRef = "/docs"
     weight = 1
+  [[menu.main]]
+    name = "Solutions"
+    pageRef = "/solutions"
+    weight = 2
   [[menu.main]]
     name = "Pricing"
     pageRef = "/pricing"
@@ -65,6 +70,12 @@ title = "Maybe Don't, AI"
   # Edit link for docs (optional)
   [params.editURL]
     enable = false
+
+# Sitemap configuration
+[sitemap]
+  changefreq = "weekly"
+  priority = 0.5
+  filename = "sitemap.xml"
 
 # Disable taxonomies (keep existing behavior)
 disableKinds = ["taxonomy", "term"]

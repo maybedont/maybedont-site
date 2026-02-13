@@ -1029,28 +1029,56 @@ Work from the `degroff/messaging_round6` branch, squash-merged as PR #64.
   use strict `ValidateRelativePath()` (rejects `../`, absolute paths, hidden files) but
   suite.yaml `resolvePath()` has no validation. Flagged for product team review.
 
-## Next Phase — SEO & Indexing
+## Completed — SEO & Indexing (`degroff/doc_next_2`, Feb 2025)
 
-Google Search Console reported issues. Analysis and fixes:
+Google Search Console reported issues (redirect pages, duplicate canonicals, un-indexed pages).
+Full SEO pass completed on this branch. See GitHub issue maybedont/maybe-dont#84 for the
+tracking checklist.
 
-### Already fixed (in Phase 2)
-- Removed Hugo aliases that generated meta-refresh redirect pages
+### Technical SEO
+- **robots.txt**: `layouts/robots.txt` + `enableRobotsTXT = true`. Disallows binary download
+  paths, references sitemap.
+- **Sitemap**: `[sitemap]` config in hugo.toml (weekly changefreq, 0.5 priority)
+- **JSON-LD structured data**: `layouts/partials/schema.html` — Organization + WebSite +
+  SoftwareApplication on homepage, Article on blog posts, BreadcrumbList on docs pages.
+  Hextra's head.html calls `{{ partial "schema.html" . }}` automatically.
+- **Meta descriptions**: Added to about.md, pricing.md, docs/_index.md, blog/_index.md
+- **SEO alias removal** (Phase 2): Removed Hugo aliases from get-started.md that generated
+  meta-refresh redirect pages flagged by Google Search Console
 
-### Remaining redirect pages (no action needed)
-- `www.` → non-www and `http://` → `https://` are GitHub Pages 301 redirects — Google
-  handles these properly, they resolve over time
+### Content SEO — 3 Solution Landing Pages
+Original plan had 5 pages; pivoted to 3 after keyword/persona review:
+- `/solutions/ai-guardrails/` — "AI Guardrails — Runtime Policy Enforcement for AI Agents"
+- `/solutions/agentic-observability/` — "Agentic AI Observability — See What Your AI Agents Are Doing"
+- `/solutions/governance-compliance/` — "Governance & Compliance — Meet Regulatory Standards for AI Agents"
+- **Dropped**: ai-dont, ai-cli-access, mcp-guardrails, audit-ai-agents, secure-ai-coding-agents
+- **Strategy**: 3 distinct buyer personas — eng lead (guardrails), eng lead (visibility),
+  compliance officer (regulatory)
 
-### Duplicate without user-selected canonical (2 pages)
-- `https://www.maybedont.ai/terms/` and `https://www.maybedont.ai/pricing/`
-- These are www variants; canonical tags point to non-www. Should self-resolve.
+### Navigation & Internal Linking
+- Solutions added to main nav (weight 2, between Documentation and Pricing)
+- 5 blog posts updated with links to relevant /solutions/ pages
+- Homepage: keyword-rich description in front matter, OG title with keywords
+- llms.txt: Updated with solutions section
 
-### Crawled - currently not indexed (10 pages)
-- All binary downloads and checksums — correct behavior, not indexable content.
+### UI/Visual Changes
+- Solutions flow SVG shortcode (`solutions-flow.html`) — agents → Maybe Don't → tools/blocked
+- Card design (`.solutions-card-v2`) with Font Awesome icons, hover border-only
+- Docs home page: uses solutions-flow SVG and card-v2 styling
+- Solution page custom layouts (`layouts/solutions/list.html`, `layouts/solutions/single.html`)
+- Blog/solutions link color fix (`.content a` selector scope)
+- Removed orphaned CSS (`.hero-keyword-summary`, `.solutions-card-wide`)
+- SVG flow diagrams on MCP and CLI gateway "How It Works" sections (replaced ASCII)
 
-### TODO
-1. **robots.txt** — Hugo template to disallow binary downloads, reference sitemap
-2. **llms.txt** — Review/improve existing `layouts/_default/home.llms.txt`
-3. **sitemap.xml** — Verify Hugo-generated sitemap uses canonical URLs, excludes utility pages
+### Additional Fixes (this branch)
+- Mobile nav sidebar: Added `left: 0` to `.hextra-sidebar-container` to fix 24px offset on
+  docs/solutions pages (fixed-position element inherited parent padding offset)
+- Blog post update: Updated CTO/CISO dialogue in risk-vs-capability.md
+
+### Google Search Console Issues (context)
+- Remaining redirect pages (www→non-www, http→https) are GitHub Pages 301s — self-resolving
+- Duplicate without canonical (www variants) — self-resolving with proper canonical tags
+- Crawled not indexed (10 pages) — all binary downloads, correct behavior
 
 ## Next Phase — UI Polish & Remaining Items
 

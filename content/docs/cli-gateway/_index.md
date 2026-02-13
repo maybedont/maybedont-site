@@ -14,10 +14,30 @@ The same policy engine that evaluates MCP tool calls also evaluates CLI commands
 
 ## How It Works
 
-```
-AI Agent → maybe-dont cli → Gateway (policy evaluation) → Allow → Command executes
-                                                        → Deny  → Command blocked
-```
+<div class="solutions-hero-graphic" style="margin: 1.5rem 0;">
+<svg viewBox="0 0 760 160" xmlns="http://www.w3.org/2000/svg" class="solutions-flow-svg">
+  <rect x="10" y="50" width="120" height="50" rx="6" class="flow-box flow-agent"/>
+  <text x="70" y="80" text-anchor="middle" class="flow-label">AI Agent</text>
+  <line x1="140" y1="75" x2="185" y2="75" class="flow-line"/>
+  <polygon points="180,70 190,75 180,80" class="flow-dot" style="fill: currentColor; opacity: 0.3;"/>
+  <rect x="195" y="50" width="130" height="50" rx="6" class="flow-box flow-agent"/>
+  <text x="260" y="72" text-anchor="middle" class="flow-label" style="font-family: ui-monospace, monospace; font-size: 12px;">maybe-dont cli</text>
+  <text x="260" y="90" text-anchor="middle" class="flow-label flow-label-sm">HTTP to gateway</text>
+  <line x1="335" y1="75" x2="375" y2="75" class="flow-line"/>
+  <polygon points="370,70 380,75 370,80" class="flow-dot" style="fill: currentColor; opacity: 0.3;"/>
+  <rect x="385" y="30" width="160" height="90" rx="10" class="flow-box flow-shield"/>
+  <text x="465" y="65" text-anchor="middle" class="flow-label flow-label-bold">Gateway</text>
+  <text x="465" y="88" text-anchor="middle" class="flow-label flow-label-sm">Policy Engine + Audit</text>
+  <line x1="555" y1="60" x2="610" y2="40" class="flow-line flow-line-allow"/>
+  <circle cx="584" cy="49" r="5" class="flow-dot flow-dot-allow"/>
+  <line x1="555" y1="90" x2="610" y2="120" class="flow-line flow-line-deny"/>
+  <circle cx="584" cy="106" r="5" class="flow-dot flow-dot-deny"/>
+  <rect x="620" y="15" width="130" height="50" rx="6" class="flow-box flow-tool"/>
+  <text x="685" y="45" text-anchor="middle" class="flow-label">Command Runs</text>
+  <rect x="620" y="95" width="130" height="50" rx="6" class="flow-box flow-tool-deny"/>
+  <text x="685" y="125" text-anchor="middle" class="flow-label flow-label-deny">Blocked</text>
+</svg>
+</div>
 
 1. The agent calls `maybe-dont cli -s <gateway-url> -- <command> [args...]`
 2. Everything after `--` is the command to validate — similar to how `sudo` separates its own flags from the command it runs

@@ -29,4 +29,6 @@ In short:
 
 One is proactive guardrails *at model creation*. The other is reactive oversight *at runtime execution.*
 
-If you’re exposing APIs to external agents (especially via MCP), *you need Maybe Don’t*—even if the agent was built using Bedrock.
+If you're exposing APIs to external agents (especially via MCP), *you need Maybe Don't*—even if the agent was built using Bedrock.
+
+Learn more about how runtime [AI guardrails](/solutions/ai-guardrails/) differ from model-level safety features.

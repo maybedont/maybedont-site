@@ -1,0 +1,42 @@
+<svg viewBox="0 0 800 200" xmlns="http://www.w3.org/2000/svg" class="solutions-flow-svg">
+  <!-- Agents column -->
+  <g class="flow-agents">
+    <rect x="20" y="20" width="160" height="40" rx="6" class="flow-box flow-agent"/>
+    <text x="100" y="45" text-anchor="middle" class="flow-label">Claude Code</text>
+    <rect x="20" y="75" width="160" height="40" rx="6" class="flow-box flow-agent"/>
+    <text x="100" y="100" text-anchor="middle" class="flow-label">Cursor</text>
+    <rect x="20" y="130" width="160" height="40" rx="6" class="flow-box flow-agent"/>
+    <text x="100" y="155" text-anchor="middle" class="flow-label">Any AI Agent</text>
+  </g>
+  <!-- Arrows to gateway -->
+  <g class="flow-arrows">
+    <line x1="190" y1="40" x2="280" y2="95" class="flow-line"/>
+    <line x1="190" y1="95" x2="280" y2="95" class="flow-line"/>
+    <line x1="190" y1="150" x2="280" y2="95" class="flow-line"/>
+  </g>
+  <!-- Gateway (center) -->
+  <g class="flow-gateway">
+    <rect x="290" y="45" width="220" height="100" rx="10" class="flow-box flow-shield"/>
+    <text x="400" y="82" text-anchor="middle" class="flow-label flow-label-bold">Maybe Don't</text>
+    <text x="400" y="108" text-anchor="middle" class="flow-label flow-label-sm">Policy Engine + Audit Log</text>
+  </g>
+  <!-- Arrows to tools -->
+  <g class="flow-arrows">
+    <line x1="520" y1="75" x2="610" y2="40" class="flow-line flow-line-allow"/>
+    <line x1="520" y1="95" x2="610" y2="95" class="flow-line flow-line-allow"/>
+    <line x1="520" y1="115" x2="610" y2="150" class="flow-line flow-line-deny"/>
+  </g>
+  <!-- Tools column -->
+  <g class="flow-tools">
+    <rect x="620" y="20" width="160" height="40" rx="6" class="flow-box flow-tool"/>
+    <text x="700" y="45" text-anchor="middle" class="flow-label">MCP Servers</text>
+    <rect x="620" y="75" width="160" height="40" rx="6" class="flow-box flow-tool"/>
+    <text x="700" y="100" text-anchor="middle" class="flow-label">CLI Commands</text>
+    <rect x="620" y="130" width="160" height="40" rx="6" class="flow-box flow-tool-deny"/>
+    <text x="700" y="155" text-anchor="middle" class="flow-label flow-label-deny">Blocked</text>
+  </g>
+  <!-- Allow/Deny indicators -->
+  <circle cx="567" cy="75" r="6" class="flow-dot flow-dot-allow"/>
+  <circle cx="567" cy="95" r="6" class="flow-dot flow-dot-allow"/>
+  <circle cx="567" cy="115" r="6" class="flow-dot flow-dot-deny"/>
+</svg>

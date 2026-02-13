@@ -1,5 +1,6 @@
 ---
-title: "Maybe Don't - AI Guardrails"
+title: "Maybe Don't - Guardrails for Agentic AI"
+description: "Guardrails for agentic AI. Real-time monitoring, intelligent policy enforcement, and comprehensive audit logging."
 toc: false
 layout: home
 ---
