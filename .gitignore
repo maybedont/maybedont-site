@@ -25,5 +25,8 @@ _vendor/
 # macOS
 .DS_Store
 
+# Playwright MCP artifacts
+.playwright-mcp/
+
 # Git Worktrees
 .worktrees

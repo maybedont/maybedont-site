@@ -46,9 +46,11 @@ This site uses the Hextra Hugo theme but treats it as our own - we prioritize ma
 
 Compare local changes against production: https://maybedont.ai/
 
-## Git Worktrees
+## Git Workflow
 
-When working on a feature branch that needs isolation from the main working directory, use `git worktree` and place worktrees in the `.worktrees/` directory at the repo root:
+**Keep the root working directory on `main` at all times.** Do not check out feature branches in the root directory.
+
+For all feature work, use git worktrees in the `.worktrees/` directory. Before creating a worktree, ask the user what the branch should be named. Branch names follow the convention `<owner>/<descriptive-name>` (e.g., `degroff/featureA`), but this may vary by developer. The worktree directory name and branch name must match:
 
 ```bash
 git worktree add .worktrees/<branch-name> -b <branch-name>
