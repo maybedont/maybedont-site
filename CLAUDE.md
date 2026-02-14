@@ -68,3 +68,9 @@ This keeps worktrees co-located with the repo instead of scattered as sibling di
 
 - `hugo` - Build the content and outputs to public/ w/out a server.
 - `hugo server` - Starts a local development server @ http://localhost:1313 This is useful to develop and test changes locally before commiting changes.
+
+### Integration Tests
+
+- `./tests/test-get-started.sh` - Runs the get-started doc through all installation paths (binary download, Docker, Homebrew) in an isolated `/tmp` environment. Also validates download links and SHA256 checksums.
+
+**When editing `content/docs/get-started.md` or related pages** (installation instructions, first-run steps, configuration examples), evaluate whether `tests/test-get-started.sh` needs updating to match. The test validates that documented commands and workflows actually work.
