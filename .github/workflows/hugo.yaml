@@ -16,7 +16,7 @@ on:
 
 # Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
 permissions:
-  contents: read
+  contents: write
   pages: write
   id-token: write
 
@@ -47,6 +47,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
+          ref: main
           submodules: recursive
           fetch-depth: 0
           lfs: false
@@ -73,6 +74,17 @@ jobs:
           echo "Updated version to ${VERSION}"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Commit version update
+        run: |
+          if git diff --quiet data/product.yaml; then
+            echo "Version unchanged, skipping commit"
+          else
+            git config user.name "github-actions[bot]"
+            git config user.email "github-actions[bot]@users.noreply.github.com"
+            git add data/product.yaml
+            git commit -m "Update product version to $(grep version data/product.yaml | awk '{print $2}')"
+            git push
+          fi
       - name: Build with Hugo
         run: |
           hugo \
