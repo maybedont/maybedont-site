@@ -140,15 +140,6 @@ Everything starts in `audit_only` mode by default — observe before enforcing. 
 
 Check the audit log for entries. If you see log output, the gateway is intercepting and evaluating operations.
 
-You can also test with curl:
-
-```bash
-curl -X POST http://localhost:8080/mcp \
-  -H "Content-Type: application/json" \
-  -H "X-GitHub-Token: your-github-token" \
-  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}'
-```
-
 ## What's Next?
 
 Two paths depending on what you're here for:

@@ -152,8 +152,9 @@ stop_docker_containers() {
 
 # Patch the bootstrapped config for testing:
 #   1. Add a dummy downstream MCP server (required by gateway)
-#   2. Switch server type from stdio to http with listen_addr
+#   2. Ensure server type is http with listen_addr (no-op on v1.2.0+)
 #   3. Disable AI validation (CEL-only, no API key needed)
+#   4. Disable audit_report native tool (requires AI API key)
 #
 # Uses exact string matches against the known default config. If the default
 # config format changes, these will fail — which is a useful signal that the
@@ -176,14 +177,14 @@ text = re.sub(
     count=1
 )
 
-# 2. Switch server to HTTP mode
+# 2. Ensure server is in HTTP mode (no-op on v1.2.0+ where http is the default)
 text = text.replace(
     'type: stdio  # stdio, http, sse',
-    'type: http'
+    'type: http  # stdio, http, sse'
 )
 text = text.replace(
     '# listen_addr: \"127.0.0.1:8080\"  # Required for http/sse',
-    'listen_addr: \"127.0.0.1:8080\"'
+    'listen_addr: \"127.0.0.1:8080\"  # Required for http/sse'
 )
 
 # 3. Disable AI validation in all sections
