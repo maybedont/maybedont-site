@@ -761,14 +761,14 @@ html.dark .cta-primary:hover {
 }
 
 /* ===== PRICING PAGE ===== */
-/* Pricing grid - two tier layout */
+/* Pricing grid - three tier layout */
 .pricing-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2.5rem;
   align-items: stretch;
   margin-bottom: 5rem;
-  max-width: 900px;
+  max-width: 1200px;
 }
 
 @media (max-width: 768px) {
