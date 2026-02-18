@@ -74,3 +74,5 @@ This keeps worktrees co-located with the repo instead of scattered as sibling di
 - `./tests/test-get-started.sh` - Runs the get-started doc through all installation paths (binary download, Docker, Homebrew) in an isolated `/tmp` environment. Also validates download links and SHA256 checksums.
 
 **When editing `content/docs/get-started.md` or related pages** (installation instructions, first-run steps, configuration examples), evaluate whether `tests/test-get-started.sh` needs updating to match. The test validates that documented commands and workflows actually work.
+
+- `./tests/test-mobile-nav.sh` - Playwright-based test that verifies the mobile hamburger menu and desktop nav links behave correctly at 390px, 1023px, and 1024px breakpoints. **Run this before opening PRs that touch navigation, sidebar, or CSS files.**
