@@ -319,15 +319,37 @@ html.dark .hextra-sidebar-container {
 
 }
 
-/* Hamburger menu: show below 1024px, hide at 1024px+ */
-.hextra-hamburger-menu {
-  display: block;
+/*
+ * Tailwind lg: breakpoint utilities (1024px)
+ *
+ * Hextra's pre-compiled CSS only includes md: (768px) breakpoint utilities.
+ * Our nav/sidebar components use the lg: breakpoint (1024px) so that the
+ * hamburger menu and mobile overlay are active up to 1024px instead of 768px.
+ * These rules mirror the compiled md: utilities but at the lg: breakpoint.
+ */
+@media (min-width: 64rem) {
+  .hx\:lg\:hidden { display: none; }
+  .hx\:lg\:inline-flex { display: inline-flex; }
+  .hx\:lg\:inline-block { display: inline-block; }
+  .hx\:lg\:sticky { position: sticky; }
+  .hx\:lg\:top-16 { top: 4rem; }
+  .hx\:lg\:shrink-0 { flex-shrink: 0; }
+  .hx\:lg\:w-64 { width: 16rem; }
+  .hx\:lg\:self-start { align-self: flex-start; }
+  .hx\:lg\:h-\[calc\(100vh-var\(--navbar-height\)-var\(--menu-height\)\)\] {
+    height: calc(100vh - var(--navbar-height) - var(--menu-height));
+  }
+  .hx\:lg\:text-sm {
+    font-size: var(--hx-text-sm);
+    line-height: var(--tw-leading, var(--hx-text-sm--line-height));
+  }
+  .hx\:lg\:overflow-auto { overflow: auto; }
 }
 
-@media (min-width: 1024px) {
-  .hextra-hamburger-menu {
-    display: none;
-  }
+@media not all and (min-width: 64rem) {
+  .hx\:max-lg\:hidden { display: none; }
+  .hx\:max-lg\:\[transform\:translate3d\(0\,-100\%\,0\)\] { transform: translateY(-100%); }
+  .hx\:max-lg\:\[transform\:translate3d\(0\,0\,0\)\] { transform: translate(0); }
 }
 
 /*
@@ -461,7 +483,6 @@ nav[aria-label="Breadcrumb"],
   font-size: 0.875rem;
   text-decoration: none;
   margin-left: 0.75rem;
-  display: inline-flex;
   align-items: center;
   box-shadow: 0 2px 8px var(--shadow-primary);
   transition: all 0.2s ease;
