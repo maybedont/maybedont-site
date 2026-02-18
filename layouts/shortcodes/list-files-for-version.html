@@ -62,7 +62,7 @@ Intel
 (function() {
   const version = "{{ $version }}";
   const versionNum = "{{ $versionNum }}";
-  const baseURL = "{{ $baseURL }}";
+  const baseURL = "{{ $baseURL }}/";
 
   function detectOS() {
     const ua = navigator.userAgent.toLowerCase();
@@ -103,8 +103,8 @@ Intel
       const x86Link = document.getElementById('macos-x86-link');
       const armSha = document.getElementById('macos-arm64-sha');
       const x86Sha = document.getElementById('macos-x86-sha');
-      const armUrl = baseURL + '/maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
-      const x86Url = baseURL + '/maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
+      const armUrl = baseURL + 'maybe-dont_' + versionNum + '_darwin_arm64.tar.gz';
+      const x86Url = baseURL + 'maybe-dont_' + versionNum + '_darwin_x86_64.tar.gz';
       if (armLink) armLink.href = armUrl;
       if (x86Link) x86Link.href = x86Url;
       if (armSha) armSha.href = armUrl + '.sha256';
@@ -113,7 +113,7 @@ Intel
       singleEl.style.display = 'flex';
       macDualEl.style.display = 'none';
       const filename = 'maybe-dont_' + versionNum + '_' + os + '_' + arch + ext;
-      const downloadUrl = baseURL + '/' + filename;
+      const downloadUrl = baseURL + filename;
       const shaUrl = downloadUrl + '.sha256';
       const linkEl = document.getElementById('detected-download-link');
       const textEl = document.getElementById('detected-download-text');
