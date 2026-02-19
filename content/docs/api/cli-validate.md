@@ -1,5 +1,5 @@
 ---
-title: Validate API
+title: CLI Validate
 weight: 1
 ---
 
