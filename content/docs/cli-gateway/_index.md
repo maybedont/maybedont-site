@@ -161,5 +161,5 @@ CLI validations appear in the [audit log](/docs/audit-log/) alongside MCP tool c
 See [Policies](/docs/policies/) for the full guide, and [CEL Policies](/docs/policies/cel-policies/) for the CLI-specific variables available in CEL expressions.
 
 {{< cards >}}
-  {{< card link="rest-api" title="Validate API" icon="document-text" subtitle="Endpoint details, schemas, and error codes" >}}
+  {{< card link="/docs/api/cli-validate" title="CLI Validate API" icon="document-text" subtitle="Endpoint details, schemas, and error codes" >}}
 {{< /cards >}}

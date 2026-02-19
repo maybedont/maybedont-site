@@ -5,6 +5,10 @@ weight: 6
 
 [OpenHands](https://github.com/All-Hands-AI/OpenHands) is an open-source AI software development agent. This guide shows how to route OpenHands' MCP connections through Maybe Don't.
 
+{{< callout type="info" >}}
+**Beyond MCP:** OpenHands can also use the [Action Validate API](/docs/api/action-validate/) for pre-execution safety checks on all action types — shell commands, file operations, and browser actions — not just MCP tool calls. The Action Validate API integrates with OpenHands' `SecurityAnalyzer` interface to evaluate every action against your policies before it runs.
+{{< /callout >}}
+
 ## Prerequisites
 
 - Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
