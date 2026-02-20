@@ -52,15 +52,7 @@ The `cody.mcpServers` key is used for MCP server configuration in VS Code with C
 
 In VS Code, check Cody's MCP tools panel for tools prefixed with `github__`.
 
-Test the gateway independently:
-
-```bash
-curl -s http://localhost:8080/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}' | head -c 200
-```
-
-If you see a JSON response with tool definitions, the gateway is working.
+You can also try asking Cody to list its available MCP tools as an end-to-end check.
 
 ## What's Happening
 
@@ -85,15 +77,8 @@ npx --version
 ### Tools not appearing
 
 - Check Cody's output/logs for MCP errors
-- Verify the gateway is running
-- Test the connection directly:
-
-```bash
-curl http://localhost:8080/mcp -X POST \
-  -H "Content-Type: application/json" \
-  -H "X-GitHub-Token: $GITHUB_TOKEN" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
-```
+- Verify the gateway container is running: `docker ps | grep maybe-dont`
+- Check the gateway logs for tool discovery messages: `docker logs maybe-dont`
 
 ### Authentication errors
 

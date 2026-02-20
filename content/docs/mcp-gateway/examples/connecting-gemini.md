@@ -57,15 +57,7 @@ For JetBrains IDEs (IntelliJ, PyCharm, etc.), create or edit the `mcp.json` file
 
 After configuring, Gemini should show GitHub tools available. Look for tools prefixed with `github__`.
 
-Test the gateway independently:
-
-```bash
-curl -s http://localhost:8080/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}' | head -c 200
-```
-
-If you see a JSON response with tool definitions, the gateway is working.
+You can also try asking Gemini to list its available MCP tools as an end-to-end check.
 
 ## What's Happening
 
@@ -79,7 +71,8 @@ When Gemini calls a tool:
 
 ### Tools not appearing
 
-- Verify the gateway is running
+- Verify the gateway container is running: `docker ps | grep maybe-dont`
+- Check the gateway logs for tool discovery messages: `docker logs maybe-dont`
 - Check your IDE's Gemini logs for connection errors
 - Ensure the JSON syntax is valid
 
@@ -87,12 +80,3 @@ When Gemini calls a tool:
 
 - Verify your GitHub token is valid
 - Check that the header name matches exactly: `X-GitHub-Token`
-
-### Testing the connection
-
-```bash
-curl http://localhost:8080/mcp -X POST \
-  -H "Content-Type: application/json" \
-  -H "X-GitHub-Token: $GITHUB_TOKEN" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
-```

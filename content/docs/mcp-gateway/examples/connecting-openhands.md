@@ -45,17 +45,7 @@ openhands
 
 ## Verify the Connection
 
-In OpenHands, you should see GitHub tools prefixed with `github__` in the available tools.
-
-Test the gateway independently:
-
-```bash
-curl -s http://localhost:8080/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}' | head -c 200
-```
-
-If you see a JSON response with tool definitions, the gateway is working.
+In OpenHands, you should see GitHub tools prefixed with `github__` in the available tools. You can also try asking OpenHands to list its available MCP tools as an end-to-end check.
 
 ## What's Happening
 
@@ -72,12 +62,16 @@ This is particularly useful with OpenHands since it can be quite autonomous — 
 
 ### Connection refused
 
-Verify the gateway is running:
+Verify the gateway container is running:
 
 ```bash
-curl http://localhost:8080/mcp -X POST \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
+docker ps | grep maybe-dont
+```
+
+Check the gateway logs for errors:
+
+```bash
+docker logs maybe-dont
 ```
 
 ### MCP server not loading
