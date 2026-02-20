@@ -10,6 +10,31 @@ gtag('js', new Date());
 gtag('config', 'G-95EX0B12B9');
 </script>
 
+<!-- GA4 Event Tracking: CTA clicks -->
+<script>
+document.addEventListener('click', function(e) {
+  var tracked = e.target.closest('a[data-ga]');
+  if (tracked) {
+    gtag('event', tracked.dataset.ga, {
+      'event_category': 'conversion',
+      'event_label': tracked.dataset.gaLocation || '',
+      'link_url': tracked.href
+    });
+    return;
+  }
+
+  // Fallback: track any cal.com link without explicit data-ga attributes
+  var calLink = e.target.closest('a[href*="cal.com"]');
+  if (calLink) {
+    gtag('event', 'book_demo', {
+      'event_category': 'conversion',
+      'event_label': 'inline_link',
+      'link_url': calLink.href
+    });
+  }
+});
+</script>
+
 <!-- Custom JS for sidebar toggle at 1024px breakpoint - works on all pages -->
 <script>
 document.addEventListener('DOMContentLoaded', function() {

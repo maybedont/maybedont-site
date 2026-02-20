@@ -1,0 +1,4 @@
+{{- $text := .Get "text" | default "Book a Demo" -}}
+{{- $location := .Get "location" | default "content" -}}
+{{- $url := .Get "url" | default "https://cal.com/kmillermd/30min" -}}
+<a href="{{ $url }}" class="cta-primary" data-ga="book_demo" data-ga-location="{{ $location }}" target="_blank" rel="noopener">{{ $text }}</a>
