@@ -11,7 +11,7 @@ layout: home
     <div class="hero-content">
       <p><strong id="hero-subtitle">Lessons learned. By proxy.</strong></p>
       <div class="hx:mt-8 hx:flex hx:flex-wrap hx:gap-4">
-        <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="hero">
+        <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="hero" target="_blank" rel="noopener">
           Book a Demo
         </a>
       </div>
@@ -141,5 +141,5 @@ layout: home
 <div class="closing-cta">
   <h2 class="closing-cta-heading">Ready to get started?</h2>
   <p class="closing-cta-subtext">See how Maybe Don't can help you deploy AI agents with confidence.</p>
-  <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="bottom_cta">Book a Demo</a>
+  <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="bottom_cta" target="_blank" rel="noopener">Book a Demo</a>
 </div>
