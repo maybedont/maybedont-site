@@ -84,13 +84,10 @@ claude mcp remove maybe-dont
 
 ### "Connection refused"
 
-Make sure the gateway is running and listening on port 8080:
+Make sure the gateway container is running:
 
 ```bash
-curl http://localhost:8080/mcp -X POST \
-  -H "Content-Type: application/json" \
-  -H "X-GitHub-Token: $GITHUB_TOKEN" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
+docker ps | grep maybe-dont
 ```
 
 ### "Unauthorized" errors
@@ -103,4 +100,10 @@ echo $GITHUB_TOKEN  # Should show your token
 
 ### Tools not showing up
 
-Verify the gateway is correctly connecting to GitHub by checking its logs for successful tool discovery.
+Check the gateway logs. When an agent connects, the gateway discovers tools from the downstream MCP server and logs the tool count:
+
+```bash
+docker logs maybe-dont
+```
+
+Enable debug logging to see individual tool names.

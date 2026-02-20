@@ -97,11 +97,16 @@ When Copilot calls a tool:
 
 ### "Connection refused"
 
+Verify the gateway container is running:
+
 ```bash
-curl http://localhost:8080/mcp -X POST \
-  -H "Content-Type: application/json" \
-  -H "X-GitHub-Token: $GITHUB_TOKEN" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
+docker ps | grep maybe-dont
+```
+
+Check the gateway logs for errors:
+
+```bash
+docker logs maybe-dont
 ```
 
 ### Authentication errors

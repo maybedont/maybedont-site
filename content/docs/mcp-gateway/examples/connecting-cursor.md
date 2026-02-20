@@ -42,15 +42,7 @@ After updating the configuration, restart Cursor to pick up the changes.
 
 In Cursor, open the MCP tools panel to confirm the GitHub tools are available. You should see tools prefixed with `github__`.
 
-Test the gateway independently:
-
-```bash
-curl -s http://localhost:8080/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}' | head -c 200
-```
-
-If you see a JSON response with tool definitions, the gateway is working.
+You can also try asking Cursor to list its available MCP tools as an end-to-end check.
 
 ## What's Happening
 
@@ -65,7 +57,8 @@ When Cursor calls a tool:
 
 ### Tools not appearing
 
-- Verify the gateway is running: `curl http://localhost:8080/mcp`
+- Verify the gateway container is running: `docker ps | grep maybe-dont`
+- Check the gateway logs for tool discovery messages: `docker logs maybe-dont`
 - Check Cursor's MCP logs for connection errors
 - Ensure the JSON syntax in `mcp.json` is valid
 

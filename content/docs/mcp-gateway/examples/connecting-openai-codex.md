@@ -41,17 +41,7 @@ codex
 
 ## Verify the Connection
 
-In your Codex session, you should see GitHub tools prefixed with `github__`.
-
-Test the gateway independently:
-
-```bash
-curl -s http://localhost:8080/mcp \
-  -H "Content-Type: application/json" \
-  -d '{"jsonrpc": "2.0", "method": "tools/list", "id": 1}' | head -c 200
-```
-
-If you see a JSON response with tool definitions, the gateway is working.
+In your Codex session, try asking Codex to list its available MCP tools. You should see GitHub tools prefixed with `github__`.
 
 ## Static Headers
 
@@ -80,12 +70,16 @@ When Codex calls a tool:
 
 ### Connection issues
 
+Verify the gateway container is running:
+
 ```bash
-# Test the gateway is running
-curl http://localhost:8080/mcp -X POST \
-  -H "Content-Type: application/json" \
-  -H "X-GitHub-Token: $GITHUB_TOKEN" \
-  -d '{"jsonrpc":"2.0","method":"tools/list","id":1}'
+docker ps | grep maybe-dont
+```
+
+Check the gateway logs for tool discovery messages or errors:
+
+```bash
+docker logs maybe-dont
 ```
 
 ### Authentication errors
