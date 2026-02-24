@@ -14,17 +14,21 @@ Let's get Maybe Don't running. Pick your installation method, then follow the sa
 {{< tab >}}
 **Recommended for MCP server mode.** Docker keeps the gateway isolated and is the easiest way to get started if you're proxying MCP tool calls.
 
+<div data-ga="install_action" data-ga-label="copy_docker_pull">
 {{< codeblock lang="bash" >}}
 docker pull ghcr.io/maybedont/maybe-dont:{version}
 {{< /codeblock >}}
+</div>
 {{< /tab >}}
 
 {{< tab >}}
 **Recommended for CLI gateway and local development.** Homebrew installs `maybe-dont` as a native binary — ideal if you're validating CLI commands or want the fastest startup.
 
-```bash
+<div data-ga="install_action" data-ga-label="copy_homebrew">
+{{< codeblock lang="bash" >}}
 brew install maybedont/tap/maybe-dont
-```
+{{< /codeblock >}}
+</div>
 {{< /tab >}}
 
 {{< tab >}}
@@ -44,6 +48,7 @@ On first startup, Maybe Don't writes the default configuration and policy files 
 {{< tabs items="Docker,Package" >}}
 
 {{< tab >}}
+<div data-ga="install_action" data-ga-label="copy_docker_run">
 {{< codeblock lang="bash" >}}
 # Run once to bootstrap defaults
 docker run --rm \
@@ -53,6 +58,7 @@ docker run --rm \
   -v ${XDG_STATE_HOME:-$HOME/.local/state}/maybe-dont:/state/maybe-dont \
   ghcr.io/maybedont/maybe-dont:{version}
 {{< /codeblock >}}
+</div>
 
 Stop the container after it starts up — the defaults are now written to `~/.config/maybe-dont/`.
 {{< /tab >}}
@@ -112,6 +118,7 @@ Don't have an AI API key yet? You can skip this step and run with just CEL polic
 {{< tabs items="Docker,Package" >}}
 
 {{< tab >}}
+<div data-ga="install_action" data-ga-label="copy_docker_run">
 {{< codeblock lang="bash" >}}
 export OPENAI_API_KEY="your-api-key-here"
 
@@ -124,6 +131,7 @@ docker run \
   -p 8080:8080 \
   ghcr.io/maybedont/maybe-dont:{version}
 {{< /codeblock >}}
+</div>
 {{< /tab >}}
 
 {{< tab >}}

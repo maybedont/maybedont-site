@@ -17,9 +17,22 @@ document.addEventListener('click', function(e) {
   if (tracked) {
     gtag('event', tracked.dataset.ga, {
       'event_category': 'conversion',
-      'event_label': tracked.dataset.gaLocation || '',
+      'event_label': tracked.dataset.gaLabel || tracked.dataset.gaLocation || '',
       'link_url': tracked.href
     });
+    return;
+  }
+
+  // Track copy-button clicks on install codeblocks
+  var copyBtn = e.target.closest('.hextra-code-copy-btn');
+  if (copyBtn) {
+    var wrapper = copyBtn.closest('[data-ga]');
+    if (wrapper) {
+      gtag('event', wrapper.dataset.ga, {
+        'event_category': 'conversion',
+        'event_label': wrapper.dataset.gaLabel || ''
+      });
+    }
     return;
   }
 
