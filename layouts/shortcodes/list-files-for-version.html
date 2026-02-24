@@ -50,7 +50,7 @@ Intel
 {{- range $platforms -}}
 {{- $filename := printf "maybe-dont_%s_%s_%s.%s" $versionNum .os .arch .ext -}}
 <li class="download-list-item">
-<a href="{{ $baseURL }}/{{ $filename }}" class="download-list-link">{{ $filename }}</a>
+<a href="{{ $baseURL }}/{{ $filename }}" class="download-list-link" data-ga="install_action" data-ga-label="download_{{ .os }}_{{ .arch }}">{{ $filename }}</a>
 <a class="download-list-sha" href="{{ $baseURL }}/{{ $filename }}.sha256"><i class="fa-solid fa-download"></i> sha256</a>
 </li>
 {{- end -}}
@@ -109,6 +109,8 @@ Intel
       if (x86Link) x86Link.href = x86Url;
       if (armSha) armSha.href = armUrl + '.sha256';
       if (x86Sha) x86Sha.href = x86Url + '.sha256';
+      if (armLink) { armLink.dataset.ga = 'install_action'; armLink.dataset.gaLabel = 'download_darwin_arm64'; }
+      if (x86Link) { x86Link.dataset.ga = 'install_action'; x86Link.dataset.gaLabel = 'download_darwin_x86_64'; }
     } else {
       singleEl.style.display = 'flex';
       macDualEl.style.display = 'none';
@@ -123,6 +125,7 @@ Intel
       if (textEl) textEl.textContent = getOSName(os) + ' ' + getArchName(arch);
       if (shaEl) shaEl.href = shaUrl;
       if (infoEl) infoEl.textContent = 'Detected platform: ' + getOSName(os);
+      if (linkEl) { linkEl.dataset.ga = 'install_action'; linkEl.dataset.gaLabel = 'download_' + os + '_' + arch; }
     }
   }
 
