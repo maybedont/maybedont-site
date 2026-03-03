@@ -1,0 +1,727 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Maybe Don't — Guardrails for Agentic AI</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    /* ===== RESET & BASE ===== */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html {
+      font-family: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
+      color: #111827;
+      font-size: 13px;
+      line-height: 1.5;
+      -webkit-print-color-adjust: exact;
+      print-color-adjust: exact;
+    }
+
+    /* ===== PAGE CONTAINER ===== */
+    @page {
+      size: letter;
+      margin: 0;
+    }
+
+    .page {
+      width: 8.5in;
+      height: 11in;
+      position: relative;
+      overflow: hidden;
+      background: #fff;
+      page-break-after: always;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .page:last-child {
+      page-break-after: auto;
+    }
+
+    /* ===== PAGE 1: HERO ===== */
+    .hero {
+      padding: 0.5in 0.7in 0.4in;
+      background: linear-gradient(155deg, #0D2F9E 0%, #131520 45%, #111215 100%);
+      position: relative;
+      color: #fff;
+    }
+
+    .hero::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 3px;
+      background: linear-gradient(90deg, #6699FF 0%, #1A40E5 50%, #0D2F9E 100%);
+    }
+
+    /* Subtle radial glow behind logo area */
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      left: -10%;
+      width: 5in;
+      height: 5in;
+      background: radial-gradient(circle, rgba(102, 153, 255, 0.12) 0%, transparent 65%);
+      pointer-events: none;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 14px;
+      position: relative;
+    }
+
+    .brand img {
+      width: 44px;
+      height: 44px;
+    }
+
+    .brand-name {
+      font-size: 26px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .hero h1 {
+      font-size: 30px;
+      font-weight: 800;
+      letter-spacing: -0.8px;
+      line-height: 1.15;
+      margin-bottom: 10px;
+      position: relative;
+    }
+
+    .hero .subtitle {
+      font-size: 13.5px;
+      font-weight: 400;
+      color: rgba(255, 255, 255, 0.75);
+      max-width: 5.5in;
+      line-height: 1.55;
+      position: relative;
+    }
+
+    .hero .mission-hero {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: #6699FF;
+      margin-top: 10px;
+      position: relative;
+      letter-spacing: 0.2px;
+    }
+
+    /* ===== PAGE 1: THE CHALLENGE ===== */
+    .challenge {
+      padding: 0.32in 0.7in 0.22in;
+    }
+
+    .section-label {
+      font-size: 10px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      color: #1A40E5;
+      margin-bottom: 6px;
+    }
+
+    .challenge h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 8px;
+      color: #111827;
+    }
+
+    .challenge .intro {
+      font-size: 12px;
+      color: #4b5563;
+      line-height: 1.6;
+      margin-bottom: 16px;
+      max-width: 6.5in;
+    }
+
+    .scenario-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .scenario-card {
+      background: #fefefe;
+      border: none;
+      padding: 10px 13px 10px 16px;
+      position: relative;
+    }
+
+    .scenario-card::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      bottom: 4px;
+      width: 3px;
+      border-radius: 2px;
+      background: rgba(26, 64, 229, 0.35);
+    }
+
+    .scenario-card .scenario-title {
+      font-size: 11.5px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 2px;
+    }
+
+    .scenario-card .scenario-desc {
+      font-size: 10.5px;
+      color: #6b7280;
+      line-height: 1.45;
+    }
+
+    /* ===== PAGE 1: THE SOLUTION ===== */
+    .solution {
+      padding: 0.28in 0.7in 0.25in;
+      background: #f8f9fb;
+      position: relative;
+      flex: 1;
+    }
+
+    .solution::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 1px;
+      background: #e5e7eb;
+    }
+
+    .solution h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 6px;
+      color: #111827;
+    }
+
+    .solution .solution-intro {
+      font-size: 11.5px;
+      color: #4b5563;
+      line-height: 1.55;
+      margin-bottom: 16px;
+      max-width: 6.5in;
+    }
+
+    .arch-diagram {
+      width: 100%;
+      max-width: 7in;
+      margin: 0 auto;
+      display: block;
+    }
+
+    .page-footer {
+      text-align: center;
+      padding: 6px 0;
+    }
+
+    .page-footer span {
+      font-size: 9px;
+      color: #9ca3af;
+    }
+
+    /* ===== PAGE 2: ACCENT BAR ===== */
+    .accent-bar {
+      height: 3px;
+      background: linear-gradient(90deg, #0D2F9E 0%, #1A40E5 50%, #6699FF 100%);
+    }
+
+    /* ===== PAGE 2: PILLARS ===== */
+    .pillars-section {
+      padding: 0.35in 0.7in 0.22in;
+    }
+
+    .pillars-section h2 {
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: -0.4px;
+      margin-bottom: 4px;
+      color: #111827;
+    }
+
+    .pillars-section .pillars-intro {
+      font-size: 12px;
+      color: #4b5563;
+      margin-bottom: 16px;
+    }
+
+    .pillars-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr 1fr;
+      gap: 12px;
+    }
+
+    .pillar-card {
+      border: 1px solid #e5e7eb;
+      border-radius: 8px;
+      padding: 16px 15px 14px;
+      background: #fff;
+    }
+
+    .pillar-card .pillar-icon {
+      margin-bottom: 10px;
+    }
+
+    .pillar-card h3 {
+      font-size: 13px;
+      font-weight: 700;
+      color: #111827;
+      margin-bottom: 6px;
+      letter-spacing: -0.2px;
+    }
+
+    .pillar-card ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    .pillar-card ul li {
+      font-size: 10px;
+      color: #4b5563;
+      line-height: 1.45;
+      padding-left: 14px;
+      position: relative;
+      margin-bottom: 3px;
+    }
+
+    .pillar-card ul li::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 5.5px;
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: #1A40E5;
+      opacity: 0.5;
+    }
+
+    /* ===== PAGE 2: CTA ===== */
+    .cta {
+      background: linear-gradient(155deg, #111215 0%, #131520 50%, #0D2F9E 100%);
+      padding: 0.4in 0.7in 0.55in;
+      color: #fff;
+      text-align: center;
+      position: relative;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .cta::before {
+      content: '';
+      position: absolute;
+      bottom: -30%;
+      right: -5%;
+      width: 4in;
+      height: 4in;
+      background: radial-gradient(circle, rgba(102, 153, 255, 0.1) 0%, transparent 60%);
+      pointer-events: none;
+    }
+
+    .cta .quote {
+      font-size: 16px;
+      font-weight: 600;
+      font-style: italic;
+      color: rgba(255, 255, 255, 0.7);
+      margin-bottom: 20px;
+      position: relative;
+    }
+
+    .cta .quote::before,
+    .cta .quote::after {
+      content: '"';
+      color: #6699FF;
+      font-size: 22px;
+    }
+
+    .cta .quote::after {
+      content: '"';
+    }
+
+    .cta h2 {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .cta-button {
+      display: inline-block;
+      align-self: center;
+      background: linear-gradient(135deg, #2952EF 0%, #1A40E5 50%, #0D2F9E 100%);
+      color: #fff;
+      padding: 12px 48px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      letter-spacing: 0.2px;
+      border: 1px solid rgba(102, 153, 255, 0.3);
+      box-shadow: 0 2px 12px rgba(26, 64, 229, 0.35);
+      margin-bottom: 18px;
+      position: relative;
+    }
+
+    .cta .contact-info {
+      font-size: 11.5px;
+      color: rgba(255, 255, 255, 0.6);
+      position: relative;
+    }
+
+    .cta .contact-info a {
+      color: #6699FF;
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .cta .mission {
+      font-size: 10.5px;
+      color: rgba(255, 255, 255, 0.45);
+      margin-top: 12px;
+      position: relative;
+    }
+
+    /* ===== PRINT INSTRUCTIONS (screen only) ===== */
+    .print-instructions {
+      background: #fef3c7;
+      color: #92400e;
+      padding: 10px 20px;
+      text-align: center;
+      font-size: 13px;
+      font-weight: 500;
+      border-bottom: 1px solid #fbbf24;
+    }
+
+    .print-instructions code {
+      background: rgba(0,0,0,0.08);
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 12px;
+    }
+
+    /* ===== SCREEN STYLES ===== */
+    @media screen {
+      body {
+        background: #d1d5db;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 32px;
+        padding-bottom: 32px;
+      }
+
+      .print-instructions {
+        width: 100%;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+      }
+
+      .page {
+        box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+      }
+    }
+
+    /* ===== PRINT OVERRIDES ===== */
+    @media print {
+      .print-instructions {
+        display: none;
+      }
+
+      body {
+        background: none;
+      }
+
+      .page {
+        box-shadow: none;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Print instructions — visible on screen only -->
+  <div class="print-instructions">
+    To save as PDF: <code>File → Print → Save as PDF</code>. Make sure <strong>"Background graphics"</strong> is enabled in print settings.
+  </div>
+
+  <!-- ==================== PAGE 1 ==================== -->
+  <div class="page">
+
+    <!-- HERO -->
+    <div class="hero">
+      <div class="brand">
+        <img src="static/images/logo-128.png" alt="Maybe Don't logo">
+        <span class="brand-name">Maybe Don't</span>
+      </div>
+      <h1>Guardrails for Agentic AI</h1>
+      <p class="subtitle">
+        Real-time policy enforcement and observability for AI.
+      </p>
+      <p class="mission-hero">Reducing risk so enterprises can confidently leverage agentic AI.</p>
+    </div>
+
+    <!-- THE CHALLENGE -->
+    <div class="challenge">
+      <div class="section-label">The Challenge</div>
+      <h2>AI Agents Are Powerful. And Dangerously Autonomous.</h2>
+      <p class="intro">
+        Your AI agents can read, write, create, and delete across every connected system — faster than
+        any human review can keep pace. A single misstep cascades into real damage before anyone notices.
+      </p>
+      <div class="scenario-grid">
+        <div class="scenario-card">
+          <div class="scenario-title">AI Agent Wiped a Production Database</div>
+          <div class="scenario-desc">Replit's AI coding agent deleted a live database during a code freeze, then fabricated fake records to cover it up. <em>— Fortune, 2025</em></div>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-title">AI Agent Caused a 13-Hour AWS Outage</div>
+          <div class="scenario-desc">Amazon's Kiro AI agent autonomously deleted and recreated a production environment, taking down AWS Cost Explorer for 13 hours. <em>— Financial Times, 2025</em></div>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-title">AI Agent Wiped a Developer's Entire Drive</div>
+          <div class="scenario-desc">Google's Antigravity AI, running in autonomous "Turbo mode," misinterpreted a cache-clear request and deleted the user's entire D: drive with no recovery. <em>— The Register, 2025</em></div>
+        </div>
+        <div class="scenario-card">
+          <div class="scenario-title">AI Agent Destroyed Files in Read-Only Mode</div>
+          <div class="scenario-desc">Cursor's AI agent ran rm&nbsp;-rf on 70 tracked files, killed remote processes, and ran git&nbsp;reset&nbsp;--hard — while in "Plan Mode" designed to prevent changes. <em>— Cursor Forum, 2025</em></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- THE SOLUTION -->
+    <div class="solution">
+      <div class="section-label">The Solution</div>
+      <h2>How It Works</h2>
+      <p class="solution-intro">
+        Maybe Don't intercept agent operations before they execute — via MCP gateway, agent hooks, or REST API.
+        Every action is evaluated against your policies, logged for audit, and either allowed or blocked with a clear explanation.
+      </p>
+
+      <!-- Architecture Diagram — shows three distinct integration patterns + observability -->
+      <svg class="arch-diagram" viewBox="0 0 680 260" xmlns="http://www.w3.org/2000/svg" style="font-family: 'Plus Jakarta Sans', system-ui, sans-serif;">
+        <defs>
+          <marker id="arrowR" markerWidth="7" markerHeight="5" refX="7" refY="2.5" orient="auto">
+            <path d="M0,0 L7,2.5 L0,5" fill="none" stroke="#6699FF" stroke-width="1"/>
+          </marker>
+          <marker id="arrowL" markerWidth="7" markerHeight="5" refX="0" refY="2.5" orient="auto">
+            <path d="M7,0 L0,2.5 L7,5" fill="none" stroke="#6699FF" stroke-width="1"/>
+          </marker>
+          <marker id="arrowD" markerWidth="5" markerHeight="7" refX="2.5" refY="7" orient="auto">
+            <path d="M0,0 L5,0 L2.5,7" fill="none" stroke="#6699FF" stroke-width="1"/>
+          </marker>
+        </defs>
+
+        <!-- ===== ROW 1: MCP Gateway (proxy pattern) ===== -->
+        <text x="340" y="14" text-anchor="middle" font-size="9" font-weight="600" fill="#9ca3af" letter-spacing="1">MCP GATEWAY</text>
+
+        <!-- AI Agent box -->
+        <rect x="0" y="24" width="130" height="38" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="65" y="40" text-anchor="middle" font-size="10" font-weight="600" fill="#111827">AI Agent</text>
+        <text x="65" y="52" text-anchor="middle" font-size="8" fill="#6b7280">Claude, Cursor, Copilot</text>
+
+        <!-- Arrow: Agent → Maybe Don't -->
+        <path d="M130,38 L222,38" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
+        <text x="176" y="33" text-anchor="middle" font-size="7.5" fill="#6b7280">tool call</text>
+
+        <!-- Maybe Don't (MCP) -->
+        <rect x="228" y="22" width="220" height="44" rx="8" fill="#f0f3ff" stroke="#1A40E5" stroke-width="1.5"/>
+        <text x="338" y="49" text-anchor="middle" font-size="12" font-weight="700" fill="#1A40E5">Maybe Don't</text>
+
+        <!-- Arrow: Maybe Don't → MCP Server -->
+        <path d="M448,38 L522,38" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
+        <text x="485" y="33" text-anchor="middle" font-size="7.5" fill="#10b981" font-weight="600">ALLOW</text>
+
+        <!-- MCP Server -->
+        <rect x="528" y="24" width="148" height="38" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="602" y="40" text-anchor="middle" font-size="10" font-weight="600" fill="#111827">MCP Server</text>
+        <text x="602" y="52" text-anchor="middle" font-size="8" fill="#6b7280">GitHub, Slack, DB, etc.</text>
+
+        <!-- ===== ROW 2: Agent Hook (callback pattern) ===== -->
+        <text x="340" y="90" text-anchor="middle" font-size="9" font-weight="600" fill="#9ca3af" letter-spacing="1">AGENT HOOK</text>
+
+        <!-- Agent / CLI box -->
+        <rect x="0" y="100" width="130" height="38" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="65" y="116" text-anchor="middle" font-size="10" font-weight="600" fill="#111827">Agent / CLI</text>
+        <text x="65" y="128" text-anchor="middle" font-size="8" fill="#6b7280">Claude Code, shell</text>
+
+        <!-- Arrow: Agent → Maybe Don't (ask) -->
+        <path d="M130,113 L222,113" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
+        <text x="176" y="108" text-anchor="middle" font-size="7.5" fill="#6b7280">evaluate</text>
+
+        <!-- Maybe Don't (Hook) -->
+        <rect x="228" y="98" width="220" height="44" rx="8" fill="#f0f3ff" stroke="#1A40E5" stroke-width="1.5"/>
+        <text x="338" y="125" text-anchor="middle" font-size="12" font-weight="700" fill="#1A40E5">Maybe Don't</text>
+
+        <!-- Arrow: Maybe Don't → Agent (response) -->
+        <path d="M228,126 L130,126" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowL)"/>
+        <text x="176" y="137" text-anchor="middle" font-size="7.5" fill="#10b981" font-weight="600">ALLOW / BLOCK</text>
+
+        <!-- Continues label -->
+        <text x="602" y="124" text-anchor="middle" font-size="9" fill="#6b7280" font-style="italic">Agent continues</text>
+        <text x="602" y="135" text-anchor="middle" font-size="9" fill="#6b7280" font-style="italic">or halts</text>
+
+        <!-- ===== ROW 3: REST API (direct call) ===== -->
+        <text x="340" y="166" text-anchor="middle" font-size="9" font-weight="600" fill="#9ca3af" letter-spacing="1">REST API</text>
+
+        <!-- External System box -->
+        <rect x="0" y="176" width="130" height="38" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <text x="65" y="192" text-anchor="middle" font-size="10" font-weight="600" fill="#111827">External System</text>
+        <text x="65" y="204" text-anchor="middle" font-size="8" fill="#6b7280">OpenHands, custom</text>
+
+        <!-- Arrow: System → Maybe Don't -->
+        <path d="M130,189 L222,189" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
+        <text x="176" y="184" text-anchor="middle" font-size="7.5" fill="#6b7280">validate</text>
+
+        <!-- Maybe Don't (API) -->
+        <rect x="228" y="174" width="220" height="44" rx="8" fill="#f0f3ff" stroke="#1A40E5" stroke-width="1.5"/>
+        <text x="338" y="201" text-anchor="middle" font-size="12" font-weight="700" fill="#1A40E5">Maybe Don't</text>
+
+        <!-- Arrow: Maybe Don't → System (response) -->
+        <path d="M228,202 L130,202" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowL)"/>
+        <text x="176" y="213" text-anchor="middle" font-size="7.5" fill="#10b981" font-weight="600">ALLOW / BLOCK</text>
+
+        <!-- ===== BOTTOM: Audit log/SIEM push ===== -->
+        <!-- Funnel / export icon + log destination -->
+        <rect x="528" y="176" width="148" height="38" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
+        <!-- Log/export icon: document with outward arrow -->
+        <g transform="translate(540, 183)">
+          <rect x="0" y="0" width="13" height="16" rx="2" fill="none" stroke="#1A40E5" stroke-width="1.2"/>
+          <path d="M3.5,4 H9 M3.5,7.5 H9 M3.5,11 H7" stroke="#1A40E5" stroke-width="0.9" stroke-linecap="round"/>
+          <path d="M16,8 L22,8 M19,5 L22,8 L19,11" fill="none" stroke="#1A40E5" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+        </g>
+        <text x="602" y="192" text-anchor="middle" font-size="10" font-weight="600" fill="#111827" dx="10">Audit &amp; SIEM</text>
+        <text x="602" y="204" text-anchor="middle" font-size="7.5" fill="#6b7280" dx="10">Splunk · Elastic · Datadog</text>
+
+        <!-- Arrows from all three Maybe Don't boxes to Audit -->
+        <path d="M448,50 C490,50 508,195 528,195" fill="none" stroke="#6699FF" stroke-width="1" opacity="0.3" stroke-dasharray="3,2" marker-end="url(#arrowR)"/>
+        <path d="M448,126 C490,126 508,195 528,195" fill="none" stroke="#6699FF" stroke-width="1" opacity="0.3" stroke-dasharray="3,2" marker-end="url(#arrowR)"/>
+        <path d="M448,196 L528,196" fill="none" stroke="#6699FF" stroke-width="1" opacity="0.3" stroke-dasharray="3,2" marker-end="url(#arrowR)"/>
+
+        <!-- "all events" label near audit -->
+        <text x="498" y="174" text-anchor="middle" font-size="7" fill="#9ca3af" font-style="italic">all events</text>
+      </svg>
+    </div>
+
+    <div class="page-footer"><span>maybedont.ai</span></div>
+  </div>
+
+  <!-- ==================== PAGE 2 ==================== -->
+  <div class="page">
+
+    <!-- Accent bar -->
+    <div class="accent-bar"></div>
+
+    <!-- THREE PILLARS -->
+    <div class="pillars-section">
+      <div class="section-label">Core Capabilities</div>
+      <h2>What We Deliver</h2>
+      <p class="pillars-intro">Integrated capabilities that give your organization control, visibility, and compliance — without slowing down your AI agents.</p>
+
+      <div class="pillars-grid">
+        <!-- Pillar 1: AI Guardrails -->
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <path d="M24 5L8 12V22C8 32.5 14.8 42 24 45C33.2 42 40 32.5 40 22V12L24 5Z" stroke="#1A40E5" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M17 24L22 29L31 19" stroke="#1A40E5" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>AI Guardrails</h3>
+          <ul>
+            <li>Real-time policy enforcement at the action layer</li>
+            <li>Natural language and deterministic policy engines</li>
+            <li>Low-latency evaluation — agents stay fast</li>
+            <li>Start in audit-only mode; enforce when you're ready</li>
+          </ul>
+        </div>
+
+        <!-- Pillar 2: Agentic Observability -->
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <path d="M4 24C4 24 11 13 24 13C37 13 44 24 44 24C44 24 37 35 24 35C11 35 4 24 4 24Z" stroke="#1A40E5" stroke-width="2.5" stroke-linejoin="round"/>
+              <circle cx="24" cy="24" r="5.5" stroke="#1A40E5" stroke-width="2.5"/>
+              <circle cx="24" cy="24" r="2" fill="#1A40E5"/>
+            </svg>
+          </div>
+          <h3>Agentic Observability</h3>
+          <ul>
+            <li>Complete audit trail of every agent operation</li>
+            <li>Full context: who, what, when, why, and outcome</li>
+            <li>SIEM integration — Splunk, Elastic, Datadog</li>
+            <li>Pattern analysis to surface emerging risks</li>
+          </ul>
+        </div>
+
+        <!-- Pillar 3: Governance & Compliance -->
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <path d="M14 6H32L38 12V42H10V6H14Z" stroke="#1A40E5" stroke-width="2.5" stroke-linejoin="round"/>
+              <path d="M32 6V12H38" stroke="#1A40E5" stroke-width="2" stroke-linejoin="round"/>
+              <path d="M17 20H31M17 26H31M17 32H25" stroke="#1A40E5" stroke-width="1.8" stroke-linecap="round"/>
+              <circle cx="34" cy="36" r="6.5" fill="#10b981"/>
+              <path d="M31 36L33 38L37 34" stroke="white" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+            </svg>
+          </div>
+          <h3>Governance &amp; Compliance</h3>
+          <ul>
+            <li>Support for ISO 42001, SOX, HIPAA, FINRA, GDPR</li>
+            <li>Verifiable evidence for every policy decision</li>
+            <li>Human oversight with full operational context</li>
+            <li>Maturity path: observe → enforce → prove</li>
+          </ul>
+        </div>
+
+        <!-- Pillar 4: Custom Solutions -->
+        <div class="pillar-card">
+          <div class="pillar-icon">
+            <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
+              <path d="M24 8L8 16V24C8 34 15 42 24 46C33 42 40 34 40 24V16L24 8Z" stroke="#1A40E5" stroke-width="2.5" stroke-linejoin="round" stroke-dasharray="4 2"/>
+              <path d="M18 24H30M24 18V30" stroke="#1A40E5" stroke-width="2.5" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <h3>Custom Solutions</h3>
+          <ul>
+            <li>Purpose-built integrations for your stack</li>
+            <li>Custom policies for your specific workflows</li>
+            <li>Fill the gaps other tools leave open</li>
+            <li>White-glove onboarding and ongoing support</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="cta">
+      <p class="quote">Give your AI agents room to work. Give your CISO peace of mind.</p>
+      <h2>Ready to Get Started?</h2>
+      <a class="cta-button" href="https://cal.com/kmillermd/30min">Book a Demo</a>
+      <p class="contact-info">
+        <a href="https://maybedont.ai">maybedont.ai</a>
+      </p>
+    </div>
+
+    <div class="page-footer" style="bottom: 0.15in;"><span style="color: rgba(255,255,255,0.35);">maybedont.ai</span></div>
+  </div>
+</body>
+</html>
