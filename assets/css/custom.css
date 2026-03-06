@@ -25,6 +25,30 @@
 .dark .svg-stroke-icon { stroke: #e5e5e5; }
 .dark .svg-fill-icon { fill: #e5e5e5; }
 
+/* ===== ARCH-DIAGRAM SHORTCODE ===== */
+.arch-diagram-wrap {
+  margin: 2rem 0;
+  max-width: 720px;
+}
+
+.arch-diagram-wrap svg {
+  width: 100%;
+  height: auto;
+}
+
+/* Dark mode overrides for arch-diagram (light mode uses inline SVG attributes) */
+.dark .arch-box { fill: #2a2a2a; stroke: #444; }
+.dark .arch-shield { fill: #1a1f3a; stroke: var(--color-primary-dark); }
+.dark .arch-text { fill: #e5e5e5; }
+.dark .arch-text-muted { fill: #888; }
+.dark .arch-text-dim { fill: #666; }
+.dark .arch-text-brand { fill: var(--color-primary-dark); }
+.dark .arch-text-allow { fill: var(--color-success-dark); }
+.dark .arch-line { stroke: var(--color-primary-dark); }
+.dark .arch-line-dash { stroke: var(--color-primary-dark); }
+.dark .arch-arrow path { stroke: var(--color-primary-dark); }
+.dark .arch-icon { stroke: var(--color-primary-dark); }
+
 /* ===== CSS VARIABLES ===== */
 :root {
   /* Primary brand colors - Light mode */
