@@ -27,22 +27,6 @@ The value proposition is for users who **want** the safety and guardrails - deve
 
 Maybe Don't is expected to run **behind a firewall** or in a private network. It doesn't implement its own authentication at the gateway level.
 
-```
-┌─────────────────────┐
-│ Firewall / VPN      │
-│                     │
-│  ┌───────────────┐  │
-│  │ Maybe Don't   │  │
-│  │   Gateway     │  │
-│  └───────────────┘  │
-│         │           │
-│  ┌──────┴───────┐   │
-│  │ Downstream   │   │
-│  │ MCP Servers  │   │
-│  └──────────────┘   │
-└─────────────────────┘
-```
-
 ### Authentication
 
 Maybe Don't uses **pass-through authentication**. Credentials flow from the connecting client through to downstream servers:
