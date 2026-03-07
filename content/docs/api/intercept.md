@@ -47,8 +47,30 @@ This endpoint is available when the gateway is running in `http` or `sse` mode a
 | `phase` | Yes | string | `request` to validate before execution, `response` to validate after |
 | `payload.name` | Yes | string | Name of the tool being called (e.g., `Bash`, `Read`, `Write`) |
 | `payload.arguments` | No | object | Structured arguments passed to the tool |
-| `payload.result` | No | any | Tool execution result. Required when `phase` is `response` |
+| `payload.result` | No | any | Tool output. Required when `phase` is `response` |
 | `context.sessionId` | No | string | Session identifier for audit correlation |
+
+### Response Phase
+
+When validating after execution (`"phase": "response"`), include the tool's output in `payload.result`:
+
+```json
+{
+  "event": "tools/call",
+  "phase": "response",
+  "payload": {
+    "name": "Bash",
+    "arguments": {
+      "command": "cat /etc/passwd"
+    },
+    "result": {
+      "content": [
+        {"type": "text", "text": "root:x:0:0:root:/root:/bin/bash\n..."}
+      ]
+    }
+  }
+}
+```
 | `context.traceId` | No | string | Trace identifier for distributed tracing |
 | `context.principal` | No | string | Identity of the user or agent making the request |
 
@@ -188,8 +210,6 @@ The intercept endpoint is enabled by default. To disable it:
 ```yaml
 intercept:
   enabled: false
-  shell_tool_names:
-    - Bash
 ```
 
 Or via environment variable:
@@ -232,3 +252,7 @@ Intercept validations appear in the [audit log](/docs/audit-log/) alongside MCP,
 ```
 
 The `context` fields from the request are preserved in the audit entry, making it straightforward to correlate intercept decisions with specific agent sessions and users.
+
+{{< callout type="info" >}}
+This endpoint is designed for agent hook scripts that intercept tool calls before or after execution. For MCP-native integrations, the [MCP gateway](/docs/mcp-gateway/) handles interception automatically. For non-hook CLI wrappers, see [CLI Validate](/docs/api/cli-validate/).
+{{< /callout >}}
