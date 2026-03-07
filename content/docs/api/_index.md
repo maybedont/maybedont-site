@@ -5,7 +5,7 @@ weight: 10
 
 The gateway exposes REST endpoints for integrations that don't use MCP. These endpoints accept JSON requests and return validation decisions — the caller decides what to do with the result.
 
-Both endpoints use the same [CEL](/docs/policies/cel-policies/) and [AI](/docs/policies/ai-policies/) policy engines that the MCP gateway uses. One set of policies, multiple integration surfaces.
+All endpoints use the same [CEL](/docs/policies/cel-policies/) and [AI](/docs/policies/ai-policies/) policy engines that the MCP gateway uses. One set of policies, multiple integration surfaces.
 
 ## Endpoints
 
@@ -13,6 +13,7 @@ Both endpoints use the same [CEL](/docs/policies/cel-policies/) and [AI](/docs/p
 |----------|---------|
 | [`POST /api/v1/cli/validate`](/docs/api/cli-validate/) | Validate CLI commands before execution |
 | [`POST /api/v1/action/validate`](/docs/api/action-validate/) | Validate agent actions before execution |
+| [`POST /api/v1/intercept`](/docs/api/intercept/) | Validate tool calls from agent hook scripts |
 
 ## Common Headers
 
@@ -37,4 +38,5 @@ server:
 {{< cards >}}
   {{< card link="cli-validate" title="CLI Validate" icon="terminal" subtitle="Validate CLI commands before execution" >}}
   {{< card link="action-validate" title="Action Validate" icon="shield-check" subtitle="Validate agent actions before execution" >}}
+  {{< card link="intercept" title="Intercept" icon="lightning-bolt" subtitle="Validate tool calls from agent hook scripts" >}}
 {{< /cards >}}

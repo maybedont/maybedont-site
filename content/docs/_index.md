@@ -11,9 +11,7 @@ Maybe Don't provides guardrails and observability for agentic AI. It sits betwee
 
 Think of it as a security checkpoint for your AI's actions. Every tool call and CLI command is audited, validated, and logged.
 
-<div class="solutions-hero-graphic" style="margin: 2rem 0;">
-{{< solutions-flow >}}
-</div>
+{{< arch-diagram >}}
 
 ## Why Use It?
 
