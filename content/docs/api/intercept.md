@@ -36,7 +36,10 @@ This endpoint is available when the gateway is running in `http` or `sse` mode a
   "context": {
     "sessionId": "session-abc123",
     "traceId": "trace-def456",
-    "principal": "developer@example.com"
+    "principal": {
+      "type": "agent",
+      "id": "claude-code-v1"
+    }
   }
 }
 ```
@@ -50,7 +53,7 @@ This endpoint is available when the gateway is running in `http` or `sse` mode a
 | `payload.result` | No | any | Tool output. Required when `phase` is `response` |
 | `context.sessionId` | No | string | Session identifier for audit correlation |
 | `context.traceId` | No | string | Trace identifier for distributed tracing |
-| `context.principal` | No | string | Identity of the user or agent making the request |
+| `context.principal` | No | object | Identity of the actor. Has `type` and `id` fields |
 
 ### Response Phase
 
@@ -76,7 +79,7 @@ When validating after execution (`"phase": "response"`), include the tool's outp
 
 ## Shell Tool Dual Evaluation
 
-Tools listed in `intercept.shell_tool_names` (default: `["Bash"]`) get evaluated against both `cli_expression` and `mcp_expression` [CEL rules](/docs/policies/cel-policies/). This is because shell tools blur the line between CLI commands and MCP tool calls — a `Bash` tool in Claude Code is an MCP tool call that executes a CLI command. Dual evaluation ensures policies written for either surface catch the same risky behavior.
+Tools listed in `intercept.shell_tool_names` (default includes `Bash`, `execute_command`, `shell`, `run_terminal_command`, `run_command`) get evaluated against both `cli_expression` and `mcp_expression` [CEL rules](/docs/policies/cel-policies/). This is because shell tools blur the line between CLI commands and MCP tool calls — a `Bash` tool in Claude Code is an MCP tool call that executes a CLI command. Dual evaluation ensures policies written for either surface catch the same risky behavior.
 
 For tools not in `shell_tool_names`, only `mcp_expression` rules are evaluated.
 
@@ -153,20 +156,18 @@ For tools not in `shell_tool_names`, only `mcp_expression` rules are evaluated.
 | `invalid_request` | 400 | Malformed request body |
 | `missing_event` | 400 | Required `event` field is empty |
 | `missing_phase` | 400 | Required `phase` field is empty |
-| `missing_tool_name` | 400 | Required `payload.name` field is empty |
-| `invalid_content_type` | 400 | Wrong Content-Type header |
-| `policy_evaluation_error` | 500 | CEL or AI engine failed during evaluation |
-| `internal_error` | 500 | Unexpected server error |
+| `unsupported_event` | 400 | Event type is not supported (only `tools/call`) |
+| `invalid_phase` | 400 | Phase must be `request` or `response` |
+| `missing_payload_name` | 400 | Required `payload.name` field is empty |
+| `response_phase_missing_result` | 400 | `payload.result` is required for response phase |
+| `invalid_content_type` | 415 | Wrong Content-Type header |
 
 ### Error Response Format
 
 ```json
 {
-  "error": {
-    "code": "invalid_request",
-    "message": "Request body must be valid JSON"
-  },
-  "request_id": "req-abc123"
+  "error": "invalid_request",
+  "message": "Request body must be valid JSON"
 }
 ```
 
@@ -185,7 +186,7 @@ curl -X POST http://localhost:8080/api/v1/intercept \
     },
     "context": {
       "sessionId": "session-abc123",
-      "principal": "developer@example.com"
+      "principal": {"type": "user", "id": "developer@example.com"}
     }
   }'
 ```
@@ -218,7 +219,7 @@ Or via environment variable:
 MAYBE_DONT_INTERCEPT_ENABLED=false
 ```
 
-The `shell_tool_names` list controls which tools get [dual evaluation](#shell-tool-dual-evaluation) against both `cli_expression` and `mcp_expression` CEL rules. The default is `["Bash"]`. Add tool names as they appear in the agent's tool call events:
+The `shell_tool_names` list controls which tools get [dual evaluation](#shell-tool-dual-evaluation) against both `cli_expression` and `mcp_expression` CEL rules. The default covers common shell tool names across agent frameworks: `Bash`, `execute_command`, `shell`, `run_terminal_command`, and `run_command`. Override the list to match your environment:
 
 ```yaml
 intercept:
@@ -244,7 +245,7 @@ Intercept validations appear in the [audit log](/docs/audit-log/) alongside MCP,
   },
   "context": {
     "sessionId": "session-abc123",
-    "principal": "developer@example.com"
+    "principal": {"type": "user", "id": "developer@example.com"}
   },
   "decision": "allow",
   "duration_ms": 12
