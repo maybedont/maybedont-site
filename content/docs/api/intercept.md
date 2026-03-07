@@ -49,6 +49,8 @@ This endpoint is available when the gateway is running in `http` or `sse` mode a
 | `payload.arguments` | No | object | Structured arguments passed to the tool |
 | `payload.result` | No | any | Tool output. Required when `phase` is `response` |
 | `context.sessionId` | No | string | Session identifier for audit correlation |
+| `context.traceId` | No | string | Trace identifier for distributed tracing |
+| `context.principal` | No | string | Identity of the user or agent making the request |
 
 ### Response Phase
 
@@ -71,8 +73,6 @@ When validating after execution (`"phase": "response"`), include the tool's outp
   }
 }
 ```
-| `context.traceId` | No | string | Trace identifier for distributed tracing |
-| `context.principal` | No | string | Identity of the user or agent making the request |
 
 ## Shell Tool Dual Evaluation
 
