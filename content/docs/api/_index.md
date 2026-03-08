@@ -25,6 +25,18 @@ All API endpoints accept these headers:
 | `X-Maybe-Dont-Client-ID` | No | Client identifier for audit attribution |
 | `X-Request-ID` | No | Per-request tracing ID (generated if missing) |
 
+## Choosing a Validation Surface
+
+The API endpoints listed above are not the only way to validate with Maybe Don't. The MCP gateway validates inline as a proxy. This table compares all validation surfaces to help you choose the right integration point.
+
+| Aspect | MCP Gateway | CLI Validate | Action Validate | Intercept |
+|--------|-------------|--------------|-----------------|-----------|
+| Integration | MCP proxy (inline) | REST endpoint | REST endpoint | REST endpoint |
+| Trigger | MCP tool call through gateway | External CLI wrapper | Agent framework | Agent hook script |
+| Phases | Request + response (automatic) | Request only | Request only | Request + response (caller chooses) |
+| Proxies execution | Yes | No | No | No |
+| Response format | MCP protocol | `allowed` boolean | `allowed` + `risk_level` | `valid` boolean + `messages` |
+
 ## Server Requirements
 
 API endpoints require the gateway to be running in `http` or `sse` mode (not `stdio`), since they need a network listener.
