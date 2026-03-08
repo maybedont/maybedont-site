@@ -77,12 +77,6 @@ When validating after execution (`"phase": "response"`), include the tool's outp
 }
 ```
 
-## Shell Tool Dual Evaluation
-
-Tools listed in `intercept.shell_tool_names` (default includes `Bash`, `execute_command`, `shell`, `run_terminal_command`, `run_command`) get evaluated against both `cli_expression` and `mcp_expression` [CEL rules](/docs/policies/cel-policies/). This is because shell tools blur the line between CLI commands and MCP tool calls — a `Bash` tool in Claude Code is an MCP tool call that executes a CLI command. Dual evaluation ensures policies written for either surface catch the same risky behavior.
-
-For tools not in `shell_tool_names`, only `mcp_expression` rules are evaluated.
-
 ## Response: Valid
 
 ```json
@@ -191,19 +185,6 @@ curl -X POST http://localhost:8080/api/v1/intercept \
   }'
 ```
 
-## How It Differs
-
-The intercept endpoint shares the same policy engines as the other validation surfaces but serves a different integration pattern:
-
-| | [MCP Gateway](/docs/mcp-gateway/) | [CLI Validate](/docs/api/cli-validate/) | [Action Validate](/docs/api/action-validate/) | Intercept |
-|---|---|---|---|---|
-| **Integration** | MCP proxy (inline) | REST endpoint | REST endpoint | REST endpoint |
-| **Trigger** | MCP tool call passes through gateway | External CLI wrapper calls endpoint | Agent framework calls endpoint | Agent hook script calls endpoint |
-| **Phases** | Request + response (automatic) | Request only | Request only | Request + response (caller chooses) |
-| **Shell dual eval** | No | No | No | Yes (`shell_tool_names`) |
-| **Proxies execution** | Yes | No | No | No |
-| **Response format** | MCP protocol | `allowed` boolean | `allowed` + `risk_level` | `valid` boolean + `messages` |
-
 ## Configuration
 
 The intercept endpoint is enabled by default. To disable it:
@@ -219,11 +200,10 @@ Or via environment variable:
 MAYBE_DONT_INTERCEPT_ENABLED=false
 ```
 
-The `shell_tool_names` list controls which tools get [dual evaluation](#shell-tool-dual-evaluation) against both `cli_expression` and `mcp_expression` CEL rules. The default covers common shell tool names across agent frameworks: `Bash`, `execute_command`, `shell`, `run_terminal_command`, and `run_command`. Override the list to match your environment:
+The `shell_tool_names` list tells the gateway which tool names contain CLI commands in their arguments (e.g., `Bash`, `execute_command`). When the gateway receives one of these tools, it extracts the command string and evaluates it against CLI policies. Override the defaults to match the tool names used by your agent:
 
 ```yaml
 intercept:
-  enabled: true
   shell_tool_names:
     - Bash
     - shell
