@@ -539,21 +539,29 @@
         <text x="65" y="52" text-anchor="middle" font-size="8" fill="#6b7280">Claude, Cursor, Copilot</text>
 
         <!-- Arrow: Agent → Maybe Don't -->
-        <path d="M130,38 L222,38" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
-        <text x="176" y="33" text-anchor="middle" font-size="7.5" fill="#6b7280">tool call</text>
+        <path d="M130,37 L222,37" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
+        <text x="176" y="32" text-anchor="middle" font-size="7.5" fill="#6b7280">tool call</text>
 
         <!-- Maybe Don't (MCP) -->
         <rect x="228" y="22" width="220" height="44" rx="8" fill="#f0f3ff" stroke="#1A40E5" stroke-width="1.5"/>
         <text x="338" y="49" text-anchor="middle" font-size="12" font-weight="700" fill="#1A40E5">Maybe Don't</text>
 
-        <!-- Arrow: Maybe Don't → MCP Server -->
-        <path d="M448,38 L522,38" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
-        <text x="485" y="33" text-anchor="middle" font-size="7.5" fill="#10b981" font-weight="600">ALLOW</text>
+        <!-- Arrow: Maybe Don't → MCP Server (ALLOW) -->
+        <path d="M448,37 L522,37" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowR)"/>
+        <text x="485" y="32" text-anchor="middle" font-size="7.5" fill="#10b981" font-weight="600">ALLOW</text>
 
         <!-- MCP Server -->
         <rect x="528" y="24" width="148" height="38" rx="6" fill="#fff" stroke="#d1d5db" stroke-width="1"/>
         <text x="602" y="40" text-anchor="middle" font-size="10" font-weight="600" fill="#111827">MCP Server</text>
         <text x="602" y="52" text-anchor="middle" font-size="8" fill="#6b7280">GitHub, Slack, DB, etc.</text>
+
+        <!-- Return: MCP Server → Maybe Don't -->
+        <path d="M528,50 L448,50" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowL)"/>
+        <text x="485" y="61" text-anchor="middle" font-size="7.5" fill="#6b7280">response</text>
+
+        <!-- Return: Maybe Don't → Agent (ALLOW / BLOCK) -->
+        <path d="M228,50 L130,50" fill="none" stroke="#6699FF" stroke-width="1.5" opacity="0.45" marker-end="url(#arrowL)"/>
+        <text x="176" y="61" text-anchor="middle" font-size="7.5" fill="#10b981" font-weight="600">ALLOW / BLOCK</text>
 
         <!-- ===== ROW 2: Agent Hook (callback pattern) ===== -->
         <text x="340" y="90" text-anchor="middle" font-size="9" font-weight="600" fill="#9ca3af" letter-spacing="1">AGENT HOOK</text>

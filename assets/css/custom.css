@@ -27,7 +27,7 @@
 
 /* ===== ARCH-DIAGRAM SHORTCODE ===== */
 .arch-diagram-wrap {
-  margin: 2rem 0;
+  margin: 2rem auto;
   max-width: 720px;
 }
 
