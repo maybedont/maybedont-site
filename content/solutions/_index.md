@@ -5,7 +5,7 @@ description: "Explore how Maybe Don't provides guardrails, observability, and go
 
 <div class="solutions-hero">
   <div class="solutions-hero-graphic">
-    {{< solutions-flow >}}
+    {{< arch-diagram >}}
   </div>
   <p class="solutions-hero-sub">Guardrails, observability, and governance for agentic AI. Whether you're enforcing policies, building an audit trail, or meeting compliance requirements — we have you covered.</p>
 </div>
