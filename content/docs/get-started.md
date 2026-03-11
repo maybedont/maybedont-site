@@ -105,7 +105,7 @@ validation:
   ai:
     provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-4o-mini"
+    model: "gpt-5.1"
     api_key: "${OPENAI_API_KEY}"
 ```
 

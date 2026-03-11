@@ -91,7 +91,7 @@ validation:
 
     # Model name
     # Env: MAYBE_DONT_VALIDATION_AI_MODEL
-    # Examples: gpt-4o-mini, gpt-5, claude-sonnet-4-5-20250929
+    # Examples: gpt-5.1, gpt-5, claude-sonnet-4-5-20250929
     model: ""
 
     # API key — supports ${ENV_VAR} syntax

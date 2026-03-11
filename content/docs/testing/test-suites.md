@@ -58,7 +58,7 @@ engines:
     enabled: true
     model_matrix:
       - provider: openai
-        model: gpt-4o-mini
+        model: gpt-5.1
         enabled: true
       - provider: anthropic
         model: claude-sonnet-4-5-20250929

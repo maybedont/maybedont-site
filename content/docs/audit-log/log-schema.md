@@ -74,7 +74,7 @@ Present when AI validation is enabled:
 {
   "ai": {
     "provider": "openai",
-    "model": "gpt-4o-mini",
+    "model": "gpt-5.1",
     "endpoint_host": "api.openai.com",
     "endpoint_path": "/v1/chat/completions"
   }
@@ -216,7 +216,7 @@ The `action_reason` field explains why the final action was taken:
   },
   "ai": {
     "provider": "openai",
-    "model": "gpt-4o-mini",
+    "model": "gpt-5.1",
     "endpoint_host": "api.openai.com"
   },
   "request_validation": {

@@ -15,7 +15,7 @@ maybe-dont test policies --suite-dir ./suite
 maybe-dont test policies --suite-dir ./suite --engine cel
 
 # Single AI model
-maybe-dont test policies --suite-dir ./suite --model openai:gpt-4o-mini
+maybe-dont test policies --suite-dir ./suite --model openai:gpt-5.1
 
 # Full model matrix comparison
 maybe-dont test policies --suite-dir ./suite --matrix
@@ -95,8 +95,8 @@ Model Matrix Results
 ─────────────────────────────────────────────────────
 Model                           Pass  Fail  Match %
 ─────────────────────────────────────────────────────
-openai:gpt-4o-mini              18    2     90.0%
-openai:gpt-4o                   20    0     100.0%
+openai:gpt-5.1                  18    2     90.0%
+openai:gpt-5.2                  20    0     100.0%
 anthropic:claude-sonnet-4-5     19    1     95.0%
 ─────────────────────────────────────────────────────
 ```

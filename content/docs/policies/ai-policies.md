@@ -23,7 +23,7 @@ validation:
   ai:
     provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-4o-mini"
+    model: "gpt-5.1"
     api_key: "${OPENAI_API_KEY}"
 ```
 
@@ -200,7 +200,7 @@ AI validation adds latency (typically 1-5 seconds per rule). To optimize:
 1. **Use CEL for simple checks** — AI is overkill for exact matches
 2. **Disable unused rules** — Set `enabled: false` on rules you don't need
 3. **Tune the blocking budget** — Adjust `validation.max_blocking_ms` if needed
-4. **Choose efficient models** — Smaller models like `gpt-4o-mini` are faster and often sufficient for policy evaluation
+4. **Choose efficient models** — Models like `gpt-5.1` offer a good balance of accuracy, speed, and cost for policy evaluation
 
 ## Per-Rule Mode Override
 
