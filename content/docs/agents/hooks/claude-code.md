@@ -92,8 +92,20 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 [maybe-dont] WARNING (PostToolUse): Policy violation detected — <reason>
 ```
 
+## Filtering
+
+Claude Code hooks use a `matcher` field to filter which tools trigger the hook. The matcher is a regex tested against the tool name. The default configuration uses `"Bash"` to match CLI tools only, while the [MCP gateway](/docs/mcp-gateway/) handles MCP tools.
+
+| Matcher | What it matches |
+|---------|----------------|
+| `"Bash"` | CLI tool calls only (default) |
+| `"mcp__.*"` | MCP tool calls only |
+| `"Edit\|Write"` | File editing tools |
+| `"*"` or omitted | All tools |
+
+To change what triggers the hook, update the `matcher` field in `.claude/settings.json`. See the [Claude Code hooks reference](https://code.claude.com/docs/en/hooks#matcher-patterns) for the full list of matcher patterns.
+
 ## Agent-Specific Notes
 
-- Claude Code hooks use a `matcher` field to filter which tools trigger the hook. The default `"Bash"` matches CLI tools only. Use `"*"` to match all tools.
 - `$CLAUDE_PROJECT_DIR` resolves to the project root at runtime, ensuring the hook works regardless of the agent's working directory.
 - Claude Code passes tool details as JSON on stdin to the hook script.

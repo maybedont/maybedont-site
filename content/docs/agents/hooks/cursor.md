@@ -78,6 +78,19 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 [maybe-dont] DENIED: <reason>
 ```
 
+## Filtering
+
+Cursor provides two levels of filtering. First, separate event types let you choose which surfaces to hook — `beforeShellExecution` for CLI commands and `beforeMCPExecution` for MCP tools. Second, each event supports a `matcher` field (regex) to further filter by command text or tool name.
+
+```json
+{
+  "command": ".cursor/hooks/maybe-dont-hook.sh",
+  "matcher": "kubectl|aws|terraform"
+}
+```
+
+The default configuration hooks shell events only, while the [MCP gateway](/docs/mcp-gateway/) handles MCP tools. See the [Cursor hooks documentation](https://cursor.com/docs/agent/hooks) for the full matcher reference.
+
 ## Agent-Specific Notes
 
 - Cursor supports four hook events (shell + MCP, pre + post) — the most granular hook support of any agent. The default config enables shell events only; add MCP events if not using the MCP gateway.

@@ -74,6 +74,19 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 [maybe-dont] WARNING (PostToolUse): Policy violation detected — <reason>
 ```
 
+## Filtering
+
+GitHub Copilot hooks do not support a declarative matcher — `PreToolUse` and `PostToolUse` fire for all tool calls. To filter by tool name, add conditional logic in the hook script itself:
+
+```bash
+TOOL_NAME=$(echo "$INPUT" | jq -r '.toolName')
+if [ "$TOOL_NAME" != "bash" ]; then
+  exit 0  # Allow non-CLI tools without validation
+fi
+```
+
+See the [GitHub Copilot hooks documentation](https://docs.github.com/en/copilot/reference/hooks-configuration) for the full configuration reference.
+
 ## Agent-Specific Notes
 
 - The CLI agent name is `copilot` (not `github-copilot`): `maybe-dont hooks export --agent copilot`.

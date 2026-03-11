@@ -69,6 +69,30 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 [maybe-dont] WARNING (PostToolUse): Policy violation detected — <reason>
 ```
 
+## Filtering
+
+Cline hooks support a `matcher` field using Claude Code-compatible regex syntax. The matcher filters which tools trigger the hook based on tool name.
+
+```json
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": ".*",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".clinerules/hooks/maybe-dont-hook.sh"
+          }
+        ]
+      }
+    ]
+  }
+}
+```
+
+Use a specific pattern like `"execute_command"` to match only CLI tools, or `".*"` to match all tools. See the [Cline hooks documentation](https://docs.cline.bot/features/hooks) for details.
+
 ## Agent-Specific Notes
 
 - The reference hook scripts are bash — they require macOS or Linux. On Windows, you can write your own hook in any language that calls the [intercept endpoint](/docs/api/intercept/).
