@@ -14,11 +14,12 @@ This guide shows how to integrate [GitHub Copilot](https://github.com/features/c
 
 ## Install the Hook
 
-Export the hook script and make it executable:
+Export the hook script into your project's `.github/hooks/` directory:
 
 ```bash
-maybe-dont hooks export --agent github-copilot > maybe-dont-hook.sh
-chmod +x maybe-dont-hook.sh
+mkdir -p .github/hooks
+maybe-dont hooks export --agent copilot > .github/hooks/maybe-dont-hook.sh
+chmod +x .github/hooks/maybe-dont-hook.sh
 ```
 
 ## Configure GitHub Copilot
@@ -26,16 +27,26 @@ chmod +x maybe-dont-hook.sh
 Export the config snippet:
 
 ```bash
-maybe-dont hooks export --agent github-copilot --config
+maybe-dont hooks export --agent copilot --config
 ```
 
-This outputs a JSON snippet to place in `.github/hooks/`:
+This outputs a JSON configuration to save as `.github/hooks/maybe-dont.json`. Update the command path to where you placed the hook script:
 
 ```json
 {
   "hooks": {
-    "PreToolUse": "./maybe-dont-hook.sh",
-    "PostToolUse": "./maybe-dont-hook.sh"
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": ".github/hooks/maybe-dont-hook.sh"
+      }
+    ],
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": ".github/hooks/maybe-dont-hook.sh"
+      }
+    ]
   }
 }
 ```
@@ -55,12 +66,17 @@ export MAYBE_DONT_URL="http://localhost:8080"
 
 ## Verify It Works
 
-Open VS Code with Copilot and trigger a tool call. Check the gateway's [audit log](/docs/audit-log/) for entries from the hook.
+Open VS Code with Copilot and trigger a tool call. Check the gateway's [audit log](/docs/audit-log/) for entries — you should see an intercept record for the tool call.
 
-The hook writes status messages to stderr. You should see lines indicating allow/deny decisions.
+The hook is silent on allow. On deny, you'll see stderr output like:
+
+```
+[maybe-dont] WARNING (PostToolUse): Policy violation detected — <reason>
+```
 
 ## Agent-Specific Notes
 
+- The CLI agent name is `copilot` (not `github-copilot`): `maybe-dont hooks export --agent copilot`.
 - The same hooks work for Cody and VS Code Copilot — the hook format is shared across VS Code extensions.
 - Hook configuration lives in `.github/hooks/*.json` in your project root.
 - GitHub Copilot passes tool details as JSON on stdin to the hook script.

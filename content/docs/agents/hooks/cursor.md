@@ -14,11 +14,12 @@ This guide shows how to integrate [Cursor](https://cursor.sh) with Maybe Don't u
 
 ## Install the Hook
 
-Export the hook script and make it executable:
+Export the hook script into your project's `.cursor/hooks/` directory:
 
 ```bash
-maybe-dont hooks export --agent cursor > maybe-dont-hook.sh
-chmod +x maybe-dont-hook.sh
+mkdir -p .cursor/hooks
+maybe-dont hooks export --agent cursor > .cursor/hooks/maybe-dont-hook.sh
+chmod +x .cursor/hooks/maybe-dont-hook.sh
 ```
 
 ## Configure Cursor
@@ -29,18 +30,28 @@ Export the config snippet:
 maybe-dont hooks export --agent cursor --config
 ```
 
-This outputs the configuration to add to `.cursor/hooks/`. Cursor supports four hook events — the most granular hook support of any agent:
+This outputs the configuration to save as `.cursor/hooks/hooks.json`. Update the command path to where you placed the hook script. The default configuration validates shell commands via hooks while the [MCP gateway](/docs/mcp-gateway/) handles MCP tools:
 
 ```json
 {
   "hooks": {
-    "beforeShellExecution": "./maybe-dont-hook.sh",
-    "afterShellExecution": "./maybe-dont-hook.sh",
-    "beforeMCPExecution": "./maybe-dont-hook.sh",
-    "afterMCPExecution": "./maybe-dont-hook.sh"
+    "beforeShellExecution": [
+      {
+        "command": ".cursor/hooks/maybe-dont-hook.sh"
+      }
+    ],
+    "afterShellExecution": [
+      {
+        "command": ".cursor/hooks/maybe-dont-hook.sh"
+      }
+    ]
   }
 }
 ```
+
+{{< callout type="info" >}}
+**Using hooks without the MCP gateway?** Add `beforeMCPExecution` and `afterMCPExecution` entries with the same command to also validate MCP tool calls via hooks. The `afterMCPExecution` hook uniquely supports output redaction via the gateway's mutation response. See the comments in the exported config for details.
+{{< /callout >}}
 
 Set the gateway URL before launching Cursor:
 
@@ -59,12 +70,16 @@ export MAYBE_DONT_URL="http://localhost:8080"
 
 ## Verify It Works
 
-Open Cursor and trigger a tool call or shell command. Check the gateway's [audit log](/docs/audit-log/) for entries from the hook.
+Open Cursor and run a shell command. Check the gateway's [audit log](/docs/audit-log/) for entries — you should see an intercept record for the command.
 
-The hook writes status messages to stderr. You should see lines indicating allow/deny decisions for each event.
+The hook is silent on allow. On deny, you'll see stderr output like:
+
+```
+[maybe-dont] DENIED: <reason>
+```
 
 ## Agent-Specific Notes
 
-- Cursor has the most granular hook support — separate events for shell and MCP, both pre and post.
+- Cursor supports four hook events (shell + MCP, pre + post) — the most granular hook support of any agent. The default config enables shell events only; add MCP events if not using the MCP gateway.
 - The `afterMCPExecution` event supports output mutation, meaning the hook can redact sensitive data from tool responses before Cursor sees them.
 - Cursor passes hook context as JSON on stdin.

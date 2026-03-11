@@ -14,11 +14,12 @@ This guide shows how to integrate [Gemini CLI](https://github.com/google-gemini/
 
 ## Install the Hook
 
-Export the hook script and make it executable:
+Export the hook script into your project's `.gemini/hooks/` directory:
 
 ```bash
-maybe-dont hooks export --agent gemini-cli > maybe-dont-hook.sh
-chmod +x maybe-dont-hook.sh
+mkdir -p .gemini/hooks
+maybe-dont hooks export --agent gemini-cli > .gemini/hooks/maybe-dont-hook.sh
+chmod +x .gemini/hooks/maybe-dont-hook.sh
 ```
 
 ## Configure Gemini CLI
@@ -29,13 +30,23 @@ Export the config snippet:
 maybe-dont hooks export --agent gemini-cli --config
 ```
 
-This outputs a JSON snippet to merge into your Gemini CLI `settings.json`:
+This outputs a JSON snippet to merge into your Gemini CLI `settings.json`. Update the command path to where you placed the hook script:
 
 ```json
 {
   "hooks": {
-    "BeforeTool": "./maybe-dont-hook.sh",
-    "AfterTool": "./maybe-dont-hook.sh"
+    "BeforeTool": [
+      {
+        "type": "command",
+        "command": ".gemini/hooks/maybe-dont-hook.sh"
+      }
+    ],
+    "AfterTool": [
+      {
+        "type": "command",
+        "command": ".gemini/hooks/maybe-dont-hook.sh"
+      }
+    ]
   }
 }
 ```
@@ -55,13 +66,17 @@ export MAYBE_DONT_URL="http://localhost:8080"
 
 ## Verify It Works
 
-Start Gemini CLI and trigger a tool call. Check the gateway's [audit log](/docs/audit-log/) for entries from the hook:
+Start Gemini CLI and trigger a tool call. Check the gateway's [audit log](/docs/audit-log/) for entries — you should see an intercept record for the tool call.
 
 ```bash
 gemini
 ```
 
-The hook writes status messages to stderr. You should see lines indicating allow/deny decisions.
+The hook is silent on allow. On deny, you'll see stderr output like:
+
+```
+[maybe-dont] WARNING (AfterTool): Policy violation detected for '<tool_name>' — <reason>
+```
 
 ## Agent-Specific Notes
 

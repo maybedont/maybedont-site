@@ -14,11 +14,12 @@ This guide shows how to integrate [Claude Code](https://docs.anthropic.com/en/do
 
 ## Install the Hook
 
-Export the hook script and make it executable:
+Export the hook script into your project's `.claude/hooks/` directory:
 
 ```bash
-maybe-dont hooks export --agent claude-code > maybe-dont-hook.sh
-chmod +x maybe-dont-hook.sh
+mkdir -p .claude/hooks
+maybe-dont hooks export --agent claude-code > .claude/hooks/maybe-dont-hook.sh
+chmod +x .claude/hooks/maybe-dont-hook.sh
 ```
 
 ## Configure Claude Code
@@ -29,26 +30,40 @@ Export the config snippet and add it to your Claude Code settings:
 maybe-dont hooks export --agent claude-code --config
 ```
 
-This outputs a JSON snippet to merge into `.claude/settings.json`. The configuration registers the hook script for the `PreToolUse` and `PostToolUse` events:
+This outputs a JSON snippet to merge into `.claude/settings.json`. Update the command path to where you placed the hook script. The default configuration uses `"matcher": "Bash"` to validate CLI tool calls via hooks while the [MCP gateway](/docs/mcp-gateway/) handles MCP tools:
 
 ```json
 {
   "hooks": {
     "PreToolUse": [
       {
-        "matcher": "*",
-        "hooks": ["./maybe-dont-hook.sh"]
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/maybe-dont-hook.sh"
+          }
+        ]
       }
     ],
     "PostToolUse": [
       {
-        "matcher": "*",
-        "hooks": ["./maybe-dont-hook.sh"]
+        "matcher": "Bash",
+        "hooks": [
+          {
+            "type": "command",
+            "command": ".claude/hooks/maybe-dont-hook.sh"
+          }
+        ]
       }
     ]
   }
 }
 ```
+
+{{< callout type="info" >}}
+**Using hooks without the MCP gateway?** Change the matcher to `"*"` to validate all tool calls (both CLI and MCP) via hooks, or add a second entry with `"matcher": "mcp__.*"` for MCP tools specifically. See the comments in the exported config for details.
+{{< /callout >}}
 
 Set the gateway URL before starting Claude Code:
 
@@ -65,20 +80,20 @@ export MAYBE_DONT_URL="http://localhost:8080"
 
 ## Verify It Works
 
-Start Claude Code and trigger a tool call. Check the gateway's [audit log](/docs/audit-log/) for entries from the hook:
+Start Claude Code and trigger a tool call. Check the gateway's [audit log](/docs/audit-log/) for entries — you should see an intercept record for the tool call.
 
 ```bash
 claude
 ```
 
-The hook writes status messages to stderr. You should see lines like:
+The hook is silent on allow. On deny, you'll see stderr output like:
 
 ```
-[maybe-dont] PreToolUse: allowed (tool: Bash)
+[maybe-dont] WARNING (PostToolUse): Policy violation detected — <reason>
 ```
 
 ## Agent-Specific Notes
 
-- Claude Code hooks use a `matcher` field to filter which tools trigger the hook. Use `"*"` to match all tools.
+- Claude Code hooks use a `matcher` field to filter which tools trigger the hook. The default `"Bash"` matches CLI tools only. Use `"*"` to match all tools.
 - The hook script path in the config is relative to the project root.
 - Claude Code passes tool details as JSON on stdin to the hook script.

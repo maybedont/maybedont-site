@@ -42,15 +42,28 @@ Maybe Don't provides guardrails and observability for agentic AI. It sits betwee
 
 - [Logging]({{ $base }}docs/configuration/logging/): Application and audit log configuration
 
-## Agent Setup Guides
+## Agent Integrations
 
-- [Claude Code]({{ $base }}docs/agents/mcp/claude-code/): Connect Anthropic's CLI assistant
-- [GitHub Copilot]({{ $base }}docs/agents/mcp/github-copilot/): Connect GitHub's AI assistant in VS Code
-- [Cursor]({{ $base }}docs/agents/mcp/cursor/): Connect the AI-powered code editor
-- [OpenAI Codex]({{ $base }}docs/agents/mcp/openai-codex/): Connect OpenAI's coding CLI
-- [Gemini Code Assist]({{ $base }}docs/agents/mcp/gemini-code-assist/): Connect Google's AI assistant
-- [OpenHands]({{ $base }}docs/agents/mcp/openhands/): Connect the open-source AI developer
-- [Cody]({{ $base }}docs/agents/mcp/cody/): Connect Sourcegraph's coding assistant
+- [Agents Overview]({{ $base }}docs/agents/): Choosing between MCP gateway, hooks, and skills
+
+### MCP Gateway Connections
+
+- [Claude Code]({{ $base }}docs/agents/mcp/claude-code/): Connect Anthropic's CLI assistant via MCP
+- [GitHub Copilot]({{ $base }}docs/agents/mcp/github-copilot/): Connect GitHub's AI assistant via MCP
+- [Cursor]({{ $base }}docs/agents/mcp/cursor/): Connect the AI-powered code editor via MCP
+- [OpenAI Codex]({{ $base }}docs/agents/mcp/openai-codex/): Connect OpenAI's coding CLI via MCP
+- [Gemini Code Assist]({{ $base }}docs/agents/mcp/gemini-code-assist/): Connect Google's AI assistant via MCP
+- [OpenHands]({{ $base }}docs/agents/mcp/openhands/): Connect the open-source AI developer via MCP
+- [Cody]({{ $base }}docs/agents/mcp/cody/): Connect Sourcegraph's coding assistant via MCP
+
+### Hook Integrations
+
+- [Hooks Overview]({{ $base }}docs/agents/hooks/): Integrate agents via hook scripts and the intercept endpoint
+- [Claude Code Hooks]({{ $base }}docs/agents/hooks/claude-code/): Claude Code PreToolUse/PostToolUse hooks
+- [Cursor Hooks]({{ $base }}docs/agents/hooks/cursor/): Cursor shell and MCP execution hooks
+- [Gemini CLI Hooks]({{ $base }}docs/agents/hooks/gemini-cli/): Gemini CLI BeforeTool/AfterTool hooks
+- [Cline Hooks]({{ $base }}docs/agents/hooks/cline/): Cline preToolUse/postToolUse hooks
+- [GitHub Copilot Hooks]({{ $base }}docs/agents/hooks/github-copilot/): GitHub Copilot PreToolUse/PostToolUse hooks
 
 ## Solutions
 

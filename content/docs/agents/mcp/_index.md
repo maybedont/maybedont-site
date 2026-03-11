@@ -81,6 +81,6 @@ request_validation:
 
 Save this as `config/maybe-dont.yaml` and start with:
 
-{{< docker-run >}}
+{{% docker-run %}}
 
 Now follow the guide for your specific AI agent.

@@ -33,9 +33,10 @@ If the gateway is unreachable, hooks allow the tool call with a warning to stder
 # List available hook scripts
 maybe-dont hooks list
 
-# Export hook script
-maybe-dont hooks export --agent claude-code > maybe-dont-hook.sh
-chmod +x maybe-dont-hook.sh
+# Export hook script to the agent's config directory
+mkdir -p .claude/hooks
+maybe-dont hooks export --agent claude-code > .claude/hooks/maybe-dont-hook.sh
+chmod +x .claude/hooks/maybe-dont-hook.sh
 
 # Export agent config snippet
 maybe-dont hooks export --agent claude-code --config
