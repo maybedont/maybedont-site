@@ -52,7 +52,7 @@ engines:
     enabled: true
     model_matrix:
       - provider: openai
-        model: gpt-4o-mini
+        model: gpt-5.1
         enabled: true
 ```
 
@@ -154,10 +154,10 @@ engines:
     enabled: true
     model_matrix:
       - provider: openai
-        model: gpt-4o-mini
+        model: gpt-5.1
         enabled: true
       - provider: openai
-        model: gpt-4o
+        model: gpt-5.2
         enabled: true
       - provider: anthropic
         model: claude-sonnet-4-5-20250929
@@ -170,7 +170,7 @@ Use the `--matrix` flag to run all enabled models and produce a comparison table
 maybe-dont test policies --suite-dir ./suite --matrix
 ```
 
-Think of it like a benchmark: "Does `gpt-4o-mini` meet 95% accuracy on our deny rules? How about `claude-sonnet`?"
+Think of it like a benchmark: "Does `gpt-5.1` meet 95% accuracy on our deny rules? How about `claude-sonnet`?"
 
 ## Acceptance Thresholds
 
