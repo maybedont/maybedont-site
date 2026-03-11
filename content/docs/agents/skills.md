@@ -1,7 +1,13 @@
 ---
 title: Skills
-weight: 38
+weight: 3
+aliases:
+  - /docs/skills/
 ---
+
+{{< callout type="info" >}}
+**For runtime policy enforcement, use [Hooks](/docs/agents/hooks/).** Skills are for teaching agents to author policies and test cases.
+{{< /callout >}}
 
 Maybe Don't ships AI agent skills — pre-written instructions embedded in the binary that teach AI coding agents how to use the gateway's features. Export them and give them to your agent.
 
@@ -13,7 +19,7 @@ Skills are prompt templates. They contain schema references, examples, and instr
 
 | Skill | Description |
 |-------|-------------|
-| `cli` | Teaches an agent to route CLI commands through the proxy |
+| `cli` | Teaches an agent to route CLI commands through the proxy. Use [hooks](/docs/agents/hooks/) instead when available — the CLI skill is a fallback for agents that don't support hooks. |
 | `cel-policy` | Guide for authoring CEL deterministic policy rules |
 | `ai-policy` | Guide for authoring AI LLM-powered policy rules |
 | `test-case` | Guide for writing policy test cases and configuring test suites |

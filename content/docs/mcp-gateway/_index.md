@@ -41,5 +41,5 @@ All operations are logged to the [audit log](/docs/audit-log/).
 {{< cards >}}
   {{< card link="downstream-servers" title="Downstream Servers" icon="server" subtitle="Configure MCP servers to proxy" >}}
   {{< card link="server-modes" title="Server" icon="chip" subtitle="Transport modes, listen address, trusted proxies" >}}
-  {{< card link="examples" title="Agents" icon="code" subtitle="Connect your AI coding assistant" >}}
+  {{< card link="/docs/agents/mcp" title="Agents" icon="code" subtitle="Connect your AI coding assistant" >}}
 {{< /cards >}}

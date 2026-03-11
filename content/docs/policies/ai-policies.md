@@ -229,5 +229,5 @@ logger:
 Or check the [audit log](/docs/audit-log/) for detailed validation results including the AI's reasoning.
 
 {{< callout type="tip" >}}
-**Want help writing AI policies?** The built-in `ai-policy` skill teaches your AI agent how to author policies. See [Skills](/docs/skills/) to learn how to export it, or run `maybe-dont skill view ai-policy` to see what it contains.
+**Want help writing AI policies?** The built-in `ai-policy` skill teaches your AI agent how to author policies. See [Skills](/docs/agents/skills/) to learn how to export it, or run `maybe-dont skill view ai-policy` to see what it contains.
 {{< /callout >}}

@@ -73,4 +73,11 @@ Think of it as a security checkpoint for your AI's actions. Every tool call and 
   <span class="solutions-card-link">Read guide <i class="fa-solid fa-arrow-right"></i></span>
 </a>
 
+<a href="agents" class="solutions-card-v2">
+  <div class="solutions-card-icon"><i class="fa-solid fa-robot"></i></div>
+  <h3>Agents</h3>
+  <p>Connect your AI coding assistant</p>
+  <span class="solutions-card-link">Read guide <i class="fa-solid fa-arrow-right"></i></span>
+</a>
+
 </div>

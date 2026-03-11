@@ -1,13 +1,15 @@
 ---
 title: Cody
 weight: 7
+aliases:
+  - /docs/mcp-gateway/examples/connecting-cody/
 ---
 
 [Cody](https://sourcegraph.com/cody) is Sourcegraph's AI coding assistant. This guide covers connecting Cody to Maybe Don't.
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - [Cody installed](https://sourcegraph.com/cody) in VS Code
 - A GitHub Personal Access Token
 

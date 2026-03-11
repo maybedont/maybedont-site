@@ -1,6 +1,8 @@
 ---
 title: OpenHands
 weight: 6
+aliases:
+  - /docs/mcp-gateway/examples/connecting-openhands/
 ---
 
 [OpenHands](https://github.com/All-Hands-AI/OpenHands) is an open-source AI software development agent. This guide shows how to route OpenHands' MCP connections through Maybe Don't.
@@ -11,7 +13,7 @@ weight: 6
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - [OpenHands installed](https://github.com/All-Hands-AI/OpenHands)
 - A GitHub Personal Access Token
 

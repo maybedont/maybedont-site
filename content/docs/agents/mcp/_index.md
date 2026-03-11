@@ -1,9 +1,13 @@
 ---
-title: Agents
-weight: 10
+title: MCP
+weight: 1
+aliases:
+  - /docs/mcp-gateway/examples/
 ---
 
-These guides show how to connect popular AI coding assistants to Maybe Don't. Each example uses [GitHub's MCP server](https://github.com/github/github-mcp-server) as the downstream service — it's a practical example since most developers already have a GitHub account. Substitute any MCP server you like; the agent-side wiring is the same.
+These guides show how to connect AI coding agents to Maybe Don't via the [MCP gateway](/docs/mcp-gateway/) proxy. The gateway sits between your agent and your MCP servers, evaluating every tool call against your policies before it reaches the downstream server.
+
+Each example uses [GitHub's MCP server](https://github.com/github/github-mcp-server) as the downstream service — it's a practical example since most developers already have a GitHub account. Substitute any MCP server you like; the agent-side wiring is the same.
 
 ## Prerequisites
 
@@ -16,13 +20,13 @@ Before following any of these guides, you'll need:
 ## Choose Your Agent
 
 {{< cards >}}
-  {{< card link="connecting-claude-code" title="Claude Code" subtitle="Anthropic's CLI coding assistant" >}}
-  {{< card link="connecting-github-copilot" title="GitHub Copilot" subtitle="GitHub's AI coding assistant" >}}
-  {{< card link="connecting-cursor" title="Cursor" subtitle="AI-powered code editor" >}}
-  {{< card link="connecting-openai-codex" title="OpenAI Codex" subtitle="OpenAI's coding CLI" >}}
-  {{< card link="connecting-gemini" title="Gemini Code Assist" subtitle="Google's AI coding assistant" >}}
-  {{< card link="connecting-openhands" title="OpenHands" subtitle="Open-source AI developer" >}}
-  {{< card link="connecting-cody" title="Cody" subtitle="Sourcegraph's coding assistant" >}}
+  {{< card link="claude-code" title="Claude Code" subtitle="Anthropic's CLI coding assistant" >}}
+  {{< card link="github-copilot" title="GitHub Copilot" subtitle="GitHub's AI coding assistant" >}}
+  {{< card link="cursor" title="Cursor" subtitle="AI-powered code editor" >}}
+  {{< card link="openai-codex" title="OpenAI Codex" subtitle="OpenAI's coding CLI" >}}
+  {{< card link="gemini-code-assist" title="Gemini Code Assist" subtitle="Google's AI coding assistant" >}}
+  {{< card link="openhands" title="OpenHands" subtitle="Open-source AI developer" >}}
+  {{< card link="cody" title="Cody" subtitle="Sourcegraph's coding assistant" >}}
 {{< /cards >}}
 
 ## Common Pattern

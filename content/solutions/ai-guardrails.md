@@ -64,7 +64,7 @@ Model safety features (like those in Claude or ChatGPT) filter content during in
 Policy evaluation typically adds single-digit milliseconds to each operation. For most use cases, the latency is imperceptible.
 
 **Can I use AI guardrails with any AI agent?**
-Maybe Don't works with any agent that connects via MCP or executes CLI commands. This includes [Claude Code](/docs/mcp-gateway/examples/connecting-claude-code/), [Cursor](/docs/mcp-gateway/examples/connecting-cursor/), [GitHub Copilot](/docs/mcp-gateway/examples/connecting-github-copilot/), and [others](/docs/mcp-gateway/examples/). See our agent setup guides for specific instructions.
+Maybe Don't works with any agent that connects via MCP or executes CLI commands. This includes [Claude Code](/docs/agents/mcp/claude-code/), [Cursor](/docs/agents/mcp/cursor/), [GitHub Copilot](/docs/agents/mcp/github-copilot/), and [others](/docs/agents/). See our [agent integration guides](/docs/agents/) for specific instructions.
 
 **Can I start without blocking anything?**
 Yes. Audit-only mode logs every operation without enforcing policies. This is the recommended way to start — observe, learn, then enforce. See the [get started guide](/docs/get-started/) for details.

@@ -5,7 +5,7 @@ weight: 2
 
 The action validation endpoint is a pre-execution safety check for agent frameworks. Before an AI agent runs an action — a shell command, file operation, or tool call — it sends the action here for policy evaluation and receives a risk level back. The agent decides what to do with the verdict.
 
-This endpoint is designed for [OpenHands](https://github.com/All-Hands-AI/OpenHands) and any agent framework that supports pluggable security analyzers. See [Connecting OpenHands](/docs/mcp-gateway/examples/connecting-openhands/) for the full integration guide.
+This endpoint is designed for [OpenHands](https://github.com/All-Hands-AI/OpenHands) and any agent framework that supports pluggable security analyzers. See [Connecting OpenHands](/docs/agents/mcp/openhands/) for the full integration guide.
 
 ## Endpoint
 

@@ -12,6 +12,10 @@ The CLI gateway extends policy enforcement beyond MCP to traditional command-lin
 
 The same policy engine that evaluates MCP tool calls also evaluates CLI commands. One set of rules, two surfaces.
 
+{{< callout type="info" >}}
+**Prefer hooks for CLI enforcement.** If your agent supports hooks, use [agent hooks](/docs/agents/hooks/) instead of routing commands through `maybe-dont cli`. Hooks call the gateway's intercept endpoint directly and enforce policy decisions deterministically — no LLM compliance required. The CLI gateway remains available for agents without hook support.
+{{< /callout >}}
+
 ## How It Works
 
 <div class="solutions-hero-graphic" style="margin: 1.5rem 0;">

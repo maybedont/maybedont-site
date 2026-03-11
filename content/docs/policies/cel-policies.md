@@ -232,5 +232,5 @@ request_validation:
 Review the [audit log](/docs/audit-log/) for entries showing `"decision": "deny"` to see what would be blocked. When you're ready to test systematically, see [Testing](/docs/testing/).
 
 {{< callout type="tip" >}}
-**Want help writing CEL policies?** The built-in `cel-policy` skill teaches your AI agent how to author rules. See [Skills](/docs/skills/) to learn how to export it, or run `maybe-dont skill view cel-policy` to see what it contains.
+**Want help writing CEL policies?** The built-in `cel-policy` skill teaches your AI agent how to author rules. See [Skills](/docs/agents/skills/) to learn how to export it, or run `maybe-dont skill view cel-policy` to see what it contains.
 {{< /callout >}}

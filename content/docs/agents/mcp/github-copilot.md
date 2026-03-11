@@ -1,13 +1,15 @@
 ---
 title: GitHub Copilot
-weight: 2
+weight: 4
+aliases:
+  - /docs/mcp-gateway/examples/connecting-github-copilot/
 ---
 
 [GitHub Copilot](https://github.com/features/copilot) is GitHub's AI coding assistant, available in VS Code, JetBrains, and other IDEs. This guide shows how to route Copilot's MCP connections through Maybe Don't.
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - [GitHub Copilot](https://github.com/features/copilot) active in VS Code (v1.102+)
 - A GitHub Personal Access Token
 

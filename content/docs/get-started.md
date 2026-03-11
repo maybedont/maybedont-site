@@ -152,10 +152,11 @@ Check the audit log for entries. If you see log output, the gateway is intercept
 
 ## What's Next?
 
-Two paths depending on what you're here for:
+Three paths depending on what you're here for:
 
-- **"I want to proxy MCP tool calls"** — Set up your [downstream servers](/docs/mcp-gateway/downstream-servers/) and connect your [AI agent](/docs/mcp-gateway/examples/)
+- **"I want to proxy MCP tool calls"** — Set up your [downstream servers](/docs/mcp-gateway/downstream-servers/) and connect your [AI agent](/docs/agents/mcp/)
 - **"I want to validate CLI commands"** — Set up the [CLI gateway](/docs/cli-gateway/)
+- **"I want to use hooks"** — See all [agent integrations](/docs/agents/) including hooks, MCP, and skills
 
 Then explore:
 
