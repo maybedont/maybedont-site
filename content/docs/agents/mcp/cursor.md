@@ -1,13 +1,15 @@
 ---
 title: Cursor
-weight: 3
+weight: 2
+aliases:
+  - /docs/mcp-gateway/examples/connecting-cursor/
 ---
 
 [Cursor](https://cursor.sh) is an AI-powered code editor. This guide shows how to route Cursor's MCP connections through Maybe Don't.
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - [Cursor installed](https://cursor.sh) (v0.48.0+ for HTTP support)
 - A GitHub Personal Access Token
 

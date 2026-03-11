@@ -1,13 +1,15 @@
 ---
 title: Gemini Code Assist
-weight: 5
+weight: 3
+aliases:
+  - /docs/mcp-gateway/examples/connecting-gemini/
 ---
 
 [Gemini Code Assist](https://cloud.google.com/gemini/docs/codeassist) is Google's AI coding assistant. This guide shows how to route Gemini's MCP connections through Maybe Don't.
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - Gemini Code Assist set up in your IDE
 - A GitHub Personal Access Token
 

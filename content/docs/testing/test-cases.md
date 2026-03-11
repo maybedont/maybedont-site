@@ -158,7 +158,7 @@ Maintain a consistent set of tags across your test suite:
 
 ## Copy-Pasteable Schemas
 
-YAML schemas you can copy into an AI chat or skill prompt. For annotated versions with field descriptions, see [Skills — Schema Reference](/docs/skills/#schema-reference).
+YAML schemas you can copy into an AI chat or skill prompt. For annotated versions with field descriptions, see [Skills — Schema Reference](/docs/agents/skills/#schema-reference).
 
 ### CEL Request Rule Schema
 
@@ -204,5 +204,5 @@ expectations:
 ```
 
 {{< callout type="tip" >}}
-**Want help writing test cases?** The built-in `test-case` skill teaches your AI agent how to write tests. Run `maybe-dont skill view test-case` to see what it contains, or see [Skills](/docs/skills/) to learn how to export it.
+**Want help writing test cases?** The built-in `test-case` skill teaches your AI agent how to write tests. Run `maybe-dont skill view test-case` to see what it contains, or see [Skills](/docs/agents/skills/) to learn how to export it.
 {{< /callout >}}

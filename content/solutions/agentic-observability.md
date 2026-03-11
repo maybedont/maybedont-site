@@ -70,7 +70,7 @@ Audit logging is asynchronous and does not add latency to the policy evaluation 
 Yes. Audit records are structured JSON that can be queried, filtered, and analyzed with standard tooling. See the [log schema reference](/docs/audit-log/log-schema/).
 
 **Which AI agents are supported?**
-Maybe Don't works with any agent that connects via MCP — [Claude Code](/docs/mcp-gateway/examples/connecting-claude-code/), [Cursor](/docs/mcp-gateway/examples/connecting-cursor/), [GitHub Copilot](/docs/mcp-gateway/examples/connecting-github-copilot/), and [more](/docs/mcp-gateway/examples/). If it speaks MCP, you get full observability.
+Maybe Don't works with any agent that connects via MCP — [Claude Code](/docs/agents/mcp/claude-code/), [Cursor](/docs/agents/mcp/cursor/), [GitHub Copilot](/docs/agents/mcp/github-copilot/), and [more](/docs/agents/). If it speaks MCP, you get full observability.
 
 ---
 

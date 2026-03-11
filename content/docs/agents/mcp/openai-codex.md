@@ -1,13 +1,15 @@
 ---
 title: OpenAI Codex
-weight: 4
+weight: 5
+aliases:
+  - /docs/mcp-gateway/examples/connecting-openai-codex/
 ---
 
 [OpenAI Codex CLI](https://github.com/openai/codex) is OpenAI's command-line coding assistant. This guide shows how to route Codex's MCP connections through Maybe Don't.
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - OpenAI Codex CLI installed
 - A GitHub Personal Access Token
 

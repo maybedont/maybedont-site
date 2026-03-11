@@ -1,13 +1,15 @@
 ---
 title: Claude Code
 weight: 1
+aliases:
+  - /docs/mcp-gateway/examples/connecting-claude-code/
 ---
 
 [Claude Code](https://docs.anthropic.com/en/docs/claude-code) is Anthropic's CLI coding assistant. This guide shows how to route Claude Code's MCP connections through Maybe Don't.
 
 ## Prerequisites
 
-- Maybe Don't running (see [Agents overview](/docs/mcp-gateway/examples/))
+- Maybe Don't running (see [MCP overview](/docs/agents/mcp/))
 - [Claude Code installed](https://docs.anthropic.com/en/docs/claude-code)
 - A GitHub Personal Access Token
 

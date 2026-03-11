@@ -189,7 +189,7 @@ The `test-case` skill teaches your AI agent how to write test cases. Export it a
 maybe-dont skill view test-case --format claude > .claude/skills/test-case.md
 ```
 
-The docs here teach you the best practices and mental model. The skills give your agent the schema knowledge to do the heavy lifting. See [Skills](/docs/skills/) for more.
+The docs here teach you the best practices and mental model. The skills give your agent the schema knowledge to do the heavy lifting. See [Skills](/docs/agents/skills/) for more.
 
 {{< cards >}}
   {{< card link="test-cases" title="Cases" icon="document-text" subtitle="Schema reference and examples" >}}

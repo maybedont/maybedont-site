@@ -121,5 +121,5 @@ cel_request_rules/
 ```
 
 {{< callout type="tip" >}}
-**Let your AI agent help.** The built-in `ai-policy`, `cel-policy`, and `test-case` skills teach your agent how to write policies and tests. See [Skills](/docs/skills/) to learn how to export them.
+**Let your AI agent help.** The built-in `ai-policy`, `cel-policy`, and `test-case` skills teach your agent how to write policies and tests. See [Skills](/docs/agents/skills/) to learn how to export them.
 {{< /callout >}}
