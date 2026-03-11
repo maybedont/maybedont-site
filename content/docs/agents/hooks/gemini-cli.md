@@ -18,8 +18,8 @@ Export the hook script into your project's `.gemini/hooks/` directory:
 
 ```bash
 mkdir -p .gemini/hooks
-maybe-dont hooks export --agent gemini-cli > .gemini/hooks/maybe-dont-hook.sh
-chmod +x .gemini/hooks/maybe-dont-hook.sh
+maybe-dont hooks export --agent gemini-cli > $GEMINI_PROJECT_DIR/.gemini/hooks/maybe-dont-hook.sh
+chmod +x $GEMINI_PROJECT_DIR/.gemini/hooks/maybe-dont-hook.sh
 ```
 
 ## Configure Gemini CLI
@@ -38,13 +38,13 @@ This outputs a JSON snippet to merge into your Gemini CLI `settings.json`. Updat
     "BeforeTool": [
       {
         "type": "command",
-        "command": ".gemini/hooks/maybe-dont-hook.sh"
+        "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/maybe-dont-hook.sh"
       }
     ],
     "AfterTool": [
       {
         "type": "command",
-        "command": ".gemini/hooks/maybe-dont-hook.sh"
+        "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/maybe-dont-hook.sh"
       }
     ]
   }
@@ -81,4 +81,5 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 ## Agent-Specific Notes
 
 - Gemini CLI hooks apply to the CLI tool only — not the Gemini Code Assist IDE extension.
+- `$GEMINI_PROJECT_DIR` resolves to the project root at runtime, ensuring the hook works regardless of the agent's working directory.
 - Gemini CLI passes tool details as JSON on stdin to the hook script.

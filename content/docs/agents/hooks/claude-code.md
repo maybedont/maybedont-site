@@ -18,8 +18,8 @@ Export the hook script into your project's `.claude/hooks/` directory:
 
 ```bash
 mkdir -p .claude/hooks
-maybe-dont hooks export --agent claude-code > .claude/hooks/maybe-dont-hook.sh
-chmod +x .claude/hooks/maybe-dont-hook.sh
+maybe-dont hooks export --agent claude-code > $CLAUDE_PROJECT_DIR/.claude/hooks/maybe-dont-hook.sh
+chmod +x $CLAUDE_PROJECT_DIR/.claude/hooks/maybe-dont-hook.sh
 ```
 
 ## Configure Claude Code
@@ -41,7 +41,7 @@ This outputs a JSON snippet to merge into `.claude/settings.json`. Update the co
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/maybe-dont-hook.sh"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/maybe-dont-hook.sh"
           }
         ]
       }
@@ -52,7 +52,7 @@ This outputs a JSON snippet to merge into `.claude/settings.json`. Update the co
         "hooks": [
           {
             "type": "command",
-            "command": ".claude/hooks/maybe-dont-hook.sh"
+            "command": "$CLAUDE_PROJECT_DIR/.claude/hooks/maybe-dont-hook.sh"
           }
         ]
       }
@@ -95,5 +95,5 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 ## Agent-Specific Notes
 
 - Claude Code hooks use a `matcher` field to filter which tools trigger the hook. The default `"Bash"` matches CLI tools only. Use `"*"` to match all tools.
-- The hook script path in the config is relative to the project root.
+- `$CLAUDE_PROJECT_DIR` resolves to the project root at runtime, ensuring the hook works regardless of the agent's working directory.
 - Claude Code passes tool details as JSON on stdin to the hook script.
