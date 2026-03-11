@@ -78,6 +78,28 @@ The hook is silent on allow. On deny, you'll see stderr output like:
 [maybe-dont] WARNING (AfterTool): Policy violation detected for '<tool_name>' — <reason>
 ```
 
+## Filtering
+
+Gemini CLI hooks support a `matcher` field that uses regex for tool events (`BeforeTool`, `AfterTool`) and exact strings for lifecycle events. Use `"*"` or omit the matcher to match all tools.
+
+```json
+{
+  "BeforeTool": [
+    {
+      "matcher": "write_file|replace",
+      "hooks": [
+        {
+          "type": "command",
+          "command": "$GEMINI_PROJECT_DIR/.gemini/hooks/maybe-dont-hook.sh"
+        }
+      ]
+    }
+  ]
+}
+```
+
+To change what triggers the hook, update the `matcher` field in your Gemini CLI `settings.json`. See the [Gemini CLI hooks documentation](https://github.com/google-gemini/gemini-cli/blob/main/docs/hooks/index.md) for details.
+
 ## Agent-Specific Notes
 
 - Gemini CLI hooks apply to the CLI tool only — not the Gemini Code Assist IDE extension.
