@@ -21,6 +21,25 @@ The hook scripts shipped with Maybe Don't are reference implementations written 
 
 If the gateway is unreachable, hooks allow the tool call with a warning to stderr. The gateway is opt-in guardrails, not a hard gate — you're choosing to add safety, not creating a single point of failure.
 
+## Response Phase Limitations
+
+Post-tool hooks send tool results to the gateway for policy evaluation and audit logging, but most agents don't support blocking or modifying the response after the tool has already executed. In practice, this means a post-tool policy violation is **logged in the [audit log](/docs/audit-log/) but not enforced** — the agent still sees the original tool output.
+
+| Agent | Event | Response deny | Response redact |
+|-------|-------|:---:|:---:|
+| Cursor | `afterMCPExecution` | No — logs warning | **Yes** — returns modified output |
+| Cursor | `afterShellExecution` | No | No |
+| Claude Code | `PostToolUse` | No | No |
+| Gemini CLI | `AfterTool` | No | No |
+| Cline | `postToolUse` | No | No |
+| GitHub Copilot | `PostToolUse` | No | No |
+
+Cursor's `afterMCPExecution` is the only hook that supports output modification — the script can return redacted content that replaces what the agent sees. All other post-tool events are observability-only.
+
+{{< callout type="info" >}}
+**Want response-phase enforcement?** Use the [MCP gateway](/docs/mcp-gateway/) instead of (or in addition to) hooks. The gateway intercepts responses at the proxy layer — before they reach the agent — so deny and redact decisions are enforced, not just logged.
+{{< /callout >}}
+
 ## Prerequisites
 
 - Gateway running in `http` or `sse` mode

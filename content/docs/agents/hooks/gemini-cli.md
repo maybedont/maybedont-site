@@ -62,7 +62,7 @@ export MAYBE_DONT_URL="http://localhost:8080"
 | Event | Phase | Description |
 |-------|-------|-------------|
 | `BeforeTool` | Pre-tool | Fires before Gemini CLI executes a tool. The hook can block the tool call. |
-| `AfterTool` | Post-tool | Fires after tool execution. The hook sends the result for post-execution policy evaluation. |
+| `AfterTool` | Post-tool | Fires after tool execution. [Observability only](/docs/agents/hooks/#response-phase-limitations) — results are logged but cannot be blocked or modified. |
 
 ## Verify It Works
 

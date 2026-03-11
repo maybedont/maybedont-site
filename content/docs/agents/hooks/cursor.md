@@ -64,7 +64,7 @@ export MAYBE_DONT_URL="http://localhost:8080"
 | Event | Phase | Description |
 |-------|-------|-------------|
 | `beforeShellExecution` | Pre-tool | Fires before a shell command runs. The hook can block execution. |
-| `afterShellExecution` | Post-tool | Fires after a shell command completes. |
+| `afterShellExecution` | Post-tool | Fires after a shell command completes. [Observability only](/docs/agents/hooks/#response-phase-limitations) — cannot modify output. |
 | `beforeMCPExecution` | Pre-tool | Fires before an MCP tool call. The hook can block the call. |
 | `afterMCPExecution` | Post-tool | Fires after an MCP tool call completes. Supports output mutation/redaction. |
 
