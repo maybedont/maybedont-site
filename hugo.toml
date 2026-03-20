@@ -2,6 +2,7 @@ baseURL = 'https://maybedont.ai/'
 languageCode = 'en-us'
 title = "Maybe Don't, AI"
 enableRobotsTXT = true
+disableKinds = ["taxonomy", "term"]
 
 # Use Hextra theme via Hugo modules
 [module]
@@ -76,9 +77,6 @@ enableRobotsTXT = true
   changefreq = "weekly"
   priority = 0.5
   filename = "sitemap.xml"
-
-# Disable taxonomies (keep existing behavior)
-disableKinds = ["taxonomy", "term"]
 
 # Cache configuration
 [caches]
