@@ -94,7 +94,7 @@ mcp_expression: ""         # CEL expression for MCP tool calls
 cli_expression: ""         # CEL expression for CLI commands
 action: deny               # deny or allow
 message: ""                # Message returned when rule triggers
-mode: ""                   # audit_only or enforce (empty = enforce)
+mode: enforce              # audit_only or enforce
 ```
 
 ### AI Request Rule
@@ -104,7 +104,7 @@ name: ""                   # Unique rule identifier (kebab-case)
 description: ""            # Human-readable description
 enabled: true              # true or false
 action: deny               # deny or allow
-mode: ""                   # audit_only or enforce (empty = enforce)
+mode: enforce              # audit_only or enforce
 prompt: ""                 # Natural language policy instruction
 ```
 
