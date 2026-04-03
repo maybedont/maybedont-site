@@ -31,7 +31,7 @@ rules:
       cli.command == "dangerous-cmd"
     action: deny
     message: "Tool blocked"
-    mode: ""
+    mode: enforce
 ```
 
 ### Dual Expression Support

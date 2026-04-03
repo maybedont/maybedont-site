@@ -34,9 +34,9 @@ Each policy group can run in one of two modes:
 | Mode | Behavior |
 |------|----------|
 | `audit_only` | Evaluate and log, but don't block (default) |
-| *(empty)* | Evaluate and enforce - deny blocks the request |
+| `enforce` | Evaluate and enforce — deny blocks the request |
 
-Start in `audit_only` mode to understand what your policies would do, then switch to enforce mode when you're confident.
+Start in `audit_only` mode to understand what your policies would do, then switch to `enforce` when you're confident.
 
 ```yaml
 request_validation:
@@ -52,7 +52,7 @@ To enforce:
 request_validation:
   cel:
     enabled: true
-    mode: ""  # Empty = enforce mode
+    mode: enforce  # Rules can now block requests
     rules_file: "cel_request_rules.yaml"
 ```
 

@@ -80,7 +80,7 @@ rules:
     description: "What this does"
     enabled: true
     action: deny
-    mode: ""
+    mode: enforce
     prompt: |-
       ANALYZE: Does this operation do something dangerous?
 
