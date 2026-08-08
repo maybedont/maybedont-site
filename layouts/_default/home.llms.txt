@@ -75,4 +75,4 @@ Maybe Don't provides guardrails and observability for agentic AI. It sits betwee
 
 - [Skills]({{ $base }}docs/agents/skills/): Pre-written instructions that teach AI agents how to use Maybe Don't
 - [Native Tools]({{ $base }}docs/native-tools/): Experimental MCP tools built into Maybe Don't
-- [Security]({{ $base }}docs/security/): Security model, telemetry, and deployment considerations
+- [Security]({{ $base }}docs/security/): Security model and deployment considerations

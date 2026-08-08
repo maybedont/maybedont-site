@@ -43,66 +43,13 @@ We're exploring options for gateway-level authentication. If this is important t
 
 ## Telemetry
 
-Maybe Don't collects anonymous usage metrics to help us improve the product. Here's exactly what's collected:
-
-### What We Collect
-
-{{< codeblock lang="json" >}}
-{
-  "timestamp": "2025-02-04T15:30:00Z",
-  "installation_id": "a1b2c3d4e5f6...",
-  "version": "{version}",
-  "tool_invocations": 1234,
-  "gateway_starts": 5,
-  "unique_request_count": 89,
-  "mcp_server_count": 3,
-  "ai_rules_enabled": true,
-  "cel_rules_enabled": true,
-  "ai_response_enabled": false,
-  "cel_response_enabled": false
-}
-{{< /codeblock >}}
-
-| Field | Description |
-|-------|-------------|
-| `installation_id` | Random 32-character hex string, generated locally |
-| `version` | Gateway version |
-| `tool_invocations` | Count of tool calls processed |
-| `gateway_starts` | Number of times gateway started |
-| `unique_request_count` | Unique request IDs seen |
-| `mcp_server_count` | Number of configured downstream servers |
-| `*_rules_enabled` | Which validation features are turned on |
-
-### What We Don't Collect
-
-- Tool names or parameters
-- API keys or credentials
-- IP addresses or hostnames
-- Any content from requests or responses
-- Anything that could identify you or your users
-
-### Reporting Frequency
-
-Metrics are reported once per day (24-hour intervals) via HTTPS.
-
-### Disabling Telemetry
-
-Set the `MAYBEDONT_METRICS_OPTOUT` environment variable:
-
-```bash
-export MAYBEDONT_METRICS_OPTOUT=1
-```
-
-When opted out:
-- No installation ID is generated
-- No metrics are tracked
-- No network requests are made for telemetry
+Maybe Don't sends no telemetry.
 
 ## Data Handling
 
 ### Tool Call Parameters
 
-Tool call parameters are logged to your audit log (which you control) but are **never** sent to our telemetry system.
+Tool call parameters are logged to your audit log (which you control) but are **never** sent anywhere outside your environment.
 
 ### AI Validation
 

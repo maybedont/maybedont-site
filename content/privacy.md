@@ -18,7 +18,6 @@ Maybe Don't, AI ("we," "our," or "us") is committed to protecting your privacy. 
 - Support communications and feedback
 
 ### Automatically Collected Information
-- Usage analytics and performance metrics
 - Error logs and diagnostic information
 - Security audit logs (when enabled)
 
