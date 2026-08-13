@@ -60,7 +60,7 @@ docker run --rm \
 {{< /codeblock >}}
 </div>
 
-AI validation is on by default, so this needs an AI API key (e.g. `OPENAI_API_KEY`) in your environment to fully start; without one it'll bootstrap the config files and exit rather than staying up. Either way, the defaults are now written to `~/.config/maybe-dont/`.
+The defaults are now written to `~/.config/maybe-dont/`.
 {{< /tab >}}
 
 {{< tab >}}
@@ -69,7 +69,7 @@ AI validation is on by default, so this needs an AI API key (e.g. `OPENAI_API_KE
 maybe-dont gateway start
 ```
 
-AI validation is on by default, so this needs an AI API key (e.g. `OPENAI_API_KEY`) in your environment to fully start; without one it'll bootstrap the config files and exit rather than staying up. Either way, the defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont gateway config info` to see the resolved paths.
+The defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont gateway config info` to see the resolved paths.
 {{< /tab >}}
 
 {{< /tabs >}}
