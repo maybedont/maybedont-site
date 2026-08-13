@@ -60,9 +60,7 @@ docker run --rm \
 {{< /codeblock >}}
 </div>
 
-This bootstraps default config files, then exits — AI validation is on by
-default and needs an API key you haven't set yet, so don't expect it to
-keep running here. The defaults are now written to `~/.config/maybe-dont/`.
+This bootstraps default config files, then exits — AI validation is on by default and needs an API key you haven't set yet, so don't expect it to keep running here. The defaults are now written to `~/.config/maybe-dont/`.
 {{< /tab >}}
 
 {{< tab >}}
@@ -71,11 +69,7 @@ keep running here. The defaults are now written to `~/.config/maybe-dont/`.
 maybe-dont gateway start
 ```
 
-This bootstraps default config files, then exits — AI validation is on by
-default and needs an API key you haven't set yet, so don't expect it to
-keep running here. The defaults are now written to your config directory —
-`~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set.
-Run `maybe-dont gateway config info` to see the resolved paths.
+This bootstraps default config files, then exits — AI validation is on by default and needs an API key you haven't set yet, so don't expect it to keep running here. The defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont gateway config info` to see the resolved paths.
 {{< /tab >}}
 
 {{< /tabs >}}
