@@ -60,7 +60,9 @@ docker run --rm \
 {{< /codeblock >}}
 </div>
 
-Stop the container after it starts up — the defaults are now written to `~/.config/maybe-dont/`.
+This bootstraps default config files, then exits — AI validation is on by
+default and needs an API key you haven't set yet, so don't expect it to
+keep running here. The defaults are now written to `~/.config/maybe-dont/`.
 {{< /tab >}}
 
 {{< tab >}}
@@ -69,13 +71,17 @@ Stop the container after it starts up — the defaults are now written to `~/.co
 maybe-dont gateway start
 ```
 
-Stop the process after it starts up. The defaults are now written to your config directory — `~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set. Run `maybe-dont gateway config info` to see the resolved paths.
+This bootstraps default config files, then exits — AI validation is on by
+default and needs an API key you haven't set yet, so don't expect it to
+keep running here. The defaults are now written to your config directory —
+`~/.config/maybe-dont` by default, or `$XDG_CONFIG_HOME/maybe-dont` if set.
+Run `maybe-dont gateway config info` to see the resolved paths.
 {{< /tab >}}
 
 {{< /tabs >}}
 
 {{< callout type="info" >}}
-**Read-only environments?** If your config directory isn't writable (e.g., mounted read-only in a container), use `maybe-dont defaults export -o <dir>` to extract the defaults to a writable location.
+**Read-only environments?** If your config directory isn't writable (e.g., mounted read-only in a container), use `maybe-dont gateway defaults export -o <dir>` to extract the defaults to a writable location.
 {{< /callout >}}
 
 ## Configure
