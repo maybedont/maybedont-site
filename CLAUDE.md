@@ -50,7 +50,7 @@ Compare local changes against production: https://maybedont.ai/
 
 **Keep the root working directory on `main` at all times.** Do not check out feature branches in the root directory.
 
-For all feature work, use git worktrees in the `.worktrees/` directory. Before creating a worktree, ask the user what the branch should be named. Branch names follow the convention `<owner>/<descriptive-name>` (e.g., `degroff/featureA`), but this may vary by developer. The worktree directory name and branch name must match:
+For all feature work, use git worktrees in the `.worktrees/` directory. Before creating a worktree, ask the user what the branch should be named. Branch names follow the convention `<owner>/<descriptive-name>` (e.g., `alice/featureA`), but this may vary by developer. The worktree directory name and branch name must match:
 
 ```bash
 git worktree add .worktrees/<branch-name> -b <branch-name>

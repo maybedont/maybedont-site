@@ -186,7 +186,12 @@
       same "printed page" as the copyright notice for easier
       identification within third-party archives.
 
-   Copyright [yyyy] [name of copyright owner]
+   Copyright 2026 Maybe Don't, Inc.
+
+   This license covers the source code of this website (templates, styles,
+   scripts, and build tooling) only. Site content, trademarks, logos, and
+   branding remain the property of Maybe Don't, Inc. and are not licensed
+   under these terms.
 
    Licensed under the Apache License, Version 2.0 (the "License");
    you may not use this file except in compliance with the License.
