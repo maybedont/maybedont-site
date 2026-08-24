@@ -7,6 +7,8 @@ aliases:
 
 Let's get Maybe Don't running. Pick your installation method, then follow the same first-run steps regardless of how you installed.
 
+The gateway is open source under the [Apache License 2.0](https://github.com/maybedont/maybe-dont/blob/main/LICENSE) — source on [GitHub](https://github.com/maybedont/maybe-dont).
+
 ## Install
 
 {{< tabs items="Docker,Homebrew,Packages" >}}
