@@ -14,7 +14,13 @@ layout: home
         <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="hero" target="_blank" rel="noopener">
           Book a Demo
         </a>
+        <a href="https://github.com/maybedont/maybe-dont" class="cta-secondary" data-ga="view_github" data-ga-location="hero" target="_blank" rel="noopener">
+          View on GitHub
+        </a>
       </div>
+      <p class="hx:mt-3 hx:text-sm hx:text-gray-500 hx:dark:text-gray-400">
+        Open source, Apache 2.0. <a href="/docs/get-started/" class="link-primary">Self-host it free</a>.
+      </p>
     </div>
     <div class="hero-terminal-wrapper">
       <div class="hero-terminal hero-terminal-full">
@@ -141,5 +147,8 @@ layout: home
 <div class="closing-cta">
   <h2 class="closing-cta-heading">Ready to get started?</h2>
   <p class="closing-cta-subtext">See how Maybe Don't can help you deploy AI agents with confidence.</p>
-  <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="bottom_cta" target="_blank" rel="noopener">Book a Demo</a>
+  <div class="hx:flex hx:flex-wrap hx:justify-center hx:gap-4">
+    <a href="https://cal.com/kmillermd/30min" class="cta-primary" data-ga="book_demo" data-ga-location="bottom_cta" target="_blank" rel="noopener">Book a Demo</a>
+    <a href="https://github.com/maybedont/maybe-dont" class="cta-secondary" data-ga="view_github" data-ga-location="bottom_cta" target="_blank" rel="noopener">View on GitHub</a>
+  </div>
 </div>
