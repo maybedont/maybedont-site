@@ -65,7 +65,7 @@ validation:
   ai:
     provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-5.1"
+    model: "gpt-5"
     api_key: "${OPENAI_API_KEY}"
 
 request_validation:
@@ -79,7 +79,7 @@ request_validation:
     rules_file: "ai_request_rules.yaml"
 ```
 
-Save this as `config/maybe-dont.yaml` and start with:
+Save this as `maybe-dont.yaml` in your config directory (`~/.config/maybe-dont/` by default, which the command below mounts into the container) and start with:
 
 {{% docker-run %}}
 

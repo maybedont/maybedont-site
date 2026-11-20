@@ -56,6 +56,18 @@ request_validation:
     rules_file: "cel_request_rules.yaml"
 ```
 
+### How Phase and Rule Modes Combine
+
+Each rule can also set its own `mode`. A rule without one defaults to `enforce`, but the phase mode wins:
+
+| Phase `mode` | Rule `mode` | Effective |
+|--------------|-------------|-----------|
+| `audit_only` | any | `audit_only` |
+| `enforce` | `enforce` or omitted | `enforce` |
+| `enforce` | `audit_only` | `audit_only` |
+
+A phase-level `audit_only` applies to every rule in that phase, overriding a per-rule `mode: enforce`. To make a rule block, set the phase mode to `enforce`. To keep individual rules observing while the rest enforce, give those rules `mode: audit_only`.
+
 ## How Policies Combine
 
 When multiple policies evaluate a request, here's how the final decision is made:

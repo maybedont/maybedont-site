@@ -9,6 +9,11 @@ Let's get Maybe Don't running. Pick your installation method, then follow the sa
 
 The gateway is open source under the [Apache License 2.0](https://github.com/maybedont/maybe-dont/blob/main/LICENSE) — source on [GitHub](https://github.com/maybedont/maybe-dont).
 
+Before you start, you'll want two things:
+
+- An OpenAI API key for AI policy validation. You can run without one; see [Configure](#configure).
+- A [GitHub personal access token](https://github.com/settings/tokens) if you follow the example below, which uses GitHub's MCP server as the downstream server. Your AI agent sends the token to the gateway with each request.
+
 ## Install
 
 {{< tabs items="Docker,Homebrew,Packages" >}}
@@ -38,14 +43,20 @@ brew install maybedont/tap/maybe-dont
 
 {{< list-files-for-version >}}
 
-After downloading, extract the archive and place the `maybe-dont` binary somewhere on your `PATH`.
+After downloading, extract the archive. It unpacks into a versioned directory such as `maybe-dont_<version>_darwin_arm64/` containing the `maybe-dont` binary, `README.md` and `LICENSE`. Move the binary somewhere on your `PATH`.
+
+{{< callout type="info" >}}
+**macOS:** If you downloaded the archive with a browser, Gatekeeper may quarantine the binary and refuse to run it. Clear the quarantine flag with `xattr -d com.apple.quarantine ./maybe-dont`.
+{{< /callout >}}
 {{< /tab >}}
 
 {{< /tabs >}}
 
 ## First Run
 
-On first startup, Maybe Don't writes the default configuration and policy files to your config directory. You don't need to create anything from scratch — just modify the defaults.
+On first startup, Maybe Don't writes the default configuration and policy files to your config directory. You don't need to create anything from scratch. Just modify the defaults.
+
+If no AI API key is set, this first start then exits with an error naming the settings to set or disable. That's expected. Set your API key or disable those settings in [Configure](#configure), then start again.
 
 {{< tabs items="Docker,Package" >}}
 
@@ -107,12 +118,24 @@ validation:
   ai:
     provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-5.1"
+    model: "gpt-5"
     api_key: "${OPENAI_API_KEY}"
 ```
 
 {{< callout type="info" >}}
-Don't have an AI API key yet? You can skip this step and run with just CEL policies. Set `ai.enabled: false` under `request_validation` in your config. You'll still get audit logging and deterministic policy evaluation.
+Don't have an AI API key yet? You can skip this step and run with just CEL policies. AI request validation and the audit report tool both need the key, so disable both in `maybe-dont.yaml`:
+
+```yaml
+request_validation:
+  ai:
+    enabled: false
+
+native_tools:
+  audit_report:
+    enabled: false
+```
+
+You'll still get audit logging and deterministic policy evaluation.
 {{< /callout >}}
 
 ## Start
@@ -126,6 +149,7 @@ export OPENAI_API_KEY="your-api-key-here"
 
 docker run \
   -e OPENAI_API_KEY \
+  -e MAYBE_DONT_SERVER_LISTEN_ADDR=0.0.0.0:8080 \
   -e XDG_CONFIG_HOME=/config \
   -e XDG_STATE_HOME=/state \
   -v ${XDG_CONFIG_HOME:-$HOME/.config}/maybe-dont:/config/maybe-dont \
@@ -146,11 +170,21 @@ maybe-dont gateway start
 
 {{< /tabs >}}
 
+The Docker command sets `MAYBE_DONT_SERVER_LISTEN_ADDR` because the default `listen_addr` of `127.0.0.1:8080` only accepts connections from inside the container.
+
+The gateway's MCP endpoint is `http://127.0.0.1:8080/mcp`. Point your AI agent there; see [agent integrations](/docs/agents/mcp/) for per-agent setup.
+
 Everything starts in `audit_only` mode by default — observe before enforcing. This means policies evaluate and log decisions, but nothing gets blocked until you're ready.
 
 ## Verify
 
-Check the audit log for entries. If you see log output, the gateway is intercepting and evaluating operations.
+Make a tool call through the gateway, then check the audit log. It's written to `maybedont-audit.log` in the log directory, which is `~/.local/state/maybe-dont/` by default (or `$XDG_STATE_HOME/maybe-dont`). Run `maybe-dont gateway config info` to print the config and log directories.
+
+```bash
+tail -f ~/.local/state/maybe-dont/maybedont-audit.log
+```
+
+If you see entries, the gateway is intercepting and evaluating operations.
 
 ## What's Next?
 
