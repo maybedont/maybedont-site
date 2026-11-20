@@ -356,8 +356,8 @@ downstream_mcp_servers:
     args: ["-y", "@example/mcp-server"]
 
     # Environment variables for the subprocess. It inherits only PATH, HOME,
-    # USER, LOGNAME, SHELL and TERM from the gateway; use ${VAR} to pass
-    # another gateway variable through. stdio only.
+    # USER, LOGNAME, SHELL, TERM, TMPDIR, LANG and LC_ALL from the gateway;
+    # use ${VAR} to pass another gateway variable through. stdio only.
     # Env: MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_<NAME>_ENV_<VAR>
     env:
       NODE_ENV: "production"
