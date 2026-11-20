@@ -6,10 +6,8 @@
   (dict "os" "darwin" "arch" "x86_64" "ext" "tar.gz" "display" "macOS (Intel)")
   (dict "os" "linux" "arch" "arm64" "ext" "tar.gz" "display" "Linux (ARM64)")
   (dict "os" "linux" "arch" "x86_64" "ext" "tar.gz" "display" "Linux (x86_64)")
-  (dict "os" "linux" "arch" "i386" "ext" "tar.gz" "display" "Linux (32-bit)")
   (dict "os" "windows" "arch" "arm64" "ext" "zip" "display" "Windows (ARM64)")
   (dict "os" "windows" "arch" "x86_64" "ext" "zip" "display" "Windows (x86_64)")
-  (dict "os" "windows" "arch" "i386" "ext" "zip" "display" "Windows (32-bit)")
 -}}
 <div id="detected-download" class="download-detected">
 <div id="download-single" class="download-detected-content" style="display: none;">
@@ -85,7 +83,7 @@ Intel
   }
 
   function getArchName(arch) {
-    return { 'arm64': 'ARM64', 'x86_64': 'x86_64', 'i386': 'x86' }[arch] || arch;
+    return { 'arm64': 'ARM64', 'x86_64': 'x86_64' }[arch] || arch;
   }
 
   function updateDownloadLink() {
