@@ -61,12 +61,14 @@ CEL is a **supplement** to AI policies, not a replacement. Think of it as a safe
 
 ## Start in Audit-Only Mode
 
-Write policies with `mode: audit_only` first. Review the [audit log](/docs/audit-log/) to see what would have been blocked. When confident, switch to enforce mode.
+Every validation phase starts in `audit_only` mode by default. Review the [audit log](/docs/audit-log/) to see what would have been blocked. When confident, set the phase mode to `enforce`.
+
+A phase-level `audit_only` applies to every rule in that phase, overriding a per-rule `mode: enforce`. Rules only block once the phase is `enforce`. After that, mark new rules `mode: audit_only` so they keep observing while the rest enforce:
 
 ```yaml
 rules:
   - name: "experimental-rule"
-    mode: audit_only  # Evaluate and log, but don't block
+    mode: audit_only  # Evaluate and log, but don't block, even when the phase enforces
     action: deny
     prompt: |
       ...

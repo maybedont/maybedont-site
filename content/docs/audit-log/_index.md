@@ -30,7 +30,7 @@ Every tool call generates an audit entry containing:
 
 ```yaml
 audit:
-  path: stdout                    # stdout, stderr, or filename
+  path: maybedont-audit.log       # default; stdout, stderr, or a filename
   filter: all                     # all or deny_only
   rotation:
     max_size_mb: 100              # Max file size before rotation
@@ -52,9 +52,12 @@ For most use cases, keep `filter: all`. You want the complete picture.
 
 | Value | Description |
 |-------|-------------|
+| `maybedont-audit.log` | Write to this file in the log directory (default) |
+| `filename.log` | Write to another file in the log directory |
 | `stdout` | Standard output (recommended for Docker) |
 | `stderr` | Standard error |
-| `filename.log` | Write to file in log directory |
+
+The log directory is `~/.local/state/maybe-dont/` by default, or `$XDG_STATE_HOME/maybe-dont` if set. Run `maybe-dont gateway config info` to print it. A filename must be a relative path inside the log directory. The [`maybedont__get_audit_log`](/docs/native-tools/#maybedont__get_audit_log) tool reads this file, so it doesn't work when the audit log goes to `stdout` or `stderr`.
 
 ## Reading the Log
 

@@ -31,7 +31,7 @@ rules:
       cli.command == "dangerous-cmd"
     action: deny
     message: "Tool blocked"
-    mode: enforce
+    mode: enforce  # Default. Only blocks when request_validation.cel.mode is enforce
 ```
 
 ### Dual Expression Support
@@ -87,6 +87,8 @@ rules:
 | `tool.arguments` | map | Tool arguments |
 | `request.params` | map | Full MCP request parameters |
 | `request` | map | The full MCP request object |
+
+`tool.name` and `tool.arguments` are equivalent to `request.params.name` and `request.params.arguments`. Use either form.
 
 ### CLI Request Context
 
@@ -193,12 +195,20 @@ rules:
 
 ## Per-Rule Mode Override
 
-Individual rules can override the top-level mode:
+A rule's `mode` can only make it less strict than its phase. When `request_validation.cel.mode` is `audit_only` (the default), every rule only logs, including rules with `mode: enforce`. To make rules block, set the phase mode to `enforce`, then use per-rule `mode: audit_only` to exempt individual rules:
 
 ```yaml
+# maybe-dont.yaml
+request_validation:
+  cel:
+    mode: enforce
+```
+
+```yaml
+# cel_request_rules.yaml
 rules:
   - name: critical-rule
-    # Inherits mode from request_validation.cel.mode
+    # No mode: defaults to enforce, so this rule blocks
     mcp_expression: ...
     action: deny
 
@@ -207,6 +217,8 @@ rules:
     mcp_expression: ...
     action: deny
 ```
+
+See [How Phase and Rule Modes Combine](/docs/policies/#how-phase-and-rule-modes-combine).
 
 ## Common Mistakes
 
@@ -229,7 +241,7 @@ request_validation:
     rules_file: "cel_request_rules.yaml"
 ```
 
-Review the [audit log](/docs/audit-log/) for entries showing `"decision": "deny"` to see what would be blocked. When you're ready to test systematically, see [Testing](/docs/testing/).
+Review the [audit log](/docs/audit-log/) for entries showing `"recommended_action": "deny"` with `"action_reason": "audit_mode"` to see what would be blocked. When you're ready to test systematically, see [Testing](/docs/testing/).
 
 {{< callout type="tip" >}}
 **Want help writing CEL policies?** The built-in `cel-policy` skill teaches your AI agent how to author rules. See [Skills](/docs/agents/skills/) to learn how to export it, or run `maybe-dont skill view cel-policy` to see what it contains.

@@ -23,7 +23,7 @@ validation:
   ai:
     provider: openai
     endpoint: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-5.1"
+    model: "gpt-5"
     api_key: "${OPENAI_API_KEY}"
 ```
 
@@ -80,7 +80,7 @@ rules:
     description: "What this does"
     enabled: true
     action: deny
-    mode: enforce
+    mode: enforce  # Default. Only blocks when request_validation.ai.mode is enforce
     prompt: |-
       ANALYZE: Does this operation do something dangerous?
 
@@ -204,18 +204,20 @@ AI validation adds latency (typically 1-5 seconds per rule). To optimize:
 
 ## Per-Rule Mode Override
 
-Individual AI rules can override the top-level mode:
+A rule's `mode` can only make it less strict than its phase. When `request_validation.ai.mode` is `audit_only` (the default), every rule only logs, including rules with `mode: enforce`. To make rules block, set `request_validation.ai.mode: enforce`, then use per-rule `mode: audit_only` to exempt individual rules:
 
 ```yaml
 rules:
   - name: critical-rule
-    # Inherits mode from request_validation.ai.mode
+    # No mode: defaults to enforce, so this rule blocks when the phase enforces
     prompt: ...
 
   - name: experimental-rule
     mode: audit_only  # Only logs, doesn't block
     prompt: ...
 ```
+
+See [How Phase and Rule Modes Combine](/docs/policies/#how-phase-and-rule-modes-combine).
 
 ## Debugging AI Decisions
 
