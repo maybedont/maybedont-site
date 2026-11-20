@@ -91,7 +91,6 @@ detect_platform() {
   case "$(uname -m)" in
     arm64|aarch64) arch="arm64" ;;
     x86_64)        arch="x86_64" ;;
-    i386|i686)     arch="i386" ;;
     *)             printf "${RED}Unsupported arch: %s${RESET}\n" "$(uname -m)"; exit 1 ;;
   esac
   echo "${os} ${arch}"
