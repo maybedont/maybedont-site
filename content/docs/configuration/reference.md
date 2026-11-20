@@ -384,6 +384,10 @@ downstream_mcp_servers:
     http:
       headers:
         Authorization: "Bearer ${TOKEN}"
+    # Follow redirects to a different host, port, or scheme (http and sse only).
+    # By default only same-host redirects and http to https upgrades are
+    # followed. See MCP Gateway > Downstream Servers > Redirects.
+    allow_cross_origin_redirects: false
     # SSE transport also supports sse.headers (same format) but SSE is
     # deprecated in the MCP spec — prefer http transport for new servers.
 

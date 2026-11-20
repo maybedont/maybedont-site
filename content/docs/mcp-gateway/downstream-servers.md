@@ -143,6 +143,22 @@ downstream_mcp_servers:
     capability_discovery_delay_ms: 2000  # Delay before discovering tools (default: 1000 for stdio)
 ```
 
+## Redirects
+
+HTTP and SSE servers can only redirect the gateway to the same host and port. Path changes such as `/mcp` to `/mcp/` work, and so does an upgrade from `http://` to `https://` on the same host. A redirect to a different host, a different port, or from `https://` down to `http://` is refused, and the connection fails with an error naming both addresses.
+
+Following a redirect sends the headers you configured, including pass-through credentials, to the new host. It can also point the gateway at addresses that only the gateway can reach, such as a cloud metadata service. If you trust a server and it needs to redirect to another host, allow it for that server only:
+
+```yaml
+downstream_mcp_servers:
+  vendor:
+    type: http
+    url: "https://old.vendor.example/mcp"
+    allow_cross_origin_redirects: true   # default: false
+```
+
+The simpler fix is usually to set `url` to the address the server redirects to.
+
 ## Environment Variable Configuration
 
 You can configure downstream servers entirely via environment variables:
@@ -155,6 +171,9 @@ export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_GITHUB_URL=https://api.githubcopilot.co
 # Pass-through auth (compact format)
 export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_GITHUB_AUTH_PASS_THROUGH_ENABLED=true
 export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_GITHUB_AUTH_PASS_THROUGH_HEADERS=X-Token:Authorization:Bearer\ {value}
+
+# Allow redirects to other hosts (default: false)
+export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_GITHUB_ALLOW_CROSS_ORIGIN_REDIRECTS=true
 ```
 
 {{< callout type="info" >}}
