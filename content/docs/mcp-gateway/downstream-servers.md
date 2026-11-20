@@ -62,11 +62,13 @@ downstream_mcp_servers:
     args:
       - "--verbose"
     env:
-      HOME: "${HOME}"
-      PATH: "${PATH}"
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
+      LOG_LEVEL: "debug"
 ```
 
-The `env` field passes environment variables to the spawned process. Use `${VAR}` syntax to reference variables from the gateway's environment.
+The spawned process doesn't inherit the gateway's environment, which can hold API keys and other credentials. It gets only `PATH`, `HOME`, `USER`, `LOGNAME`, `SHELL` and `TERM` from the gateway (the Windows equivalents on Windows), plus whatever you list under `env`. To pass a variable through from the gateway's environment, reference it with `${VAR}`, as `GITHUB_TOKEN` does above. Variable names are used exactly as written.
+
+`env` is only valid on `stdio` servers. The gateway refuses to start if it's set on an `http` or `sse` server.
 
 ## Pass-Through Authentication
 
@@ -164,6 +166,11 @@ The simpler fix is usually to set `url` to the address the server redirects to.
 You can configure downstream servers entirely via environment variables:
 
 ```bash
+# STDIO server with an environment variable for its process
+export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_LOCAL_TYPE=stdio
+export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_LOCAL_COMMAND=/usr/local/bin/mcp-server
+export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_LOCAL_ENV_GITHUB_TOKEN=ghp_xxx
+
 # Basic HTTP client
 export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_GITHUB_TYPE=http
 export MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_GITHUB_URL=https://api.githubcopilot.com/mcp/

@@ -355,9 +355,13 @@ downstream_mcp_servers:
     # Command arguments
     args: ["-y", "@example/mcp-server"]
 
-    # Environment variables passed to the subprocess
+    # Environment variables for the subprocess. It inherits only PATH, HOME,
+    # USER, LOGNAME, SHELL and TERM from the gateway; use ${VAR} to pass
+    # another gateway variable through. stdio only.
+    # Env: MAYBE_DONT_DOWNSTREAM_MCP_SERVERS_<NAME>_ENV_<VAR>
     env:
       NODE_ENV: "production"
+      GITHUB_TOKEN: "${GITHUB_TOKEN}"
 
     # Startup timeout in ms (default: 30000)
     startup_timeout_ms: 30000
