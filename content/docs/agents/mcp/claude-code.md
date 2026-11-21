@@ -94,18 +94,23 @@ docker ps | grep maybe-dont
 
 ### "Unauthorized" errors
 
-Check that your GitHub token is valid and being passed correctly:
+Check that `GITHUB_TOKEN` is set and that GitHub accepts it, without printing the token:
 
 ```bash
-echo $GITHUB_TOKEN  # Should show your token
+[ -n "$GITHUB_TOKEN" ] && echo "GITHUB_TOKEN is set" || echo "GITHUB_TOKEN is empty"
+curl -s -o /dev/null -w "%{http_code}\n" -H "Authorization: Bearer $GITHUB_TOKEN" https://api.github.com/user
 ```
+
+The `curl` command prints `200` for a valid token and `401` for a bad one. `claude mcp add` stores the header value when you run it, so if you change the token, remove the server and add it again.
 
 ### Tools not showing up
 
-Check the gateway logs. When an agent connects, the gateway discovers tools from the downstream MCP server and logs the tool count:
+Check the gateway logs. When an agent connects, the gateway discovers tools from the downstream MCP server and logs the tool count. The [docker command on the MCP overview](/docs/agents/mcp/#gateway-configuration) names the container `maybe-dont`:
 
 ```bash
 docker logs maybe-dont
 ```
+
+If you started the container with a different name, or without `--name`, find it with `docker ps` and use its name or ID. If you run the binary, the logs go to the terminal where you started it.
 
 Enable debug logging to see individual tool names.

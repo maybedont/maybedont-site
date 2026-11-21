@@ -9,13 +9,13 @@ weight: 42
 Native tools are experimental and subject to change. They may be modified or removed in future versions. Use them for testing and exploration, not production workflows.
 {{< /callout >}}
 
-The gateway exposes built-in tools that let AI agents introspect it. These are prefixed with `maybedont__` to distinguish them from downstream tools.
+The gateway exposes built-in tools that let AI agents introspect it. These are prefixed with `maybedont__` to distinguish them from downstream tools. Calls to these tools aren't evaluated against policies or written to the audit log.
 
 ## Available Tools
 
 ### maybedont__get_audit_log
 
-Retrieve recent MCP tool call entries from the audit log file, newest first.
+Retrieve recent tool call entries from the audit log file, newest first. It returns entries that have a `tool` object: MCP tool calls, plus intercept and action validation entries. CLI validation entries (`source: cli`) aren't returned.
 
 **Parameters:**
 

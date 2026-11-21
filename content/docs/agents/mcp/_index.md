@@ -42,13 +42,9 @@ The gateway configuration is identical across all agents. Only the agent-side co
 
 ## Gateway Configuration
 
-Every example uses this gateway configuration:
+Every example uses a gateway with the GitHub server added under `downstream_mcp_servers` in the bootstrapped `maybe-dont.yaml`:
 
 ```yaml
-server:
-  type: http
-  listen_addr: "0.0.0.0:8080"
-
 downstream_mcp_servers:
   github:
     type: http
@@ -60,27 +56,16 @@ downstream_mcp_servers:
           - source_header: "X-GitHub-Token"
             target_header: "Authorization"
             format: "Bearer {value}"
-
-validation:
-  ai:
-    provider: openai
-    endpoint: "https://api.openai.com/v1/chat/completions"
-    model: "gpt-5"
-    api_key: "${OPENAI_API_KEY}"
-
-request_validation:
-  cel:
-    enabled: true
-    mode: audit_only
-    rules_file: "cel_request_rules.yaml"
-  ai:
-    enabled: true
-    mode: audit_only
-    rules_file: "ai_request_rules.yaml"
 ```
 
-Save this as `maybe-dont.yaml` in your config directory (`~/.config/maybe-dont/` by default, which the command below mounts into the container) and start with:
+Edit the existing `downstream_mcp_servers:` key in `~/.config/maybe-dont/maybe-dont.yaml` (the default config directory) rather than adding a second one. Leave the rest of the file as bootstrapped: the server listens on `127.0.0.1:8080`, and CEL and AI request validation are on in `audit_only` mode.
+
+AI request validation needs an API key. The default config reads it from `OPENAI_API_KEY`, and the gateway won't start while AI validation is on and the key is empty. Export the key before starting, or turn AI validation off as described in [Get Started](/docs/get-started/#configure).
+
+Start the gateway with Docker:
 
 {{% docker-run %}}
+
+The command sets `MAYBE_DONT_SERVER_LISTEN_ADDR=0.0.0.0:8080` because the default `127.0.0.1:8080` only accepts connections from inside the container. Published as `-p 8080:8080`, the gateway is still reachable on your machine at `http://localhost:8080/mcp`. If you run the binary instead, start it with `maybe-dont gateway start` and keep the default listen address.
 
 Now follow the guide for your specific AI agent.

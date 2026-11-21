@@ -3,13 +3,13 @@ title: Audit Log
 weight: 30
 ---
 
-The audit log records everything that happens through the gateway. Every tool call, every validation decision, every action taken - it's all here.
+The audit log records the tool calls and commands the gateway validates: what was called, what each policy decided, and what the gateway did about it.
 
 ## Why It Matters
 
 The audit log lets you:
 
-- **See what AI agents are doing** - Every tool call is recorded with full parameters
+- **See what AI agents are doing** - Each downstream tool call is recorded with its parameters
 - **Understand policy decisions** - See exactly which rules fired and why
 - **Debug problems** - Trace through the request lifecycle
 - **Prove compliance** - Immutable record for audits and reviews
@@ -17,7 +17,22 @@ The audit log lets you:
 
 ## What Gets Logged
 
-Every tool call generates an audit entry containing:
+These requests each write an audit entry. The entry's `source` field says which kind it is:
+
+| Source | Request |
+|--------|---------|
+| `mcp` | A call to a downstream MCP server's tool through the gateway, whether it was allowed or denied |
+| `cli` | A command sent to the [CLI validation endpoint](/docs/api/cli-validate/) |
+| `intercept` | A tool call or command sent to the [intercept endpoint](/docs/api/intercept/) by an agent hook |
+| `action` | An action sent to the [action validation endpoint](/docs/api/action-validate/) |
+
+Some MCP requests pass through without an audit entry:
+
+- Calls to the gateway's own [`maybedont__` tools](/docs/native-tools/). These aren't audited by design.
+- `prompts/get` and `resources/read` requests. The gateway forwards them to the downstream server without evaluating policies.
+- Allowed tool calls that never get a result from the downstream server, for example because the server is unreachable or the session has expired.
+
+An MCP entry contains:
 
 | Category | Information |
 |----------|-------------|
@@ -43,7 +58,7 @@ audit:
 
 | Value | What's Logged |
 |-------|---------------|
-| `all` | Every tool call (default) |
+| `all` | Every entry (default) |
 | `deny_only` | Only denied requests |
 
 For most use cases, keep `filter: all`. You want the complete picture.
@@ -65,6 +80,7 @@ Audit entries are JSON, one per line. Here's a simplified example:
 
 ```json
 {
+  "source": "mcp",
   "validation_started": "2025-02-04T15:30:00.000Z",
   "created_at": "2025-02-04T15:30:01.234Z",
   "tool": {
