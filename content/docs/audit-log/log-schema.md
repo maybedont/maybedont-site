@@ -13,11 +13,11 @@ Audit log entries are JSON objects, one per line. This page documents the comple
 | `validation_started` | string | RFC3339Nano timestamp when validation began |
 | `created_at` | string | RFC3339Nano timestamp when entry was written |
 | `tool` | object | Tool call information. Present for `mcp`, `intercept` and `action` entries |
-| `cli` | object | Command information. Present for `cli` entries, and for `intercept` entries whose tool is a shell tool |
+| `cli` | object | Command information. Present for `cli` entries, and for request-phase `intercept` entries whose tool is a shell tool |
 | `upstream_request` | object | Incoming request metadata |
 | `ai` | object | AI provider info (MCP entries, when AI validation is enabled) |
 | `request_validation` | object | Request validation results |
-| `response_validation` | object | Response validation results (MCP entries only) |
+| `response_validation` | object | Response validation results (MCP entries, and `intercept` entries for the response phase) |
 | `recommended_action` | string | What validation recommended. Omitted when `action_reason` is `fail_open` |
 | `action` | string | What actually happened: `allow` or `deny` |
 | `action_reason` | string | Why action was taken (omitted for a normal allow) |
@@ -83,8 +83,8 @@ Audit log entries are JSON objects, one per line. This page documents the comple
 |-------|------|-------------|
 | `id` | string | Request ID. Ends in `-async` on the follow-up entry described under [Action Reasons](#action-reasons) |
 | `external_id` | string | Caller-supplied correlation ID (intercept and action entries, when sent) |
-| `client_id` | string | Caller identifier from the `X-Maybe-Dont-Client-ID` header (CLI, intercept and action entries, when sent) |
-| `session_id` | string | MCP session identifier |
+| `client_id` | string | Caller identifier from the `X-Maybe-Dont-Client-ID` header (CLI, intercept and action entries). Without the header, action entries use the request's `actor` and intercept entries use `context.principal.id` |
+| `session_id` | string | Session identifier (MCP session, or the one an intercept request sends) |
 | `client_ip` | string | Client IP address |
 | `user_agent` | string | User-Agent header |
 
@@ -130,16 +130,16 @@ Both `request_validation` and `response_validation` share the same structure. Ea
     "reason": "File deletion is not allowed",
     "results": [
       {
-        "rule": "deny-delete-file",
-        "action": "deny",
-        "result": "deny",
-        "evaluation_ms": 1
-      },
-      {
-        "rule": "allow-read-only",
+        "rule": "deny-repo-delete",
         "action": "deny",
         "mode": "audit_only",
         "result": "allow",
+        "evaluation_ms": 1
+      },
+      {
+        "rule": "deny-delete-file",
+        "action": "deny",
+        "result": "deny",
         "evaluation_ms": 1
       }
     ]
@@ -169,9 +169,9 @@ The same fields appear in CEL and AI `results` arrays.
 | `mode` | string | `audit_only` when the rule ran in audit-only mode, either set on the rule or inherited from the phase. Omitted for enforced rules |
 | `result` | string | What the rule decided: `allow`, `deny`, `redact`, or `error` |
 | `evaluation_ms` | int | Time for this rule |
-| `error` | string | Present when `result` is `error`, prefixed with a category such as `eval_error:` or `timeout:` |
+| `error` | string | Present when `result` is `error`. Usually prefixed with a category such as `eval_error:` or `timeout:` |
 
-For a CEL rule, `result` is the rule's `action` when the expression matches. When it doesn't match, a `deny` rule's result is `allow` and an `allow` rule's result is `deny`. For an AI rule, it's what the model decided.
+For a CEL rule, `result` is the rule's `action` when the expression matches. When it doesn't match, a `deny` or `redact` rule's result is `allow` and an `allow` rule's result is `deny`. For an AI rule, it's what the model decided.
 
 ### AI Results
 
@@ -233,9 +233,9 @@ An enforced rule that fails at runtime is logged and the request is allowed. `ac
 
 - A CEL rule fails when its expression doesn't compile, errors while evaluating (for example a missing key, `no such key`), or doesn't return a boolean. CEL evaluation stops at that rule, so later rules aren't evaluated.
 - An AI rule fails when the provider call errors, the response can't be parsed, or the rule runs longer than `validation.max_rule_evaluation_ms`. Other AI rules still run, and an enforced deny from any of them still blocks the request.
-- AI validation also fails open when waiting for enforced rules uses up `validation.max_blocking_ms`. The request goes ahead without waiting for the rules that are still running.
+- AI validation also fails open when waiting for enforced rules uses up `validation.max_blocking_ms`. No rule gets an `error` result in this case. The request goes ahead without waiting, and the rules still running are left out of `results`, unless the phase also has `audit_only` rules, in which case they're recorded with their eventual result. The gateway logs a warning.
 
-The failed rule has `result: "error"` and an `error` message in its per-rule result, and the gateway writes an error to its application log. On MCP entries, `fail_open` reflects request validation only. A response rule that fails is recorded in `response_validation` but doesn't change `action_reason`.
+A rule that fails has `result: "error"` and an `error` message in its per-rule result. Compile and evaluation errors from CEL rules and errors from AI rules are also written to the application log at error level; a CEL rule that returns a non-boolean is only recorded in the audit entry. On MCP entries, `fail_open` reflects request validation only. A response rule that fails is recorded in `response_validation` but doesn't change `action_reason`.
 
 MCP entries don't need a follow-up: when `audit_only` AI rules are still running, the gateway waits for them before it writes the single entry.
 

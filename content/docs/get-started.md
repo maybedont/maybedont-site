@@ -146,7 +146,7 @@ validation:
     api_key: "${OPENAI_API_KEY}"
 ```
 
-With OpenAI there's nothing to change. For Anthropic or an OpenAI-compatible provider, edit `provider`, `endpoint` and `model` in that block. See the [configuration reference](/docs/configuration/reference/).
+With OpenAI there's nothing to change. For Anthropic or an OpenAI-compatible provider, edit `provider`, `endpoint`, `model` and `api_key` in that block. Point `api_key` at the variable that holds your key, for example `"${ANTHROPIC_API_KEY}"`. See the [configuration reference](/docs/configuration/reference/).
 
 {{< callout type="info" >}}
 Don't have an AI API key yet? You can run with just CEL policies. AI request validation and the audit report tool both need the key, so turn both off. Either set these environment variables before you start the gateway:

@@ -149,11 +149,13 @@ stop_docker_containers() {
   DOCKER_CONTAINERS=()
 }
 
-# Patch the bootstrapped config for testing:
-#   1. Add a dummy downstream MCP server (required by gateway)
+# Patch the bootstrapped config the way get-started's Configure step does:
+#   1. Add the credential-free aws-docs downstream server under the existing
+#      downstream_mcp_servers key
 #   2. Ensure server type is http with listen_addr (no-op on v1.2.0+)
-#   3. Disable AI validation (CEL-only, no API key needed)
-#   4. Disable audit_report native tool (requires AI API key)
+#
+# AI validation and the audit report tool are turned off with the documented
+# environment variables when the gateway starts (see AI_OFF_ENV), not here.
 #
 # Uses exact string matches against the known default config. If the default
 # config format changes, these will fail — which is a useful signal that the
@@ -167,11 +169,11 @@ path = sys.argv[1]
 with open(path) as f:
     text = f.read()
 
-# 1. Replace downstream_mcp_servers comment block with a dummy HTTP server.
-#    HTTP type uses lazy initialization so the gateway starts without blocking.
+# 1. Replace downstream_mcp_servers comment block with the aws-docs server
+#    from the get-started Configure step.
 text = re.sub(
     r'(downstream_mcp_servers:)\n(  #[^\n]*\n)*',
-    r'\1\n  test-dummy:\n    type: http\n    url: \"http://localhost:19999\"\n\n',
+    r'\1\n  aws-docs:\n    type: http\n    url: \"https://knowledge-mcp.global.api.aws\"\n\n',
     text,
     count=1
 )
@@ -186,18 +188,60 @@ text = text.replace(
     'listen_addr: \"127.0.0.1:8080\"  # Required for http/sse'
 )
 
-# 3. Disable AI validation in all sections
-text = re.sub(r'(  ai:\n\s+enabled:) true', r'\1 false', text)
-
-# 4. Disable audit_report native tool (requires AI API key even when ai.enabled=false)
-text = text.replace(
-    'audit_report:\n    enabled: true',
-    'audit_report:\n    enabled: false'
-)
-
 with open(path, 'w') as f:
     f.write(text)
 " "$config_file"
+}
+
+# The documented way to run without an AI API key (get-started > Configure)
+AI_OFF_ENV=(
+  MAYBE_DONT_REQUEST_VALIDATION_AI_ENABLED=false
+  MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_ENABLED=false
+)
+
+# Run the get-started Verify step: list tools and call an aws-docs tool with
+# the MCP Inspector CLI, then check the call reached the audit log.
+# Needs npx (Node.js) and network access to the npm registry and to
+# knowledge-mcp.global.api.aws; skipped when npx is missing.
+verify_with_inspector() {
+  local label=$1 audit_log=$2 npm_cache=$3
+
+  if ! command -v npx &>/dev/null; then
+    skip "MCP Inspector checks need npx (Node.js) ($label)"
+    return
+  fi
+
+  # The Inspector writes ~/.mcp-inspector, and npm writes its cache, so point
+  # both into the test directory.
+  mkdir -p "$npm_cache/home"
+  local inspector=(env HOME="$npm_cache/home" npm_config_cache="$npm_cache"
+    npx -y @modelcontextprotocol/inspector --cli http://127.0.0.1:8080/mcp --transport http)
+  local list_output
+  list_output=$("${inspector[@]}" --method tools/list 2>&1) || true
+  if echo "$list_output" | grep -q '"aws-docs__aws___search_documentation"'; then
+    pass "Inspector tools/list shows aws-docs tools ($label)"
+  else
+    fail "Inspector tools/list missing aws-docs__aws___search_documentation ($label)" "${list_output:0:200}"
+    return
+  fi
+
+  local call_output
+  call_output=$("${inspector[@]}" --method tools/call \
+    --tool-name aws-docs__aws___search_documentation \
+    --tool-arg search_phrase="S3 bucket naming rules" --tool-arg limit=1 2>&1) || true
+  if echo "$call_output" | grep -q '"content"' && ! echo "$call_output" | grep -q '"isError": true'; then
+    pass "Inspector tools/call aws-docs__aws___search_documentation succeeded ($label)"
+  else
+    fail "Inspector tools/call failed ($label)" "${call_output:0:200}"
+    return
+  fi
+
+  sleep 0.5
+  if grep -q '"prefixed_name":"aws-docs__aws___search_documentation"' "$audit_log" 2>/dev/null; then
+    pass "Tool call written to audit log ($label)"
+  else
+    fail "No audit entry for the tool call ($label)" "Expected in: $audit_log"
+  fi
 }
 
 assert_config_files_exist() {
@@ -230,7 +274,7 @@ run_gateway_tests() {
   check_port_free 8080 || return
 
   info "Starting gateway ($label)..."
-  OPENAI_API_KEY="" XDG_CONFIG_HOME="$config_dir" XDG_STATE_HOME="$state_dir" XDG_CACHE_HOME="$cache_dir" \
+  env OPENAI_API_KEY="" "${AI_OFF_ENV[@]}" XDG_CONFIG_HOME="$config_dir" XDG_STATE_HOME="$state_dir" XDG_CACHE_HOME="$cache_dir" \
     "$binary" gateway start > "$log_file" 2>&1 &
   GATEWAY_PID=$!
 
@@ -291,6 +335,8 @@ run_gateway_tests() {
   else
     fail "State directory missing ($label)" "Expected at: $state_dir/maybe-dont"
   fi
+
+  verify_with_inspector "$label" "$state_dir/maybe-dont/maybedont-audit.log" "$cache_dir/npm"
 
   stop_gateway
 }
@@ -384,10 +430,9 @@ test_binary() {
 
   # ── Configure (disable AI → CEL-only) ──
   patch_config "$config_dir/maybe-dont/maybe-dont.yaml"
-  if grep -q "enabled: false" "$config_dir/maybe-dont/maybe-dont.yaml" \
-     && grep -q "type: http" "$config_dir/maybe-dont/maybe-dont.yaml" \
-     && grep -q "test-dummy:" "$config_dir/maybe-dont/maybe-dont.yaml"; then
-    pass "Config patched (HTTP mode, dummy downstream, AI disabled)"
+  if grep -q "type: http" "$config_dir/maybe-dont/maybe-dont.yaml" \
+     && grep -q "aws-docs:" "$config_dir/maybe-dont/maybe-dont.yaml"; then
+    pass "Config patched (HTTP mode, aws-docs downstream)"
   else
     fail "Config patch failed — check patch_config against default config format"
     return
@@ -452,10 +497,9 @@ test_docker() {
 
   # ── Configure (disable AI → CEL-only) ──
   patch_config "$config_dir/maybe-dont/maybe-dont.yaml"
-  if grep -q "enabled: false" "$config_dir/maybe-dont/maybe-dont.yaml" \
-     && grep -q "type: http" "$config_dir/maybe-dont/maybe-dont.yaml" \
-     && grep -q "test-dummy:" "$config_dir/maybe-dont/maybe-dont.yaml"; then
-    pass "Config patched (HTTP mode, dummy downstream, AI disabled)"
+  if grep -q "type: http" "$config_dir/maybe-dont/maybe-dont.yaml" \
+     && grep -q "aws-docs:" "$config_dir/maybe-dont/maybe-dont.yaml"; then
+    pass "Config patched (HTTP mode, aws-docs downstream)"
   else
     fail "Config patch failed — check patch_config against default config format"
     return
@@ -469,6 +513,8 @@ test_docker() {
   run_cid=$(docker run -d \
     --name "maybedont-test-run-$$" \
     -e OPENAI_API_KEY="" \
+    -e MAYBE_DONT_REQUEST_VALIDATION_AI_ENABLED=false \
+    -e MAYBE_DONT_NATIVE_TOOLS_AUDIT_REPORT_ENABLED=false \
     -e XDG_CONFIG_HOME=/config \
     -e XDG_STATE_HOME=/state \
     -e MAYBE_DONT_SERVER_LISTEN_ADDR=0.0.0.0:8080 \
@@ -530,6 +576,8 @@ test_docker() {
     fail "State directory missing (Docker)" "Expected at: $state_dir/maybe-dont"
   fi
 
+  verify_with_inspector "Docker" "$state_dir/maybe-dont/maybedont-audit.log" "$test_dir/npm-cache"
+
   docker stop "$run_cid" >/dev/null 2>&1 || true
 }
 
@@ -582,10 +630,9 @@ test_homebrew() {
 
   # ── Configure (disable AI → CEL-only) ──
   patch_config "$config_dir/maybe-dont/maybe-dont.yaml"
-  if grep -q "enabled: false" "$config_dir/maybe-dont/maybe-dont.yaml" \
-     && grep -q "type: http" "$config_dir/maybe-dont/maybe-dont.yaml" \
-     && grep -q "test-dummy:" "$config_dir/maybe-dont/maybe-dont.yaml"; then
-    pass "Config patched (HTTP mode, dummy downstream, AI disabled)"
+  if grep -q "type: http" "$config_dir/maybe-dont/maybe-dont.yaml" \
+     && grep -q "aws-docs:" "$config_dir/maybe-dont/maybe-dont.yaml"; then
+    pass "Config patched (HTTP mode, aws-docs downstream)"
   else
     fail "Config patch failed — check patch_config against default config format"
     return
