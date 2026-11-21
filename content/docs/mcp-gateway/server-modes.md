@@ -75,21 +75,10 @@ server:
 
 ### TLS
 
-SSE mode supports native TLS:
+The gateway serves plain HTTP in every mode and has no TLS settings of its own. To serve it over HTTPS, terminate TLS in a reverse proxy in front of the gateway and have the proxy forward to the gateway's `listen_addr`. If the proxy sets `X-Forwarded-For`, also configure [trusted proxies](#trusted-proxies) so the gateway picks the right client IP.
 
-```yaml
-server:
-  type: sse
-  listen_addr: "0.0.0.0:8443"
-  sse:
-    tls:
-      enabled: true
-      cert_file: "/path/to/cert.pem"
-      key_file: "/path/to/key.pem"
-```
-
-{{< callout type="info" >}}
-TLS is SSE-only. For HTTP mode with TLS, use a reverse proxy (nginx, Traefik, etc.) in front of the gateway.
+{{< callout type="warning" >}}
+Earlier versions accepted a `server.sse.tls` block but never used it, so the gateway kept serving plain HTTP. Starting with 1.9.0 the gateway refuses to start if `server.sse.tls` is set. Remove it from your config and put a reverse proxy in front of the gateway instead.
 {{< /callout >}}
 
 ## Session Timeout
