@@ -335,14 +335,14 @@ test_binary() {
     return
   fi
 
-  # Verify SHA256
-  local expected_sha actual_sha
-  expected_sha=$(curl -sL "$sha_url" | awk '{print $1}')
-  actual_sha=$(shasum -a 256 "$bin_dir/$filename" | awk '{print $1}')
-  if [ -n "$expected_sha" ] && [ "$expected_sha" = "$actual_sha" ]; then
-    pass "SHA256 checksum verified"
+  # Verify SHA256 the way the docs do: download the .sha256 file next to the
+  # archive and check it with shasum -c
+  curl -sL -o "$bin_dir/$filename.sha256" "$sha_url"
+  local sha_output
+  if sha_output=$(cd "$bin_dir" && shasum -a 256 -c "$filename.sha256" 2>&1); then
+    pass "SHA256 checksum verified with shasum -c"
   else
-    fail "SHA256 mismatch" "expected=${expected_sha:-empty} actual=$actual_sha"
+    fail "SHA256 check failed" "$sha_output"
     return
   fi
 

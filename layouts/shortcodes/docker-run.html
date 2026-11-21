@@ -1,7 +1,8 @@
 {{/*
   Docker Run Shortcode
 
-  Renders a docker run command for Maybe Don't with common options.
+  Renders a docker run command for Maybe Don't with common options. The
+  container is named maybe-dont so pages can refer to `docker logs maybe-dont`.
 
   Usage:
     {{< docker-run >}}
@@ -18,10 +19,11 @@
 {{ $envVars := split $env "," }}
 
 ```bash
-docker run \
+docker run --rm --name maybe-dont \
 {{- range $envVars }}
   -e {{ . }} \
 {{- end }}
+  -e MAYBE_DONT_SERVER_LISTEN_ADDR=0.0.0.0:{{ $port }} \
   -e XDG_CONFIG_HOME=/config \
   -e XDG_STATE_HOME=/state \
   -v ${XDG_CONFIG_HOME:-$HOME/.config}/maybe-dont:/config/maybe-dont \

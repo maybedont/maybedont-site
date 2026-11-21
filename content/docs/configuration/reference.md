@@ -3,7 +3,7 @@ title: Reference
 weight: 100
 ---
 
-Complete reference for `maybe-dont.yaml`. Every option is shown with its environment variable equivalent, default value, and available choices. This file is valid YAML — you can use it as a starting point for your own configuration.
+Complete reference for `maybe-dont.yaml`. Every option is shown with its environment variable equivalent, default value, and available choices. The values shown are the defaults, or what the bootstrapped `maybe-dont.yaml` sets where there's no built-in default. The `downstream_mcp_servers` entries at the end are examples; replace them with your own servers before you use this file.
 
 ## Configuration Precedence
 
@@ -62,24 +62,29 @@ server:
 # =============================================================================
 
 validation:
-  # Max cumulative time (ms) across all policy evaluations per request.
-  # If total evaluation time exceeds this, remaining evaluations are skipped
-  # and the request fails open.
+  # Max cumulative time (ms) a request waits for policy decisions.
+  # If the budget runs out, the request goes ahead without waiting for the
+  # AI rules still running (fail-open, logged as action_reason: fail_open).
   # Env: MAYBE_DONT_VALIDATION_MAX_BLOCKING_MS
+  # Range: 0-120000
   # Default: 90000
   max_blocking_ms: 90000
 
-  # Max time (ms) for a single rule evaluation
+  # Max time (ms) for a single rule evaluation. An enforced AI rule that runs
+  # longer counts as an error and the request fails open.
   # Env: MAYBE_DONT_VALIDATION_MAX_RULE_EVALUATION_MS
+  # Range: 0-120000
   # Default: 45000
   max_rule_evaluation_ms: 45000
 
-  # AI provider configuration
+  # AI provider configuration, shared by AI request validation, AI response
+  # validation and the audit report tool. When any of those is enabled, the
+  # gateway won't start without model and api_key.
   ai:
     # AI provider
     # Env: MAYBE_DONT_VALIDATION_AI_PROVIDER
     # Options: openai, anthropic, openai_compatible
-    # Default: openai
+    # Default: openai (leaving it unset prints a deprecation warning)
     provider: openai
 
     # API endpoint
@@ -87,16 +92,17 @@ validation:
     # Default: provider-specific (openai: https://api.openai.com/v1/chat/completions,
     #   anthropic: https://api.anthropic.com/v1/messages)
     # Required for openai_compatible — set to your provider's chat completions URL
-    endpoint: ""
+    endpoint: "https://api.openai.com/v1/chat/completions"
 
-    # Model name
+    # Model name. No built-in default; the bootstrapped config sets gpt-5.
     # Env: MAYBE_DONT_VALIDATION_AI_MODEL
     # Examples: gpt-5.1, gpt-5, claude-sonnet-4-5-20250929
-    model: ""
+    model: "gpt-5"
 
-    # API key — supports ${ENV_VAR} syntax
+    # API key — supports ${ENV_VAR} syntax. No built-in default; the
+    # bootstrapped config reads OPENAI_API_KEY.
     # Env: MAYBE_DONT_VALIDATION_AI_API_KEY
-    api_key: ""
+    api_key: "${OPENAI_API_KEY}"
 
     # Provider-specific parameters (e.g., max_tokens, temperature)
     # Passed in the request body to the AI provider
@@ -127,9 +133,11 @@ request_validation:
     # Default: audit_only
     mode: audit_only
 
-    # Path to CEL request rules file or directory
+    # Rules file, relative to the directory that holds maybe-dont.yaml.
+    # Absolute paths and paths containing .. are rejected. Required when
+    # enabled; no built-in default (the bootstrapped config sets this name).
     # Env: MAYBE_DONT_REQUEST_VALIDATION_CEL_RULES_FILE
-    rules_file: ""
+    rules_file: "cel_request_rules.yaml"
 
   # AI request validation
   ai:
@@ -144,9 +152,11 @@ request_validation:
     # Default: audit_only
     mode: audit_only
 
-    # Path to AI request rules file or directory
+    # Rules file, relative to the directory that holds maybe-dont.yaml.
+    # Absolute paths and paths containing .. are rejected. Required when
+    # enabled; no built-in default (the bootstrapped config sets this name).
     # Env: MAYBE_DONT_REQUEST_VALIDATION_AI_RULES_FILE
-    rules_file: ""
+    rules_file: "ai_request_rules.yaml"
 
 # =============================================================================
 # Response Validation
@@ -166,9 +176,11 @@ response_validation:
     # Default: audit_only
     mode: audit_only
 
-    # Path to CEL response rules file or directory
+    # Rules file, relative to the directory that holds maybe-dont.yaml.
+    # Absolute paths and paths containing .. are rejected. Required when
+    # enabled; no built-in default (the bootstrapped config sets this name).
     # Env: MAYBE_DONT_RESPONSE_VALIDATION_CEL_RULES_FILE
-    rules_file: ""
+    rules_file: "cel_response_rules.yaml"
 
   # AI response validation
   ai:
@@ -183,9 +195,11 @@ response_validation:
     # Default: audit_only
     mode: audit_only
 
-    # Path to AI response rules file or directory
+    # Rules file, relative to the directory that holds maybe-dont.yaml.
+    # Absolute paths and paths containing .. are rejected. Required when
+    # enabled; no built-in default (the bootstrapped config sets this name).
     # Env: MAYBE_DONT_RESPONSE_VALIDATION_AI_RULES_FILE
-    rules_file: ""
+    rules_file: "ai_response_rules.yaml"
 
 # =============================================================================
 # CLI Request Validation
@@ -197,17 +211,44 @@ cli_request_validation:
   # Default: false
   enabled: false
 
-  # Commands to validate — others pass through without evaluation
-  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_VALIDATE_COMMANDS
+  # Commands to validate — others pass through without evaluation.
+  # Use ["*"] to validate every command. Must not be empty when enabled.
+  # Env: MAYBE_DONT_CLI_REQUEST_VALIDATION_VALIDATE_COMMANDS (comma-separated)
   # Default: (none)
   validate_commands: []
+
+# =============================================================================
+# Intercept Endpoint
+# =============================================================================
+
+intercept:
+  # Enable the /api/v1/intercept endpoint used by agent hook scripts.
+  # When false, the endpoint returns 400.
+  # Env: MAYBE_DONT_INTERCEPT_ENABLED
+  # Default: true
+  enabled: true
+
+  # Tool names that run shell commands. When an intercepted tool has one of
+  # these names, the gateway parses its command string and evaluates both
+  # cli_expression and mcp_expression rules.
+  # Env: MAYBE_DONT_INTERCEPT_SHELL_TOOL_NAMES (comma-separated)
+  # Default: Bash, execute_command, shell, run_terminal_command, run_command
+  shell_tool_names:
+    - "Bash"
+    - "execute_command"
+    - "shell"
+    - "run_terminal_command"
+    - "run_command"
 
 # =============================================================================
 # Audit Log
 # =============================================================================
 
 audit:
-  # Output destination: stdout, stderr, or a file path
+  # Output destination: stdout, stderr, or a filename. A filename is a
+  # relative path inside the log directory; absolute paths and paths
+  # containing .. are rejected. maybedont__get_audit_log reads this file and
+  # doesn't work with stdout or stderr.
   # Env: MAYBE_DONT_AUDIT_PATH
   # Default: maybedont-audit.log
   path: maybedont-audit.log
@@ -219,7 +260,8 @@ audit:
   filter: all
 
   # Include argument values in audit log entries.
-  # When false, only argument flag names are logged — values are omitted.
+  # When false, CLI entries keep only flag names and MCP entries keep
+  # parameter names with each value replaced by "[redacted]".
   # This protects sensitive data (tokens, passwords, file contents) from
   # appearing in audit logs.
   # Env: MAYBE_DONT_AUDIT_INCLUDE_ARGUMENT_VALUES
@@ -259,7 +301,9 @@ logger:
   # Default: info
   level: info
 
-  # Output destination: stdout, stderr, or a file path
+  # Output destination: stdout, stderr, or a filename. A filename is a
+  # relative path inside the log directory; absolute paths and paths
+  # containing .. are rejected.
   # Env: MAYBE_DONT_LOGGER_PATH
   # Default: stderr
   path: stderr
@@ -343,7 +387,8 @@ native_tools:
 # tools are exposed as github__<tool_name>).
 downstream_mcp_servers:
 
-  # Example: stdio transport (launches a subprocess)
+  # Example: stdio transport (launches a subprocess). This runs the MCP
+  # reference test server, which needs Node.js but no credentials.
   example_stdio:
     # Transport type
     # Options: stdio, http, sse
@@ -353,7 +398,7 @@ downstream_mcp_servers:
     command: "npx"
 
     # Command arguments
-    args: ["-y", "@example/mcp-server"]
+    args: ["-y", "@modelcontextprotocol/server-everything"]
 
     # Environment variables for the subprocess. It inherits only PATH, HOME,
     # USER, LOGNAME, SHELL, TERM, TMPDIR, LANG and LC_ALL from the gateway;
@@ -372,7 +417,7 @@ downstream_mcp_servers:
     # Delay between retries in ms (default: 100)
     retry_delay_ms: 100
 
-    # Delay before capability discovery in ms (default: 1000, stdio only)
+    # Delay before capability discovery in ms (default: 1000 for stdio, 0 for http and sse)
     capability_discovery_delay_ms: 1000
 
     # Capability discovery retries (default: 3)

@@ -40,6 +40,6 @@ Consider creating alerts for:
 | Field | Condition | Alert |
 |-------|-----------|-------|
 | `action` | `"deny"` | Tool call was blocked |
-| `action_reason` | `"fail_open"` | Validation timed out |
+| `action_reason` | `"fail_open"` | An enforced rule failed and the call was allowed ([details](/docs/audit-log/log-schema/#fail-open)) |
 | `duration_ms` | `> 10000` | Slow validation |
 | `request_validation.ai.results[].error` | exists | AI validation error |
