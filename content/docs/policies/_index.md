@@ -81,6 +81,8 @@ When multiple policies evaluate a request, here's how the final decision is made
 
 **Rule:** Any deny = deny. This is intentional - policies are guardrails, not voting systems.
 
+A CEL rule that errors at runtime, for example by reading a field the request doesn't have, is skipped and the remaining rules still run, so a later deny still blocks the request. If nothing denies, the request is allowed and logged as [`fail_open`](/docs/audit-log/log-schema/#fail-open).
+
 ### Different Engines (CEL + AI)
 
 | CEL Result | AI Result | Final Decision |

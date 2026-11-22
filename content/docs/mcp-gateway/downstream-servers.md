@@ -163,6 +163,31 @@ downstream_mcp_servers:
 
 The simpler fix is usually to set `url` to the address the server redirects to.
 
+## Connection Errors
+
+When the gateway can't connect to a downstream server or a request to it fails, the agent gets a fixed message. The raw error can contain the server's URL, credentials or local command paths, so it only goes to the gateway log, with URLs stripped of userinfo, query strings and fragments. Check the gateway log for the cause.
+
+These messages apply to `maybedont__discover_tools` and to tool calls, prompts and resources on a downstream server:
+
+| Message | Meaning |
+|---------|---------|
+| `failed to connect to downstream server '<name>'; see the gateway log for details` | The gateway couldn't connect to the server |
+| `call to downstream server '<name>' failed; see the gateway log for details` | The server was connected, but sending the request or reading the response failed |
+| `...: authorization required; check the pass-through credentials your client sends` | The server answered 401 and uses [pass-through authentication](#pass-through-authentication). Fix the credentials your client sends |
+| `...: authorization required; check the headers configured for this server` | The server answered 401. Fix the headers configured for it |
+
+An error the downstream server returns itself, as a JSON-RPC error response, still reaches the agent.
+
+### Initialize rejected with a 4xx status
+
+An `http` server that answers the MCP initialize request with a 4xx status other than 401 fails with:
+
+```
+rejected the MCP initialize request with a 4xx status; check its credentials (headers or pass-through auth) and URL; only servers that use the old SSE transport need `type: sse`
+```
+
+This usually means a bad token or a wrong URL. GitHub's MCP server, for example, answers an invalid token with 400. Check the token and `url` before switching to `type: sse`. The agent sees this message after `failed to connect to downstream server '<name>': `, and the gateway log entry includes the same text with the underlying error.
+
 ## Environment Variable Configuration
 
 You can configure downstream servers entirely via environment variables:

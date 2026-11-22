@@ -223,19 +223,19 @@ The `action_reason` field explains why the final action was taken:
 | `request_policy` | Request validation denied |
 | `response_policy` | Response validation denied |
 | `audit_mode` | A rule in `audit_only` mode would have denied, so the request was allowed |
-| `fail_open` | An enforced rule couldn't reach a decision, so the request was allowed. See below |
+| `fail_open` | An enforced rule couldn't reach a decision and no other rule denied, so the request was allowed. Takes precedence over `audit_mode`. See below |
 | `async_completion` | Follow-up entry with AI results that finished after the response was sent (`cli`, `intercept` and `action` entries) |
 | *(omitted)* | Normal allow, no special circumstances |
 
 ### Fail-open
 
-An enforced rule that fails at runtime is logged and the request is allowed. `action_reason` is `fail_open` and `recommended_action` is omitted, because the gateway doesn't know what the failed rule would have decided. Errors from rules in `audit_only` mode are recorded in `results` but don't trigger fail-open.
+An enforced rule that fails at runtime is logged and can't deny anything, and the other rules still run. If another enforced rule denies, the request is denied as usual. If nothing denies, the request is allowed, `action_reason` is `fail_open` and `recommended_action` is omitted, because the gateway doesn't know what the failed rule would have decided. When an `audit_only` rule would also have denied, `action_reason` is still `fail_open`. Errors from rules in `audit_only` mode are recorded in `results` but don't trigger fail-open.
 
-- A CEL rule fails when its expression doesn't compile, errors while evaluating (for example a missing key, `no such key`), or doesn't return a boolean. CEL evaluation stops at that rule, so later rules aren't evaluated.
+- A CEL rule fails when it errors while evaluating (for example a missing key, `no such key`) or doesn't return a boolean. The gateway skips that rule and evaluates the rest, so a later `deny` rule still blocks the request. This applies to MCP tool calls, CLI commands and response rules. An expression that doesn't compile stops the gateway at startup instead.
 - An AI rule fails when the provider call errors, the response can't be parsed, or the rule runs longer than `validation.max_rule_evaluation_ms`. Other AI rules still run, and an enforced deny from any of them still blocks the request.
 - AI validation also fails open when waiting for enforced rules uses up `validation.max_blocking_ms`. No rule gets an `error` result in this case. The request goes ahead without waiting, and the rules still running are left out of `results`, unless the phase also has `audit_only` rules, in which case they're recorded with their eventual result. The gateway logs a warning.
 
-A rule that fails has `result: "error"` and an `error` message in its per-rule result. Compile and evaluation errors from CEL rules and errors from AI rules are also written to the application log at error level; a CEL rule that returns a non-boolean is only recorded in the audit entry. On MCP entries, `fail_open` reflects request validation only. A response rule that fails is recorded in `response_validation` but doesn't change `action_reason`.
+A rule that fails has `result: "error"` and an `error` message in its per-rule result. Evaluation errors from CEL rules and errors from AI rules are also written to the application log at error level; a CEL rule that returns a non-boolean is only recorded in the audit entry. On MCP entries, `fail_open` reflects request validation only. A response rule that fails is recorded in `response_validation` but doesn't change `action_reason`.
 
 MCP entries don't need a follow-up: when `audit_only` AI rules are still running, the gateway waits for them before it writes the single entry.
 

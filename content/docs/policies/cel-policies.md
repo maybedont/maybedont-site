@@ -225,7 +225,7 @@ See [How Phase and Rule Modes Combine](/docs/policies/#how-phase-and-rule-modes-
 | Mistake | Problem | Fix |
 |---------|---------|-----|
 | Using `mcp_expression` for CLI context | Variables don't exist, expression fails | Use `cli_expression` with `cli.*` variables |
-| Accessing nested fields without `has()` | Runtime error on missing field | Use `has()` or `get()` for optional fields |
+| Accessing nested fields without `has()` | Runtime error on missing field, so the rule is skipped and can't deny | Use `has()` or `get()` for optional fields |
 | Using `==` for partial string match | Only matches exact strings | Use `.contains()` for substrings |
 | Complex intent-based logic in CEL | Brittle, misses edge cases | Use an AI policy instead |
 

@@ -167,7 +167,7 @@ List all configured downstream MCP servers and the tools discovered for each.
 }
 ```
 
-Stdio servers report `command` instead of `url`. A pass-through server shows `tools_count: 0` until its tools are discovered for the current session.
+Stdio servers report `command` instead of `url`. For http and sse servers, `url` has any userinfo, query string and fragment removed, so credentials embedded in the configured URL aren't shown to the agent. A pass-through server shows `tools_count: 0` until its tools are discovered for the current session.
 
 **Configuration:**
 
@@ -243,12 +243,14 @@ Connect to downstream servers that use [pass-through authentication](/docs/mcp-g
   ],
   "already_connected": ["gitlab"],
   "errors": [
-    { "client_name": "jira", "error": "..." }
+    { "client_name": "jira", "error": "failed to connect to downstream server 'jira'; see the gateway log for details" }
   ]
 }
 ```
 
 `already_connected` and `errors` are omitted when empty.
+
+An `error` never includes the raw connection error, which can contain the server's URL and credentials. It's a fixed message, and the details are in the gateway log. See [Connection Errors](/docs/mcp-gateway/downstream-servers/#connection-errors) for the messages and what they mean.
 
 This tool is always enabled and cannot be disabled.
 
@@ -276,6 +278,6 @@ Native tools expose information about your gateway configuration and activity. C
 
 - **Audit log access** - Contains tool names and parameters
 - **Session list** - Shows client IPs, user agents, and connected downstream servers
-- **Server list** - Reveals your downstream server configuration
+- **Server list** - Reveals your downstream server configuration, with credentials and query strings removed from URLs
 
 If you're concerned about AI agents accessing this information, disable the relevant tools.

@@ -14,7 +14,15 @@ By default, the gateway looks for `maybe-dont.yaml` in these locations (in order
 3. `$XDG_CONFIG_HOME/maybe-dont/` (typically `~/.config/maybe-dont/`)
 4. `$HOME/.config/maybe-dont/`
 
-The first file found wins. If no config file exists on first run, default files are generated.
+The gateway uses the first of these that applies, even if it holds no config file. If no config file exists on first run, default files are generated.
+
+If the config file exists but can't be read or has a YAML error, the gateway refuses to start and prints the path with the parser error:
+
+```
+failed to read config file /path/to/maybe-dont.yaml: <parser error>
+```
+
+Earlier versions ignored such a file and started with defaults. A missing config file still falls back to defaults.
 
 ## Configuration Precedence
 
