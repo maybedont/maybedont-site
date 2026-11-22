@@ -32,6 +32,8 @@ This tells Claude Code to:
 - Use HTTP transport
 - Send your GitHub token in the `X-GitHub-Token` header
 
+`claude mcp add` uses local scope by default, so the server is only available when you run Claude Code in the directory where you added it. Add `--scope user` to make it available in all your projects.
+
 The gateway will forward this token to GitHub using pass-through authentication.
 
 ## Verify the Connection
@@ -42,7 +44,7 @@ Check that Claude Code can see the MCP server:
 claude mcp list
 ```
 
-You should see `maybe-dont` listed with the tools available from GitHub.
+You should see `maybe-dont` listed as `✔ Connected`. `claude mcp list` doesn't list tools. To see them, run `/mcp` inside Claude Code (see [Start Using It](#start-using-it)).
 
 ## Start Using It
 

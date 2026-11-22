@@ -129,7 +129,7 @@ downstream_mcp_servers:
 
 All tools from all servers are available to connecting clients. Tools are prefixed with the server name:
 - `github__create_issue`
-- `aws-docs__search_documentation`
+- `aws-docs__aws___search_documentation`
 - `local-tools__my_custom_tool`
 
 ## Initialization Settings
@@ -167,7 +167,9 @@ The simpler fix is usually to set `url` to the address the server redirects to.
 
 When the gateway can't connect to a downstream server or a request to it fails, the agent gets a fixed message. The raw error can contain the server's URL, credentials or local command paths, so it only goes to the gateway log, with URLs stripped of userinfo, query strings and fragments. Check the gateway log for the cause.
 
-These messages apply to `maybedont__discover_tools` and to tool calls, prompts and resources on a downstream server:
+At startup the gateway connects once to every server that doesn't use pass-through authentication to discover its tools. If that fails, including the 4xx below, the gateway logs `Probe client creation failed` at error level and still starts. That server's tools aren't registered, and `maybedont__list_downstream_servers` shows `tools_discovered: false` for it, so check the gateway log.
+
+Agents see the messages below when the gateway connects a server for a session: pass-through servers, `maybedont__discover_tools`, and the first tool call, prompt or resource read on a server. These messages apply to `maybedont__discover_tools` and to tool calls, prompts and resources on a downstream server:
 
 | Message | Meaning |
 |---------|---------|

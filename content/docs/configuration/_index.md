@@ -22,6 +22,12 @@ If the config file exists but can't be read or has a YAML error, the gateway ref
 failed to read config file /path/to/maybe-dont.yaml: <parser error>
 ```
 
+For example:
+
+```
+Error: failed to load config: failed to read config file /home/you/.config/maybe-dont/maybe-dont.yaml: While parsing config: yaml: line 155: did not find expected ',' or ']'
+```
+
 Earlier versions ignored such a file and started with defaults. A missing config file still falls back to defaults.
 
 ## Configuration Precedence

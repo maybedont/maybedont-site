@@ -60,7 +60,7 @@ downstream_mcp_servers:
 
 Edit the existing `downstream_mcp_servers:` key in `~/.config/maybe-dont/maybe-dont.yaml` (the default config directory) rather than adding a second one. Leave the rest of the file as bootstrapped: the server listens on `127.0.0.1:8080`, and CEL and AI request validation are on in `audit_only` mode.
 
-AI request validation needs an API key. The default config reads it from `OPENAI_API_KEY`, and the gateway won't start while AI validation is on and the key is empty. Export the key before starting, or turn AI validation off as described in [Get Started](/docs/get-started/#configure).
+AI request validation and the audit report tool need an API key. The default config reads it from `OPENAI_API_KEY`, and the gateway won't start while either is on and the key is empty. Export the key before starting, or turn off both `request_validation.ai.enabled` and `native_tools.audit_report.enabled` as described in [Get Started](/docs/get-started/#configure).
 
 Start the gateway with Docker:
 
